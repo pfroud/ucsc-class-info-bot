@@ -1,5 +1,5 @@
 """
-Scrapes a reddit page for mentions of a course.
+Scrapes the self text and comments of a reddit submission for mentions of courses.
 """
 
 import praw  # python wrapper for reddit api
@@ -22,8 +22,13 @@ subjects_lower = [x.lower() for x in subjects]
 regex = re.compile(" ?[0-9]+[A-Za-z]?")
 
 
-def get_courses(argument):
-    str_in = argument.lower()
+def get_courses(source):
+    """
+    Finds mentions of courses (department and number) in a string.
+    :param source: string to look for courses in.
+    :return: array of course strings.
+    """
+    str_in = source.lower()
     courses_found = []
     for subj in subjects_lower:  # iterate subjects
 
@@ -59,7 +64,7 @@ def get_courses(argument):
 
                     courses_found.append(subj_with_number)
 
-                    print("matched string \"" + subj_with_number + "\".")
+                    # print("matched string \"" + subj_with_number + "\".")
             else:
                 break
 
@@ -71,7 +76,7 @@ submission = r.get_submission(submission_id='3w0wt4')  # for now, directly input
 
 print("got submission.")
 
-# selftext = submission.selftext.lower()
+print(get_courses(submission.selftext))
 
 
 flat_comments = praw.helpers.flatten_tree(submission.comments)
