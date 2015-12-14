@@ -29,9 +29,13 @@ payload = {
 r = requests.post('https://pisa.ucsc.edu/class_search/', data=payload)
 
 soup = BeautifulSoup(r.text, 'html.parser')
-
 encoded_course = soup.select('tbody td:nth-of-type(3) a')[0]['href'].split('=')[2]
-
 result_url = 'https://pisa.ucsc.edu/class_search/index.php?action=detail&class_data=' + encoded_course
-
 print(result_url)
+
+soup = BeautifulSoup(result_url, 'html.parser')
+course_name = soup.select("table.PALEVEL0SECONDARY tr:nth-of-type(2) td")
+print("course_name is", course_name)
+course_description = soup.select("table.detail_table")
+print("course_description is", course_description)
+
