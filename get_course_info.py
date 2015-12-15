@@ -12,8 +12,8 @@ from bs4 import BeautifulSoup  # html parser
 
 def get_course_info(course_dept_number_string):
     """
-    definitely does something.
-    :param course_dept_number_string: string like "cmps1" or "cmps 1"
+    Given string of department and number, returns array of course title and description.
+    :param course_dept_number_string: string "cmps 1", must be a space between department and number
     :return: array of [course_name, course_description]
     """
 
