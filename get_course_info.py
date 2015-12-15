@@ -35,17 +35,7 @@ def get_course_info(course_dept_number_string):
         'binds[:subject]': course_department,
         'binds[:catalog_nbr_op]': '=',
         'binds[:catalog_nbr]': course_number,
-        'binds[:title]': '',
-        'binds[:instr_name_op]': '=',
-        'binds[:instructor]': '',
-        'binds[:ge]': '',
-        'binds[:crse_units_op]': '=',
-        'binds[:crse_units_from]': '',
-        'binds[:crse_units_to]': '',
-        'binds[:crse_units_exact]': '',
-        'binds[:days]': '',
-        'binds[:times]': '',
-        'binds[:acad_career]': ''}
+    }
 
     # do the request for the search results page
     request_result = requests.post('https://pisa.ucsc.edu/class_search/', data=payload)
