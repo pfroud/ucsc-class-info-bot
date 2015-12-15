@@ -19,7 +19,8 @@ subjects = ["ACEN", "AMST", "ANTH", "APLX", "AMS", "ARAB", "ART", "ARTG", "ASTR"
             "WMST", "LTWL", "WRIT", "YIDD", "CE", "CS"]
 subjects_lower = [x.lower() for x in subjects]
 
-regex = re.compile(" ?[0-9]+[A-Za-z]?")
+# previously " ?[0-9]+[A-Za-z]?"
+regex = re.compile("[0-9]+[A-Za-z]?")
 
 
 def get_courses(source):
