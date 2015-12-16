@@ -28,6 +28,8 @@ def get_course_object(course_dept_number_string):
     :return: a Course object
     """
 
+    print("running on \"" + course_dept_number_string + "\"")
+
     split_array = course_dept_number_string.split(' ')
     course_department = split_array[0].upper()  # server needs department to be all caps
     course_number = split_array[1]
@@ -65,6 +67,7 @@ def get_course_object(course_dept_number_string):
     # Grotesque element selection. we want class_data for a link to a class.
     # Get the <a> element which is the Class Title link in the first row of results.
     # Get the only element in the resulting array. Get the href string, then split by '=' and get second element.
+    print("a element is",  soup.select('tbody td:nth-of-type(3) a'))
     encoded_course = soup.select('tbody td:nth-of-type(3) a')[0]['href'].split('=')[2]
 
     if encoded_course is None:
@@ -97,7 +100,6 @@ def get_course_object(course_dept_number_string):
         raise Exception("Couldn't find course description")
 
     return Course(course_name, course_description, course_department, course_number, result_url)
-
 
 # thing = get_course_object('CMPS 5j')
 # print(thing)

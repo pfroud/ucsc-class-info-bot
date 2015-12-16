@@ -31,7 +31,6 @@ def get_course_strings(source):
     :param source: string to look for courses in.
     :return: array of strings of course names
     """
-    print("running on \"" + source + "\"")
 
     str_in = source.lower()
     courses_found = []
@@ -73,7 +72,6 @@ def get_course_strings(source):
             else:
                 break
 
-    print("found", courses_found)
     return courses_found
 
 
@@ -84,31 +82,31 @@ def find_all_course_names(submission_in):
     :return: an array of strings of course names
     """
     course_names = []
-    print(">title:")
     course_names.extend(get_course_strings(submission_in.title))
 
-    # print(">selftext:")
-    # course_names.extend(get_course_strings(submission_in.selftext))
-    #
-    # print(">comments:")
-    # flat_comments = praw.helpers.flatten_tree(submission_in.comments)
-    # for comment in flat_comments:
-    #     course_names.extend(get_course_strings(comment.body))
+    course_names.extend(get_course_strings(submission_in.selftext))
 
-    return course_names
+    flat_comments = praw.helpers.flatten_tree(submission_in.comments)
+    for comment in flat_comments:
+        course_names.extend(get_course_strings(comment.body))
+
+    # the list(set()) thing removes duplicates
+    return list(set(course_names))
 
 
 # def make_comment(courses):
 #     return
 
 
-# r = praw.Reddit('comment scraper by Peter Froud')  # the user agent?
-# submission = r.get_submission(submission_id='3w0wt4')  # for now, directly input a submission
-# print("got submission.")
+r = praw.Reddit('comment scraper by Peter Froud')  # the user agent?
+print("going to get submission.")
+submission = r.get_submission(submission_id='3w0wt4')  # for now, directly input a submission
+print("got submission.")
 
 # pprint(vars(submission))
 
-# names = find_all_course_names(submission)
-# print(names)
+names = find_all_course_names(submission)
 
-get_course_strings("Chem 1C without 1N lab")
+objects = [get_course_object(x) for x in names]
+
+print(objects)
