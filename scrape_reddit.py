@@ -22,7 +22,7 @@ subjects = ["ACEN", "AMST", "ANTH", "APLX", "AMS", "ARAB", "ART", "ARTG", "ASTR"
 subjects_lower = [x.lower() for x in subjects]
 
 # previously " ?[0-9]+[A-Za-z]?"
-regex = re.compile("[0-9]+[A-Za-z]?")
+regex = re.compile(" [0-9]+[A-Za-z]?")
 
 
 def get_course_strings(source):
@@ -31,7 +31,7 @@ def get_course_strings(source):
     :param source: string to look for courses in.
     :return: array of strings of course names
     """
-    print("running on \""+source+"\"")
+    print("running on \"" + source + "\"")
 
     str_in = source.lower()
     courses_found = []
@@ -49,7 +49,7 @@ def get_course_strings(source):
             # run string search
             subj_start_index = trimmed_str.find(subj)
 
-            if subj_start_index > 0:  # if found a subject in body
+            if subj_start_index >= 0:  # if found a subject in body
 
                 # set string index where subject ends
                 subj_end_index = subj_start_index + len(subj)
@@ -102,11 +102,13 @@ def find_all_course_names(submission_in):
 #     return
 
 
-r = praw.Reddit('comment scraper by Peter Froud')  # the user agent?
-submission = r.get_submission(submission_id='3w0wt4')  # for now, directly input a submission
+# r = praw.Reddit('comment scraper by Peter Froud')  # the user agent?
+# submission = r.get_submission(submission_id='3w0wt4')  # for now, directly input a submission
 # print("got submission.")
 
 # pprint(vars(submission))
 
-names = find_all_course_names(submission)
-print(names)
+# names = find_all_course_names(submission)
+# print(names)
+
+get_course_strings("Chem 1C without 1N lab")
