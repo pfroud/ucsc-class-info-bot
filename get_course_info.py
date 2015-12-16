@@ -9,15 +9,24 @@ from bs4 import BeautifulSoup  # html parser
 
 # http://www.crummy.com/software/BeautifulSoup/bs4/doc/
 
+class Course:
+    def __init__(self, name, description, dept, number, link):
+        self.name = name
+        self.description = description
+        self.dept = dept
+        self.number = number
+        self.link = link
+
+    def __str__(self):
+        return self.name
+
 
 def get_course_info(course_dept_number_string):
     """
     Given string of department and number, returns array of course title and description.
     :param course_dept_number_string: string "cmps 1", must be a space between department and number
-    :return: array of [course_name, course_description]
+    :return: a Course object
     """
-
-    return_array = []
 
     split_array = course_dept_number_string.split(' ')
     course_department = split_array[0].upper()  # server needs department to be all caps
@@ -53,6 +62,9 @@ def get_course_info(course_dept_number_string):
     # Get the only element in the resulting array. Get the href string, then split by '=' and get second element.
     encoded_course = soup.select('tbody td:nth-of-type(3) a')[0]['href'].split('=')[2]
 
+    if encoded_course is None:
+        raise Exception("Couldn't find link in search results page")
+
     # stick class_data to the end of this thing. you'll get a page with course information.
     result_url = 'https://pisa.ucsc.edu/class_search/index.php?action=detail&class_data=' + encoded_course
 
@@ -69,14 +81,18 @@ def get_course_info(course_dept_number_string):
 
     # this does now work
     course_name = soup.select("table.PALEVEL0SECONDARY tr:nth-of-type(2) td")[0].text
+    if course_name is None:
+        raise Exception("Couldn't find course name")
     # http://stackoverflow.com/questions/10993612/python-removing-xa0-from-string
     course_name = course_name.replace(u'\xa0', u' ')
-    return_array.append(course_name)
+    course_name = course_name.replace('  ', ': ')
 
     course_description = soup.select("table.detail_table")[1].select("td")[0].text
-    return_array.append(course_description)
+    if course_description is None:
+        raise Exception("Couldn't find course description")
 
-    return return_array
+    return Course(course_name, course_description, course_department, course_number, result_url)
 
 
-print(get_course_info('CMPS 5j'))
+thing = get_course_info('CMPS 5j')
+print(thing)

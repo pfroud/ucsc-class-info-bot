@@ -74,10 +74,11 @@ def get_courses(source):
 
 r = praw.Reddit('comment scraper by Peter Froud')  # the user agent?
 submission = r.get_submission(submission_id='3w0wt4')  # for now, directly input a submission
-
 print("got submission.")
 
 print(get_courses(submission.selftext))
+
+print(get_courses(submission.title))
 
 
 flat_comments = praw.helpers.flatten_tree(submission.comments)
