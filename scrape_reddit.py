@@ -4,6 +4,8 @@ Scrapes the self text and comments of a reddit submission for mentions of course
 
 import praw  # python wrapper for reddit api
 import re  # regular expressions
+from pprint import pprint
+from get_course_info import get_course_object
 
 # http://praw.readthedocs.org/en/stable/pages/writing_a_bot.html
 # http://praw.readthedocs.org/en/stable/pages/comment_parsing.html 
@@ -23,12 +25,14 @@ subjects_lower = [x.lower() for x in subjects]
 regex = re.compile("[0-9]+[A-Za-z]?")
 
 
-def get_courses(source):
+def get_course_strings(source):
     """
     Finds mentions of courses (department and number) in a string.
     :param source: string to look for courses in.
-    :return: array of course strings.
+    :return: array of strings of course names
     """
+    print("running on \""+source+"\"")
+
     str_in = source.lower()
     courses_found = []
     for subj in subjects_lower:  # iterate subjects
@@ -69,20 +73,40 @@ def get_courses(source):
             else:
                 break
 
+    print("found", courses_found)
     return courses_found
+
+
+def find_all_course_names(submission_in):
+    """
+    Finds mentions of a course in a submission's title, selftext, and comments.
+    :param submission_in: a praw submission object
+    :return: an array of strings of course names
+    """
+    course_names = []
+    print(">title:")
+    course_names.extend(get_course_strings(submission_in.title))
+
+    # print(">selftext:")
+    # course_names.extend(get_course_strings(submission_in.selftext))
+    #
+    # print(">comments:")
+    # flat_comments = praw.helpers.flatten_tree(submission_in.comments)
+    # for comment in flat_comments:
+    #     course_names.extend(get_course_strings(comment.body))
+
+    return course_names
+
+
+# def make_comment(courses):
+#     return
 
 
 r = praw.Reddit('comment scraper by Peter Froud')  # the user agent?
 submission = r.get_submission(submission_id='3w0wt4')  # for now, directly input a submission
-print("got submission.")
+# print("got submission.")
 
-print(get_courses(submission.selftext))
+# pprint(vars(submission))
 
-print(get_courses(submission.title))
-
-
-flat_comments = praw.helpers.flatten_tree(submission.comments)
-
-
-for comment in flat_comments:  # iterate comments
-    print(get_courses(comment.body))
+names = find_all_course_names(submission)
+print(names)

@@ -21,16 +21,21 @@ class Course:
         return self.name
 
 
-def get_course_info(course_dept_number_string):
+def get_course_object(course_dept_number_string):
     """
-    Given string of department and number, returns array of course title and description.
-    :param course_dept_number_string: string "cmps 1", must be a space between department and number
+    Given string of department and number, returns a Course object with information about it.
+    :param course_dept_number_string: string like "cmps 1", must be a space between department and number
     :return: a Course object
     """
 
     split_array = course_dept_number_string.split(' ')
     course_department = split_array[0].upper()  # server needs department to be all caps
     course_number = split_array[1]
+
+    if course_department == 'CS':
+        course_department = "CMPS"
+    if course_department == 'CE':
+        course_department = "CMPE"
 
     # print("course_department is \"" + course_department + "\" and course_number is \"" + course_number + "\"")
 
@@ -94,5 +99,5 @@ def get_course_info(course_dept_number_string):
     return Course(course_name, course_description, course_department, course_number, result_url)
 
 
-thing = get_course_info('CMPS 5j')
-print(thing)
+# thing = get_course_object('CMPS 5j')
+# print(thing)
