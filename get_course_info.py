@@ -21,7 +21,7 @@ class Course:
         return self.name
 
 
-def get_course_object(course_dept_number_string):
+def get_course_object_bad(course_dept_number_string):
     """
     Given string of department and number, returns a Course object with information about it.
     :param course_dept_number_string: string like "cmps 1", must be a space between department and number
