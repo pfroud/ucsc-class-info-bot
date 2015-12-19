@@ -2,19 +2,32 @@
 Given a string of a department and course number, pulls information about the course from the registrar.
 """
 
-import requests
+import requests, re
 from bs4 import BeautifulSoup
 from pprint import pprint
-import sys
 
-departments = ["acen", "amst", "anth", "aplx", "ams", "arab", "art", "artg", "astr", "bioc", "biol", "bioe", "bme",
-               "chem", "chin", "clei", "clni", "clte", "cmmu", "cmpm", "cmpe", "cmps", "cowl", "ltcr", "cres", "crwn",
-               "danm", "eart", "econ", "educ", "ee", "engr", "ltel", "envs", "etox", "fmst", "film", "fren", "ltfr",
-               "game", "germ", "ltge", "gree", "ltgr", "hebr", "hndi", "his", "havc", "hisc", "humn", "ism", "ital",
-               "ltit", "japn", "jwst", "krsg", "laad", "latn", "lals", "ltin", "lgst", "ling", "lit", "math", "merr",
-               "metx", "ltmo", "musc", "oaks", "ocea", "phil", "phye", "phys", "poli", "prtr", "port", "ltpr", "psyc",
-               "punj", "russ", "scic", "socd", "socs", "socy", "span", "sphs", "spss", "ltsp", "stev", "tim", "thea",
-               "ucdc", "wmst", "ltwl", "writ", "yidd", "ce", "cs"]
+DEBUG = False
+
+works = [
+    "acen", "aplx", "ams", "art", "artg", "astr", "bioc", "mcdb", "eeb", "bme",
+    "chem", "chin", "clni", "clte", "cmmu", "cmpm", "cmpe", "cmps", "cowl", "cres", "crwn",
+    "danm", "eart", "educ", "ee", "envs", "fmst", "film", "fren", "game", "gree", "hebr", "his", "hisc",
+    "ital", "japn", "jwst", "krsg", "laad", "latn", "lals", "lgst", "ling", "math", "merr",
+    "metx", "musc", "oaks", "ocea", "phil", "phye", "phys", "poli", "port", "punj", "russ", "scic", "socd",
+    "socy", "span", "sphs", "stev", "tim", "thea", "ucdc", "writ", "yidd"]
+
+# not_work = ['anth', 'hvac', 'prtr', 'psyc']
+not_work = ['prtr']
+
+
+# taken out anth, hvac, prtr, psyc bc some stuff is indented
+# taken out clei because everything in one strong tag
+# subsets of lit page: ltcr (creative writing), ltel (English-Language Literatures), ltfr (French Literature),
+#    ltge (German Literature), ltgr (Greek Literature), ltin (latin literature), ltpr (Pre & Early Modern Literature),
+#    ltmo (Modern Literary Studies), ltsp (Spanish/Latin Amer/Latino Lit), ltwl (World Lit & Cultural Studies), ltit
+# taken out econ and germ because the 1 doesn't start bold
+# etox (Environmental Toxicology) I think is now metx (Microbiol & Environ Toxicology)
+# taken out lit because there are a bunch of subsections
 
 
 class CourseDatabase:
@@ -25,9 +38,9 @@ class CourseDatabase:
         self.depts[new_dept.name] = new_dept
 
     def __str__(self):
-        string = ""
+        string = 'Database with ' + str(len(self.depts)) + ' departments.\n'
         for dept_num, dept_obj in sorted(self.depts.items()):
-            string += dept_num + ':\n' + str(dept_obj) + '\n'
+            string += '\n' + dept_num + ': ' + str(dept_obj)
         return string
 
 
@@ -40,7 +53,7 @@ class Department:
         self.courses[new_course.number] = new_course
 
     def __str__(self):
-        string = ""
+        string = 'Department with ' + str(len(self.courses)) + " courses.\n"
         for course_num, course_obj in sorted(self.courses.items()):
             string += '   ' + course_num + ': ' + str(course_obj) + '\n'
         return string
@@ -54,11 +67,18 @@ class Course:
         self.number = number
 
     def __str__(self):
-        return self.name
+        return '\"' + self.name + "\""
+
+
+regex = re.compile("[0-9]+[A-Za-z]?\.")
+
+
+def has_course_number(num_string):
+    return regex.match(num_string) is not None
 
 
 def build_department_object(dept_name_in):
-    # print("running on \"" + dept_name_in + "\"")
+    print("running on \"" + dept_name_in + "\"")
 
     course_department = dept_name_in
 
@@ -67,12 +87,12 @@ def build_department_object(dept_name_in):
     if course_department == 'CE':
         course_department = "CMPE"
     if course_department == 'ECON':
-        sys.stderr.write('this breaks for econ because they didn\'t put 1 in bold\n')
-        return
+        # raise Exception('this breaks for econ because they didn\'t put 1 in bold\n')
+        return '!!broken case for econ!!'
 
     new_dept = Department(course_department)
 
-    url = "http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/" + course_department.lower() + ".html"
+    url = "http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/" + course_department + ".html"
 
     request_result = requests.get(url)
 
@@ -82,31 +102,30 @@ def build_department_object(dept_name_in):
 
     soup = BeautifulSoup(request_result.text, 'html.parser')
 
-    h2s = soup.select("h2")
+    every_strong_tag = soup.select("div.main-content strong")
 
-    # a division is lower-division, upper-division, or graduate
-    division_p_tags = [h2.next_sibling.next_sibling for h2 in h2s]
+    numbers_in_strongs = []
 
-    # print(division_p_tags)
-
-    every_strong_tag = [p.select("strong") for p in division_p_tags]
-
-    # see http://stackoverflow.com/a/406296
-    every_strong_flattened = [s for inner in every_strong_tag for s in inner]
-
-    # pprint(every_strong_flattened)
-
-    # get every 3rd element - need to do something else!!
-    numbers_in_strongs = [every_strong_flattened[x] for x in range(len(every_strong_flattened)) if x % 3 == 0]
+    for tag in every_strong_tag:
+        if has_course_number(tag.text):
+            numbers_in_strongs.append(tag)
 
     for num_tag in numbers_in_strongs:
         number = num_tag.text[:-1]
-        # print("doing", number)
+        if DEBUG:
+            print("   doing", number)
 
         title_tag = num_tag.next_sibling.next_sibling
         name = title_tag.text[:-1]
 
-        description_tag = title_tag.next_sibling.next_sibling.next_sibling.next_sibling
+        description_tag = title_tag.next_sibling.next_sibling
+
+        while description_tag.name == 'strong' or description_tag.name == 'br' or description_tag.name == 'h2':
+            description_tag = description_tag.next_sibling.next_sibling
+
+        if description_tag.name == 'p':
+            description_tag = description_tag.next_sibling
+
         description = description_tag[2:]
 
         new_dept.add_course(Course(course_department, number, name, description))
@@ -116,7 +135,7 @@ def build_department_object(dept_name_in):
 
 def build_database():
     db = CourseDatabase()
-    for current_dept in ['artg', 'hebr', 'bioc', 'punj']:
+    for current_dept in works:
         db.add_dept(build_department_object(current_dept))
     return db
 
