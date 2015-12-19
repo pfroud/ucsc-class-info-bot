@@ -2,11 +2,10 @@
 Given a string of a department and course number, pulls information about the course from the registrar.
 """
 
-import requests, re
+import requests
+import re
 from bs4 import BeautifulSoup
 from pprint import pprint
-
-DEBUG = False
 
 works = [
     "acen", "aplx", "ams", "art", "artg", "astr", "bioc", "mcdb", "eeb", "bme",
@@ -77,6 +76,37 @@ def has_course_number(num_string):
     return regex.match(num_string) is not None
 
 
+def is_last_course_in_p(strong_tag):
+    # print('-----------------------')
+    # print('strong_tag is', strong_tag)
+    parent_p = strong_tag.parent
+    strongs_in_p = parent_p.find_all('strong')
+    # print('length of that array is', len(strongs_in_p))
+    # pprint(strongs_in_p)
+    index = strongs_in_p.index(strong_tag)
+    distance_to_end = len(strongs_in_p) - index
+    print('   distance_to_end is', distance_to_end)
+    return distance_to_end <= 4
+    # print('index is', index)
+    # print('distance to end is', len(strongs_in_p)-index)
+    # print('-----------------------')
+
+
+# psyc "118. Special Topics in Developmental Psychology. F,W,S": distance to end is 3
+# anth "130. Enthographic Area Studies.": distance to end is 2
+# prtr "20. Dance/Theater Practicum.": distance to end is 2
+
+# prediction - prtr "22. Art Practicum (2 credits). *" should have dist to end is 4
+
+
+def is_next_p_indented(num_tag):
+    return num_tag.parent.next_sibling.next_sibling.get('style') == 'margin-left: 30px;'
+
+
+def in_indented_paragraph(num_tag):
+    return num_tag.parent.get('style') == 'margin-left: 30px;'
+
+
 def build_department_object(dept_name_in):
     print("running on \"" + dept_name_in + "\"")
 
@@ -86,9 +116,6 @@ def build_department_object(dept_name_in):
         course_department = "CMPS"
     if course_department == 'CE':
         course_department = "CMPE"
-    if course_department == 'ECON':
-        # raise Exception('this breaks for econ because they didn\'t put 1 in bold\n')
-        return '!!broken case for econ!!'
 
     new_dept = Department(course_department)
 
@@ -111,9 +138,17 @@ def build_department_object(dept_name_in):
             numbers_in_strongs.append(tag)
 
     for num_tag in numbers_in_strongs:
+
         number = num_tag.text[:-1]
-        if DEBUG:
-            print("   doing", number)
+        print("doing", number)
+
+        # if number == '20':
+        #     is_last_course_in_p(num_tag)
+        #     exit(0)
+
+        if is_last_course_in_p(num_tag) and is_next_p_indented(num_tag) and not in_indented_paragraph(num_tag):
+            print('   SKIPPING num_tag \"' + num_tag.text + "\"<<<<<<<<<<<<<<<<<<<<<")
+            continue
 
         title_tag = num_tag.next_sibling.next_sibling
         name = title_tag.text[:-1]
@@ -135,9 +170,9 @@ def build_department_object(dept_name_in):
 
 def build_database():
     db = CourseDatabase()
-    for current_dept in works:
+    for current_dept in not_work:
         db.add_dept(build_department_object(current_dept))
     return db
 
 
-print(build_database())
+build_database()
