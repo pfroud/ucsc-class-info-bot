@@ -13,20 +13,17 @@ works = [
     "danm", "eart", "educ", "ee", "envs", "fmst", "film", "fren", "game", "gree", "hebr", "his", "hisc",
     "ital", "japn", "jwst", "krsg", "laad", "latn", "lals", "lgst", "ling", "math", "merr",
     "metx", "musc", "oaks", "ocea", "phil", "phye", "phys", "poli", "port", "punj", "russ", "scic", "socd",
-    "socy", "span", "sphs", "stev", "tim", "thea", "ucdc", "writ", "yidd"]
+    "socy", "span", "sphs", "stev", "tim", "thea", "ucdc", "writ", "yidd", 'prtr', 'anth', 'psyc']
 
-# not_work = ['anth', 'hvac', 'prtr', 'psyc']
-not_work = ['prtr']
+not_work = []
 
 
-# taken out anth, hvac, prtr, psyc bc some stuff is indented
-# taken out clei because everything in one strong tag
+# taken out psyc bc some stuff is indented
+# taken out clei because everything in one strong tag. also havc 152 is one strong tag.
 # subsets of lit page: ltcr (creative writing), ltel (English-Language Literatures), ltfr (French Literature),
 #    ltge (German Literature), ltgr (Greek Literature), ltin (latin literature), ltpr (Pre & Early Modern Literature),
 #    ltmo (Modern Literary Studies), ltsp (Spanish/Latin Amer/Latino Lit), ltwl (World Lit & Cultural Studies), ltit
 # taken out econ and germ because the 1 doesn't start bold
-# etox (Environmental Toxicology) I think is now metx (Microbiol & Environ Toxicology)
-# taken out lit because there are a bunch of subsections
 
 
 class CourseDatabase:
@@ -85,7 +82,7 @@ def is_last_course_in_p(strong_tag):
     # pprint(strongs_in_p)
     index = strongs_in_p.index(strong_tag)
     distance_to_end = len(strongs_in_p) - index
-    print('   distance_to_end is', distance_to_end)
+    # print('   distance_to_end is', distance_to_end)
     return distance_to_end <= 4
     # print('index is', index)
     # print('distance to end is', len(strongs_in_p)-index)
@@ -141,10 +138,6 @@ def build_department_object(dept_name_in):
 
         number = num_tag.text[:-1]
         print("doing", number)
-
-        # if number == '20':
-        #     is_last_course_in_p(num_tag)
-        #     exit(0)
 
         if is_last_course_in_p(num_tag) and is_next_p_indented(num_tag) and not in_indented_paragraph(num_tag):
             print('   SKIPPING num_tag \"' + num_tag.text + "\"<<<<<<<<<<<<<<<<<<<<<")
