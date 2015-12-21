@@ -156,6 +156,7 @@ def get_soup_object(dept_name):
 
 def course_from_num_tag(dept_name_orig, num_tag):
     """Builds and returns a Course object from the number specified.
+    If the <strong> tag has more than just the number in it, use course_from_num_tag_all_in_one().
 
     :param dept_name_orig: name of the department like 'cmps'
     :type dept_name_orig: str
@@ -195,13 +196,13 @@ def course_from_num_tag(dept_name_orig, num_tag):
 
 
 def course_from_num_tag_all_in_one(dept_name, num_tag):
-    """
+    """Makes a Course object when the whole heading is in one <strong> tag.
 
-    :param dept_name:
+    :param dept_name: Name of the department the course is in
     :type dept_name: str
-    :param num_tag:
+    :param num_tag: <strong> tag with the number, name, AND ges.
     :type num_tag: Tag
-    :return:
+    :return: Course object
     :rtype: Course
     """
     strong_text = num_tag.text
@@ -223,21 +224,21 @@ def course_from_num_tag_all_in_one(dept_name, num_tag):
     return Course(dept_name, course_num, course_name, course_description)
 
 
-def handle_1_not_bold_case(dept_name, every_strong_tag):
-    """
+def get_first_course_no_bold(dept_name, first_strong_tag):
+    """Gets the first course when the number is not bolded.
+    Use only for germ and econ departments.
 
-    :param every_strong_tag:
+    :param first_strong_tag: the first strong tag on the page, which is the name (not the number)
     :type: every_strong_tag: list
-    :return:
+    :return: Course object of the first course listed
     :rtype: Course
     """
-    first_tag = every_strong_tag[0]
-    number_1 = first_tag.previous_sibling[1:-2]
+    number_1 = first_strong_tag.previous_sibling[1:-2]
     # print("\"" + number_1 + "\"")
     # print(first_tag.text[:-1])
-    description = first_tag.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling[2:]
+    description = first_strong_tag.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling[2:]
     # print("\"" + description + "\"")
-    return Course(dept_name, number_1, first_tag.text[:-1], description)
+    return Course(dept_name, number_1, first_strong_tag.text[:-1], description)
 
 
 def build_department_object(dept_name):
@@ -269,7 +270,7 @@ def build_department_object(dept_name):
             new_dept.add_course(course_from_num_tag(dept_name, num_tag))
 
     if dept_name == 'germ' or dept_name == 'econ':
-        new_dept.add_course((handle_1_not_bold_case(dept_name, every_strong_tag)))
+        new_dept.add_course((get_first_course_no_bold(dept_name, every_strong_tag[0])))
 
     return new_dept
 
