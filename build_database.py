@@ -5,7 +5,8 @@ Given a string of a department and course number, pulls information about the co
 import requests
 import re
 from bs4 import BeautifulSoup
-
+import pickle
+import json
 DEBUG = False
 
 departments = ["acen", "aplx", "ams", "art", "artg", "astr", "bioc", "mcdb", "eeb", "bme", "chem", "chin", "clni",
@@ -13,7 +14,7 @@ departments = ["acen", "aplx", "ams", "art", "artg", "astr", "bioc", "mcdb", "ee
                "fmst", "film", "fren", "game", "gree", "hebr", "his", "hisc", "ital", "japn", "jwst", "krsg", "laad",
                "latn", "lals", "lgst", "ling", "math", "merr", "metx", "musc", "oaks", "ocea", "phil", "phye", "phys",
                "poli", "port", "punj", "russ", "scic", "socd", "socy", "span", "sphs", "stev", "tim", "thea", "ucdc",
-               "writ", "yidd", 'prtr', 'anth', 'psyc', 'havc', 'clei', 'econ', 'germ']
+               "writ", "yidd", 'prtr', 'anth', 'psyc', 'havc', 'clei', 'econ', 'germ', 'lit']
 
 lit_departments = {'Literature': 'lit',
                    'Creative Writing': 'ltcr',
@@ -72,10 +73,15 @@ class Course:
     """Holds course name and description."""
 
     def __init__(self, dept, number, name, description):
+        self.dept = dept
+
+        if number[-1].isalpha():
+            self.number = number.zfill(4)
+        else:
+            self.number = number.zfill(3)
+
         self.name = name
         self.description = description
-        self.dept = dept
-        self.number = number
 
     def __str__(self):
         return '\"' + self.name + "\""
@@ -121,7 +127,18 @@ def is_next_p_indented(num_tag):
     :return: whether next paragraph is indented
     :rtype: bool
     """
-    return num_tag.parent.next_sibling.next_sibling.get('style') == 'margin-left: 30px;'
+    parent = num_tag.parent
+
+    # special case for English-Language Literatures 102 (in lit page)
+    if parent.name == 'strong':
+        parent = parent.parent
+
+    next_p = parent.next_sibling.next_sibling
+
+    if next_p.name != 'p':
+        return False
+
+    return next_p.get('style') == 'margin-left: 30px;'
 
 
 def in_indented_paragraph(num_tag):
@@ -154,12 +171,12 @@ def get_soup_object(dept_name):
     return BeautifulSoup(request_result.text, 'html.parser')
 
 
-def course_from_num_tag(dept_name_orig, num_tag):
+def course_from_num_tag(dept_name, num_tag):
     """Builds and returns a Course object from the number specified.
     If the <strong> tag has more than just the number in it, use course_from_num_tag_all_in_one().
 
-    :param dept_name_orig: name of the department like 'cmps'
-    :type dept_name_orig: str
+    :param dept_name: name of the department like 'cmps'
+    :type dept_name: str
     :param num_tag: tag of a course number, like <strong>21.</strong>
     :type num_tag: Tag
     :return: Course object of the specified course, or None if the course has sub-numbers
@@ -170,7 +187,7 @@ def course_from_num_tag(dept_name_orig, num_tag):
         print("doing", number)
 
     # extremely stupid special case
-    if dept_name_orig == 'havc' and number == '152. Roman Eyes: Visual Culture and Power in the Ancient Roman World. ':
+    if dept_name == 'havc' and number == '152. Roman Eyes: Visual Culture and Power in the Ancient Roman World. ':
         if DEBUG:
             print('>>>>>>>>>> havc 152 special case')
         return course_from_num_tag_all_in_one('havc', num_tag)
@@ -192,7 +209,18 @@ def course_from_num_tag(dept_name_orig, num_tag):
         description_tag = description_tag.next_sibling
 
     description = description_tag[2:]
-    return Course(dept_name_orig, number, name, description)
+
+    if dept_name in lit_departments.values():
+        real_name = find_real_lit_dept(num_tag).replace("\ufeff", "")
+        # print("   real name is \"" + real_name + "\"")
+
+        # Russian Lit department has no dept code, probably does not actually exist
+        if real_name == 'Russian Literature':
+            return None
+
+        return Course(lit_departments[real_name], number, name, description)
+    else:
+        return Course(dept_name, number, name, description)
 
 
 def course_from_num_tag_all_in_one(dept_name, num_tag):
@@ -228,6 +256,8 @@ def get_first_course_no_bold(dept_name, first_strong_tag):
     """Gets the first course when the number is not bolded.
     Use only for germ and econ departments.
 
+    :param dept_name: name of the department like 'cmps'
+    :type dept_name: str
     :param first_strong_tag: the first strong tag on the page, which is the name (not the number)
     :type: every_strong_tag: list
     :return: Course object of the first course listed
@@ -249,8 +279,8 @@ def build_department_object(dept_name):
     :return: Department object of all the courses in the department
     :rtype: Department
     """
-    if DEBUG:
-        print("running on \"" + dept_name + "\"")
+    # if DEBUG:
+    print("running on \"" + dept_name + "\"")
 
     new_dept = Department(dept_name)
     soup = get_soup_object(dept_name)
@@ -275,17 +305,23 @@ def build_department_object(dept_name):
     return new_dept
 
 
-# def add_lit_departments():
-#     # http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/lit.html
-#
-#     soup = get_soup_object('lit')
-#
-#     current_h1 = soup.select("div.main-content h1")[0]
-#
-#     current_dept_name = current_h1.text
-#     current_dept_code = lit_departments[current_dept_name]
-#
-#     pass
+def find_real_lit_dept(num_tag):
+    """
+
+    :param num_tag:
+    :return:
+    """
+    global in_creative_writing
+    parent = num_tag.parent
+
+    while parent.name != 'h1':
+        parent = parent.previous_sibling
+    real_dept = parent.text
+
+    if real_dept == 'Creative Writing':
+        in_creative_writing = True
+
+    return real_dept
 
 
 def build_database():
@@ -295,10 +331,14 @@ def build_database():
      :rtype: CourseDatabase
     """
     db = CourseDatabase()
-    for current_dept in ['econ']:
+    for current_dept in ['ling']:
         db.add_dept(build_department_object(current_dept))
-    # add_lit_departments()
     return db
 
+db = build_database()
 
-print(build_database())
+with open(r'C:\Users\Peter Froud\Documents\reddit ucsc bot\pickle_file', 'wb') as file:
+    pickle.dump(db, file)
+file.close()
+
+
