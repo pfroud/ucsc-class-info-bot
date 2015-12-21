@@ -331,14 +331,14 @@ def build_database():
      :rtype: CourseDatabase
     """
     db = CourseDatabase()
-    for current_dept in ['ling']:
+    for current_dept in departments:
         db.add_dept(build_department_object(current_dept))
     return db
 
-db = build_database()
-
-with open(r'C:\Users\Peter Froud\Documents\reddit ucsc bot\pickle_file', 'wb') as file:
-    pickle.dump(db, file)
-file.close()
+# db = build_database()
+#
+# with open(r'C:\Users\Peter Froud\Documents\reddit ucsc bot\pickle_file', 'wb') as file:
+#     pickle.dump(db, file)
+# file.close()
 
 
