@@ -6,16 +6,30 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
-departments = [
-    "acen", "aplx", "ams", "art", "artg", "astr", "bioc", "mcdb", "eeb", "bme",
-    "chem", "chin", "clni", "clte", "cmmu", "cmpm", "cmpe", "cmps", "cowl", "cres", "crwn",
-    "danm", "eart", "educ", "ee", "envs", "fmst", "film", "fren", "game", "gree", "hebr", "his", "hisc",
-    "ital", "japn", "jwst", "krsg", "laad", "latn", "lals", "lgst", "ling", "math", "merr",
-    "metx", "musc", "oaks", "ocea", "phil", "phye", "phys", "poli", "port", "punj", "russ", "scic", "socd",
-    "socy", "span", "sphs", "stev", "tim", "thea", "ucdc", "writ", "yidd", 'prtr', 'anth', 'psyc']
+DEBUG = False
+
+departments = ["acen", "aplx", "ams", "art", "artg", "astr", "bioc", "mcdb", "eeb", "bme", "chem", "chin", "clni",
+               "clte", "cmmu", "cmpm", "cmpe", "cmps", "cowl", "cres", "crwn", "danm", "eart", "educ", "ee", "envs",
+               "fmst", "film", "fren", "game", "gree", "hebr", "his", "hisc", "ital", "japn", "jwst", "krsg", "laad",
+               "latn", "lals", "lgst", "ling", "math", "merr", "metx", "musc", "oaks", "ocea", "phil", "phye", "phys",
+               "poli", "port", "punj", "russ", "scic", "socd", "socy", "span", "sphs", "stev", "tim", "thea", "ucdc",
+               "writ", "yidd", 'prtr', 'anth', 'psyc']
+
+lit_departments = {'Literature': 'lit',
+                   'Creative Writing': 'ltcr',
+                   'English-Language Literatures': 'ltel',
+                   'French Literature': 'ltfr',
+                   'German Literature': 'ltge',
+                   'Greek Literature': 'ltgr',
+                   'Latin Literature': 'ltin',
+                   'Italian Literature': 'ltit',
+                   'Modern Literary Studies': 'ltmo',
+                   'Pre- and Early Modern Literature': 'ltpr',
+                   'Spanish/Latin American/Latino Literatures': 'ltsp',
+                   'World Literature and Cultural Studies': 'ltwl'}
 
 
-# taken out clei because everything in one strong tag. also havc 152 is one strong tag.
+# havc 152 is one strong tag.
 # subsets of lit page: ltcr (creative writing), ltel (English-Language Literatures), ltfr (French Literature),
 #    ltge (German Literature), ltgr (Greek Literature), ltin (latin literature), ltpr (Pre & Early Modern Literature),
 #    ltmo (Modern Literary Studies), ltsp (Spanish/Latin Amer/Latino Lit), ltwl (World Lit & Cultural Studies), ltit
@@ -32,7 +46,7 @@ class CourseDatabase:
         self.depts[new_dept.name] = new_dept
 
     def __str__(self):
-        string = 'Database with ' + str(len(self.depts)) + ' departments.\n'
+        string = 'Database with ' + str(len(self.depts)) + ' department(s).\n'
         for dept_num, dept_obj in sorted(self.depts.items()):
             string += '\n' + dept_num + ': ' + str(dept_obj)
         return string
@@ -50,7 +64,7 @@ class Department:
             self.courses[new_course.number] = new_course
 
     def __str__(self):
-        string = 'Department with ' + str(len(self.courses)) + " courses.\n"
+        string = 'Department with ' + str(len(self.courses)) + " course(s).\n"
         for course_num, course_obj in sorted(self.courses.items()):
             string += '   ' + course_num + ': ' + str(course_obj) + '\n'
         return string
@@ -70,7 +84,10 @@ class Course:
 
 
 # used in has_course_number() below
-regex = re.compile("[0-9]+[A-Za-z]?\.")
+regex_course_num = re.compile("[0-9]+[A-Za-z]?\.")
+
+# used only for college eight, those bastards
+regex_course_name = re.compile("[A-Za-z :']+\.?")
 
 
 def has_course_number(num_string):
@@ -81,7 +98,7 @@ def has_course_number(num_string):
     :return: whether the string contains a course number
     :rtype: bool
     """
-    return regex.match(num_string) is not None
+    return regex_course_num.match(num_string) is not None
 
 
 def is_last_course_in_p(strong_tag):
@@ -139,21 +156,29 @@ def get_soup_object(dept_name):
     return BeautifulSoup(request_result.text, 'html.parser')
 
 
-def course_from_num_tag(dept_name, num_tag):
+def course_from_num_tag(dept_name_orig, num_tag):
     """Builds and returns a Course object from the number specified.
 
-    :param dept_name: name of the department
-    :type dept_name: str
-    :param num_tag: tag of a course number
+    :param dept_name_orig: name of the department like 'cmps'
+    :type dept_name_orig: str
+    :param num_tag: tag of a course number, like <strong>21.</strong>
     :type num_tag: Tag
     :return: Course object of the specified course, or None if the course has sub-numbers
     :rtype: Course
     """
     number = num_tag.text[:-1]
-    print("doing", number)
+    if DEBUG:
+        print("doing", number)
+
+    # extremely stupid special case
+    if dept_name_orig == 'havc' and number == '152. Roman Eyes: Visual Culture and Power in the Ancient Roman World. ':
+        if DEBUG:
+            print('>>>>>>>>>> havc 152 special case')
+        return course_from_num_tag_all_in_one('havc', num_tag)
 
     if is_last_course_in_p(num_tag) and is_next_p_indented(num_tag) and not in_indented_paragraph(num_tag):
-        print('   SKIPPING num_tag \"' + num_tag.text + "\"<<<<<<<<<<<<<<<<<<<<<")
+        if DEBUG:
+            print('   SKIPPING num_tag \"' + num_tag.text + "\"<<<<<<<<<<<<<<<<<<<<<")
         return None
 
     name_tag = num_tag.next_sibling.next_sibling
@@ -168,7 +193,32 @@ def course_from_num_tag(dept_name, num_tag):
         description_tag = description_tag.next_sibling
 
     description = description_tag[2:]
-    return Course(dept_name, number, name, description)
+    return Course(dept_name_orig, number, name, description)
+
+
+def course_from_num_tag_all_in_one(dept_name, num_tag):
+    """
+
+    :param num_tag:
+    :return:
+    """
+    strong_text = num_tag.text
+
+    num_end = regex_course_num.match(strong_text).end()
+    course_num = strong_text[0:num_end - 1]
+    if DEBUG:
+        print("doing", course_num)
+    the_rest = strong_text[num_end + 1:]
+
+    name_end = regex_course_name.match(the_rest).end()
+    course_name = the_rest[0:name_end - 1]
+
+    if dept_name == 'havc':
+        course_description = num_tag.next_sibling.next_sibling[1:]
+    else:
+        course_description = num_tag.next_sibling.next_sibling.next_sibling[1:]
+
+    return Course(dept_name, course_num, course_name, course_description)
 
 
 def build_department_object(dept_name_in):
@@ -179,7 +229,8 @@ def build_department_object(dept_name_in):
     :return: Department object of all the courses in the department
     :rtype: Department
     """
-    print("running on \"" + dept_name_in + "\"")
+    if DEBUG:
+        print("running on \"" + dept_name_in + "\"")
 
     new_dept = Department(dept_name_in)
     soup = get_soup_object(dept_name_in)
@@ -193,9 +244,25 @@ def build_department_object(dept_name_in):
             numbers_in_strongs.append(tag)
 
     for num_tag in numbers_in_strongs:
-        new_dept.add_course(course_from_num_tag(dept_name_in, num_tag))
+        if dept_name_in == 'clei':
+            new_dept.add_course(course_from_num_tag_all_in_one('clei', num_tag))
+        else:
+            new_dept.add_course(course_from_num_tag(dept_name_in, num_tag))
 
     return new_dept
+
+
+# def add_lit_departments():
+#     # http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/lit.html
+#
+#     soup = get_soup_object('lit')
+#
+#     current_h1 = soup.select("div.main-content h1")[0]
+#
+#     current_dept_name = current_h1.text
+#     current_dept_code = lit_departments[current_dept_name]
+#
+#     pass
 
 
 def build_database():
@@ -205,9 +272,10 @@ def build_database():
      :rtype: CourseDatabase
     """
     db = CourseDatabase()
-    for current_dept in ['prtr']:
+    for current_dept in ['havc']:
         db.add_dept(build_department_object(current_dept))
+    # add_lit_departments()
     return db
 
 
-build_database()
+print(build_database())
