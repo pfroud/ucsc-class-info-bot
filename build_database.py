@@ -29,7 +29,6 @@ lit_departments = {'Literature': 'lit',
                    'World Literature and Cultural Studies': 'ltwl'}
 
 
-# havc 152 is one strong tag.
 # subsets of lit page: ltcr (creative writing), ltel (English-Language Literatures), ltfr (French Literature),
 #    ltge (German Literature), ltgr (Greek Literature), ltin (latin literature), ltpr (Pre & Early Modern Literature),
 #    ltmo (Modern Literary Studies), ltsp (Spanish/Latin Amer/Latino Lit), ltwl (World Lit & Cultural Studies), ltit
