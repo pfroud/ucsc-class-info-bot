@@ -13,7 +13,7 @@ departments = ["acen", "aplx", "ams", "art", "artg", "astr", "bioc", "mcdb", "ee
                "fmst", "film", "fren", "game", "gree", "hebr", "his", "hisc", "ital", "japn", "jwst", "krsg", "laad",
                "latn", "lals", "lgst", "ling", "math", "merr", "metx", "musc", "oaks", "ocea", "phil", "phye", "phys",
                "poli", "port", "punj", "russ", "scic", "socd", "socy", "span", "sphs", "stev", "tim", "thea", "ucdc",
-               "writ", "yidd", 'prtr', 'anth', 'psyc']
+               "writ", "yidd", 'prtr', 'anth', 'psyc', 'havc', 'clei', 'econ', 'germ']
 
 lit_departments = {'Literature': 'lit',
                    'Creative Writing': 'ltcr',
@@ -32,7 +32,6 @@ lit_departments = {'Literature': 'lit',
 # subsets of lit page: ltcr (creative writing), ltel (English-Language Literatures), ltfr (French Literature),
 #    ltge (German Literature), ltgr (Greek Literature), ltin (latin literature), ltpr (Pre & Early Modern Literature),
 #    ltmo (Modern Literary Studies), ltsp (Spanish/Latin Amer/Latino Lit), ltwl (World Lit & Cultural Studies), ltit
-# taken out econ and germ because the 1 doesn't start bold
 
 
 class CourseDatabase:
@@ -198,8 +197,12 @@ def course_from_num_tag(dept_name_orig, num_tag):
 def course_from_num_tag_all_in_one(dept_name, num_tag):
     """
 
+    :param dept_name:
+    :type dept_name: str
     :param num_tag:
+    :type num_tag: Tag
     :return:
+    :rtype: Course
     """
     strong_text = num_tag.text
 
@@ -220,19 +223,36 @@ def course_from_num_tag_all_in_one(dept_name, num_tag):
     return Course(dept_name, course_num, course_name, course_description)
 
 
-def build_department_object(dept_name_in):
+def handle_1_not_bold_case(dept_name, every_strong_tag):
+    """
+
+    :param every_strong_tag:
+    :type: every_strong_tag: list
+    :return:
+    :rtype: Course
+    """
+    first_tag = every_strong_tag[0]
+    number_1 = first_tag.previous_sibling[1:-2]
+    # print("\"" + number_1 + "\"")
+    # print(first_tag.text[:-1])
+    description = first_tag.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling[2:]
+    # print("\"" + description + "\"")
+    return Course(dept_name, number_1, first_tag.text[:-1], description)
+
+
+def build_department_object(dept_name):
     """Builds and returns a Department object with all courses.
 
-    :param dept_name_in: name of the department to get classes for
+    :param dept_name: name of the department to get classes for
     :type: dept_name_in: str
     :return: Department object of all the courses in the department
     :rtype: Department
     """
     if DEBUG:
-        print("running on \"" + dept_name_in + "\"")
+        print("running on \"" + dept_name + "\"")
 
-    new_dept = Department(dept_name_in)
-    soup = get_soup_object(dept_name_in)
+    new_dept = Department(dept_name)
+    soup = get_soup_object(dept_name)
 
     every_strong_tag = soup.select("div.main-content strong")
 
@@ -243,10 +263,13 @@ def build_department_object(dept_name_in):
             numbers_in_strongs.append(tag)
 
     for num_tag in numbers_in_strongs:
-        if dept_name_in == 'clei':
+        if dept_name == 'clei':
             new_dept.add_course(course_from_num_tag_all_in_one('clei', num_tag))
         else:
-            new_dept.add_course(course_from_num_tag(dept_name_in, num_tag))
+            new_dept.add_course(course_from_num_tag(dept_name, num_tag))
+
+    if dept_name == 'germ' or dept_name == 'econ':
+        new_dept.add_course((handle_1_not_bold_case(dept_name, every_strong_tag)))
 
     return new_dept
 
@@ -271,7 +294,7 @@ def build_database():
      :rtype: CourseDatabase
     """
     db = CourseDatabase()
-    for current_dept in ['havc']:
+    for current_dept in ['econ']:
         db.add_dept(build_department_object(current_dept))
     # add_lit_departments()
     return db
