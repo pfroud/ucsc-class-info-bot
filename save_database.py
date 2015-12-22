@@ -5,8 +5,7 @@ Given a string of a department and course number, pulls information about the co
 import requests
 import re
 from bs4 import BeautifulSoup
-import pickle
-import json
+
 DEBUG = False
 
 departments = ["acen", "aplx", "ams", "art", "artg", "astr", "bioc", "mcdb", "eeb", "bme", "chem", "chin", "clni",
@@ -16,18 +15,18 @@ departments = ["acen", "aplx", "ams", "art", "artg", "astr", "bioc", "mcdb", "ee
                "poli", "port", "punj", "russ", "scic", "socd", "socy", "span", "sphs", "stev", "tim", "thea", "ucdc",
                "writ", "yidd", 'prtr', 'anth', 'psyc', 'havc', 'clei', 'econ', 'germ', 'lit']
 
-lit_departments = {'Literature': 'lit',
-                   'Creative Writing': 'ltcr',
-                   'English-Language Literatures': 'ltel',
-                   'French Literature': 'ltfr',
-                   'German Literature': 'ltge',
-                   'Greek Literature': 'ltgr',
-                   'Latin Literature': 'ltin',
-                   'Italian Literature': 'ltit',
-                   'Modern Literary Studies': 'ltmo',
-                   'Pre- and Early Modern Literature': 'ltpr',
-                   'Spanish/Latin American/Latino Literatures': 'ltsp',
-                   'World Literature and Cultural Studies': 'ltwl'}
+lit_department_codes = {'Literature': 'lit',
+                        'Creative Writing': 'ltcr',
+                        'English-Language Literatures': 'ltel',
+                        'French Literature': 'ltfr',
+                        'German Literature': 'ltge',
+                        'Greek Literature': 'ltgr',
+                        'Latin Literature': 'ltin',
+                        'Italian Literature': 'ltit',
+                        'Modern Literary Studies': 'ltmo',
+                        'Pre- and Early Modern Literature': 'ltpr',
+                        'Spanish/Latin American/Latino Literatures': 'ltsp',
+                        'World Literature and Cultural Studies': 'ltwl'}
 
 
 # subsets of lit page: ltcr (creative writing), ltel (English-Language Literatures), ltfr (French Literature),
@@ -171,9 +170,9 @@ def get_soup_object(dept_name):
     return BeautifulSoup(request_result.text, 'html.parser')
 
 
-def course_from_num_tag(dept_name, num_tag):
+def get_course(dept_name, num_tag):
     """Builds and returns a Course object from the number specified.
-    If the <strong> tag has more than just the number in it, use course_from_num_tag_all_in_one().
+    If the <strong> tag has more than just the number in it, use get_course_all_in_one().
 
     :param dept_name: name of the department like 'cmps'
     :type dept_name: str
@@ -190,7 +189,7 @@ def course_from_num_tag(dept_name, num_tag):
     if dept_name == 'havc' and number == '152. Roman Eyes: Visual Culture and Power in the Ancient Roman World. ':
         if DEBUG:
             print('>>>>>>>>>> havc 152 special case')
-        return course_from_num_tag_all_in_one('havc', num_tag)
+        return get_course_all_in_one('havc', num_tag)
 
     if is_last_course_in_p(num_tag) and is_next_p_indented(num_tag) and not in_indented_paragraph(num_tag):
         if DEBUG:
@@ -210,20 +209,20 @@ def course_from_num_tag(dept_name, num_tag):
 
     description = description_tag[2:]
 
-    if dept_name in lit_departments.values():
-        real_name = find_real_lit_dept(num_tag).replace("\ufeff", "")
+    if dept_name in lit_department_codes.values():
+        real_name = get_real_lit_dept(num_tag).replace("\ufeff", "")
         # print("   real name is \"" + real_name + "\"")
 
         # Russian Lit department has no dept code, probably does not actually exist
         if real_name == 'Russian Literature':
             return None
 
-        return Course(lit_departments[real_name], number, name, description)
+        return Course(lit_department_codes[real_name], number, name, description)
     else:
         return Course(dept_name, number, name, description)
 
 
-def course_from_num_tag_all_in_one(dept_name, num_tag):
+def get_course_all_in_one(dept_name, num_tag):
     """Makes a Course object when the whole heading is in one <strong> tag.
 
     :param dept_name: Name of the department the course is in
@@ -271,7 +270,7 @@ def get_first_course_no_bold(dept_name, first_strong_tag):
     return Course(dept_name, number_1, first_strong_tag.text[:-1], description)
 
 
-def build_department_object(dept_name):
+def get_department_object(dept_name):
     """Builds and returns a Department object with all courses.
 
     :param dept_name: name of the department to get classes for
@@ -295,9 +294,9 @@ def build_department_object(dept_name):
 
     for num_tag in numbers_in_strongs:
         if dept_name == 'clei':
-            new_dept.add_course(course_from_num_tag_all_in_one('clei', num_tag))
+            new_dept.add_course(get_course_all_in_one('clei', num_tag))
         else:
-            new_dept.add_course(course_from_num_tag(dept_name, num_tag))
+            new_dept.add_course(get_course(dept_name, num_tag))
 
     if dept_name == 'germ' or dept_name == 'econ':
         new_dept.add_course((get_first_course_no_bold(dept_name, every_strong_tag[0])))
@@ -305,7 +304,7 @@ def build_department_object(dept_name):
     return new_dept
 
 
-def find_real_lit_dept(num_tag):
+def get_real_lit_dept(num_tag):
     """
 
     :param num_tag:
@@ -324,7 +323,7 @@ def find_real_lit_dept(num_tag):
     return real_dept
 
 
-def build_database():
+def get_database():
     """Builds and returns a CourseDatabase object
 
     :return: CourseDatabase object with all Departments
@@ -332,13 +331,11 @@ def build_database():
     """
     db = CourseDatabase()
     for current_dept in departments:
-        db.add_dept(build_department_object(current_dept))
+        db.add_dept(get_department_object(current_dept))
     return db
 
-# db = build_database()
+# db = get_database()
 #
 # with open(r'C:\Users\Peter Froud\Documents\reddit ucsc bot\pickle_file', 'wb') as file:
 #     pickle.dump(db, file)
 # file.close()
-
-
