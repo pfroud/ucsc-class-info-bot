@@ -5,6 +5,8 @@ Given a string of a department and course number, pulls information about the co
 import requests
 import re
 from bs4 import BeautifulSoup
+import pickle
+import os.path
 
 DEBUG = False
 
@@ -28,10 +30,11 @@ lit_department_codes = {'Literature': 'lit',
                         'Spanish/Latin American/Latino Literatures': 'ltsp',
                         'World Literature and Cultural Studies': 'ltwl'}
 
+# used in has_course_number() below
+regex_course_num = re.compile("[0-9]+[A-Za-z]?\.")
 
-# subsets of lit page: ltcr (creative writing), ltel (English-Language Literatures), ltfr (French Literature),
-#    ltge (German Literature), ltgr (Greek Literature), ltin (latin literature), ltpr (Pre & Early Modern Literature),
-#    ltmo (Modern Literary Studies), ltsp (Spanish/Latin Amer/Latino Lit), ltwl (World Lit & Cultural Studies), ltit
+# used only for college eight, those bastards
+regex_course_name = re.compile("[A-Za-z :']+\.?")
 
 
 class CourseDatabase:
@@ -68,29 +71,25 @@ class Department:
         return string
 
 
+def pad_course_num(number):
+    if number[-1].isalpha():
+        return number.zfill(4)
+    else:
+        return number.zfill(3)
+
+
 class Course:
     """Holds course name and description."""
 
     def __init__(self, dept, number, name, description):
         self.dept = dept
-
-        if number[-1].isalpha():
-            self.number = number.zfill(4)
-        else:
-            self.number = number.zfill(3)
-
+        self.num = pad_course_num(number)
         self.name = name
         self.description = description
 
     def __str__(self):
-        return '\"' + self.name + "\""
-
-
-# used in has_course_number() below
-regex_course_num = re.compile("[0-9]+[A-Za-z]?\.")
-
-# used only for college eight, those bastards
-regex_course_name = re.compile("[A-Za-z :']+\.?")
+        return self.dept + ' ' + self.num + ': ' + self.name
+        # return '\"' + self.name + "\""
 
 
 def has_course_number(num_string):
@@ -310,15 +309,11 @@ def get_real_lit_dept(num_tag):
     :param num_tag:
     :return:
     """
-    global in_creative_writing
     parent = num_tag.parent
 
     while parent.name != 'h1':
         parent = parent.previous_sibling
     real_dept = parent.text
-
-    if real_dept == 'Creative Writing':
-        in_creative_writing = True
 
     return real_dept
 
@@ -334,8 +329,32 @@ def get_database():
         db.add_dept(get_department_object(current_dept))
     return db
 
-# db = get_database()
-#
-# with open(r'C:\Users\Peter Froud\Documents\reddit ucsc bot\pickle_file', 'wb') as file:
-#     pickle.dump(db, file)
-# file.close()
+# seems to only work with absolute path
+path = r'C:\Users\Peter Froud\Documents\reddit ucsc bot\class_database_pickle'
+
+
+def save_database():
+    """
+
+    :return:
+    """
+    if os.path.isfile(path):
+        print('save_database(): database already exists. Use load_database() instead.')
+        return
+
+    db = get_database()
+
+    with open(path, 'wb') as file:
+        pickle.dump(db, file)
+    file.close()
+
+
+def load_database():
+    """
+
+    :return:
+    """
+    with open(path, 'rb') as file:
+        db = pickle.load(file)
+    file.close()
+    return db

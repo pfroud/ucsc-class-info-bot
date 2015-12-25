@@ -4,8 +4,11 @@ Scrapes the self text and comments of a reddit submission for mentions of course
 
 import praw  # python wrapper for reddit api
 import re  # regular expressions
+import pickle
 from pprint import pprint
-from get_course_info import get_course_object
+from database import load_database, pad_course_num, CourseDatabase, Department, Course
+
+# from get_course_info import get_course_object
 
 # http://praw.readthedocs.org/en/stable/pages/writing_a_bot.html
 # http://praw.readthedocs.org/en/stable/pages/comment_parsing.html 
@@ -25,7 +28,7 @@ subjects_lower = [x.lower() for x in subjects]
 regex = re.compile(" [0-9]+[A-Za-z]?")
 
 
-def get_course_strings(source):
+def get_mentions_in_string(source):
     """
     Finds mentions of courses (department and number) in a string.
     :param source: string to look for courses in.
@@ -75,38 +78,79 @@ def get_course_strings(source):
     return courses_found
 
 
-def find_all_course_names(submission_in):
+def get_mentions_in_submission(submission_in):
     """
     Finds mentions of a course in a submission's title, selftext, and comments.
     :param submission_in: a praw submission object
     :return: an array of strings of course names
     """
     course_names = []
-    course_names.extend(get_course_strings(submission_in.title))
+    course_names.extend(get_mentions_in_string(submission_in.title))
 
-    course_names.extend(get_course_strings(submission_in.selftext))
+    course_names.extend(get_mentions_in_string(submission_in.selftext))
 
     flat_comments = praw.helpers.flatten_tree(submission_in.comments)
     for comment in flat_comments:
-        course_names.extend(get_course_strings(comment.body))
+        course_names.extend(get_mentions_in_string(comment.body))
 
     # the list(set()) thing removes duplicates
     return list(set(course_names))
 
 
-# def make_comment(courses):
-#     return
+def auth_reddit():
+    """
+
+    :return:
+    """
+    red = praw.Reddit(user_agent='desktop:ucsc-class-info-bot:v0.0.1 (by /u/ucsc-class-info-bot)', site_name='ucsc_bot')
+    with open('access_information_pickle', 'rb') as file:
+        access_information = pickle.load(file)
+    file.close()
+    red.set_access_credentials(**access_information)
+    return red
 
 
-r = praw.Reddit('comment scraper by Peter Froud')  # the user agent?
-print("going to get submission.")
-submission = r.get_submission(submission_id='3w0wt4')  # for now, directly input a submission
-print("got submission.")
+def get_course_obj_from_mention(mention):
+    split = mention.split(' ')
+    dept = split[0]
+    num = pad_course_num(split[1].upper())
+    course_obj = db.depts[dept].courses[num]
+    return course_obj
 
-# pprint(vars(submission))
 
-names = find_all_course_names(submission)
+def save_submission(sub):
+    with open(r'C:\Users\Peter Froud\Documents\reddit ucsc bot\submission_pickle', 'wb') as file:
+        pickle.dump(sub, file)
+    file.close()
 
-objects = [get_course_object(x) for x in names]
 
-print(objects)
+def load_submission():
+    with open(r'C:\Users\Peter Froud\Documents\reddit ucsc bot\submission_pickle', 'rb') as file:
+        sub = pickle.load(file)
+    file.close()
+    return sub
+
+# url = r.get_authorize_url('bananaphone', 'identity submit edit', True)
+# print(url)
+
+# with open(r'C:\Users\Peter Froud\Documents\reddit ucsc bot\access_information_pickle', 'wb') as file:
+#     pickle.dump(r.get_access_information('code'), file)
+# file.close()
+
+# r = auth_reddit()
+
+# print('>loading database')
+db = load_database()
+
+# print('>getting PRAW')
+# r = praw.Reddit(user_agent='desktop:ucsc-class-info-bot:v0.0.1 (by /u/ucsc-class-info-bot)')
+
+# print('>getting submission')
+# submission = r.get_submission(submission_id='3w0wt4')
+submission = load_submission()
+
+# print('>finding mentions')
+mentions = get_mentions_in_submission(submission)
+
+for m in mentions:
+    print(get_course_obj_from_mention(m))
