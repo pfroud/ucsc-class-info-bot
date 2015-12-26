@@ -42,12 +42,14 @@ class CourseDatabase:
 
     def __init__(self):
         self.depts = dict()  # set up an empty dictionary
+        self.num_courses = 0
 
     def add_dept(self, new_dept):
         self.depts[new_dept.name] = new_dept
+        self.num_courses += len(new_dept.courses)
 
     def __str__(self):
-        string = 'Database with ' + str(len(self.depts)) + ' department(s).\n'
+        string = 'Database with {} course(s) in {} department(s).\n'.format(self.num_courses, len(self.depts))
         for dept_num, dept_obj in sorted(self.depts.items()):
             string += '\n' + dept_num + ': ' + str(dept_obj)
         return string
@@ -65,13 +67,21 @@ class Department:
             self.courses[new_course.number] = new_course
 
     def __str__(self):
-        string = 'Department with ' + str(len(self.courses)) + " course(s).\n"
+        string = 'Department with {} course(s).\n'.format(len(self.courses))
         for course_num, course_obj in sorted(self.courses.items()):
-            string += '   ' + course_num + ': ' + str(course_obj) + '\n'
+            string += '   ' + course_num.ljust(4) + ': ' + str(course_obj) + '\n'
         return string
 
 
 def pad_course_num(number):
+    """Adds leading zeroes to course numbers.
+    '3' -> '003'; '3A' -> '003A'; '100' and '100A' unchanged.
+
+    :param number: course number to pad
+    :type number: str
+    :return: padded course number
+    :rtype: str
+    """
     if number[-1].isalpha():
         return number.zfill(4)
     else:
@@ -83,13 +93,14 @@ class Course:
 
     def __init__(self, dept, number, name, description):
         self.dept = dept
-        self.num = pad_course_num(number)
+        self.number = pad_course_num(number)
+        # self.number = number
         self.name = name
         self.description = description
 
     def __str__(self):
-        return self.dept + ' ' + self.num + ': ' + self.name
-        # return '\"' + self.name + "\""
+        # return self.dept + ' ' + self.number + ': ' + self.name
+        return '\"' + self.name + "\""
 
 
 def has_course_number(num_string):
@@ -273,7 +284,7 @@ def get_department_object(dept_name):
     """Builds and returns a Department object with all courses.
 
     :param dept_name: name of the department to get classes for
-    :type: dept_name_in: str
+    :type dept_name: str
     :return: Department object of all the courses in the department
     :rtype: Department
     """
@@ -304,10 +315,12 @@ def get_department_object(dept_name):
 
 
 def get_real_lit_dept(num_tag):
-    """
+    """Gets the department for a course in the lit page, which has many sub-departments.
 
-    :param num_tag:
-    :return:
+    :param num_tag: Tag of the number of a course
+    :type: num_tag: Tag
+    :return: name of the department the course actually is in
+    :rtype str
     """
     parent = num_tag.parent
 
@@ -319,18 +332,19 @@ def get_real_lit_dept(num_tag):
 
 
 def get_database():
-    """Builds and returns a CourseDatabase object
+    """Builds and returns a CourseDatabase object.
 
     :return: CourseDatabase object with all Departments
-     :rtype: CourseDatabase
+    :rtype: CourseDatabase
     """
     db = CourseDatabase()
-    for current_dept in departments:
+    for current_dept in ['ams']:
         db.add_dept(get_department_object(current_dept))
     return db
 
+
 # seems to only work with absolute path
-path = r'C:\Users\Peter Froud\Documents\reddit ucsc bot\class_database_pickle'
+database_pickle_path = r'C:\Users\Peter Froud\Documents\reddit ucsc bot\database\class_database.pickle'
 
 
 def save_database():
@@ -338,15 +352,16 @@ def save_database():
 
     :return:
     """
-    if os.path.isfile(path):
-        print('save_database(): database already exists. Use load_database() instead.')
-        return
+    # if os.path.isfile(database_pickle_path):
+    #     print('save_database(): database already exists. Use load_database() instead.')
+    #     return
 
     db = get_database()
 
-    with open(path, 'wb') as file:
+    with open(database_pickle_path, 'wb') as file:
         pickle.dump(db, file)
     file.close()
+    return db
 
 
 def load_database():
@@ -354,7 +369,9 @@ def load_database():
 
     :return:
     """
-    with open(path, 'rb') as file:
+    with open(database_pickle_path, 'rb') as file:
         db = pickle.load(file)
     file.close()
     return db
+
+print(save_database())

@@ -114,43 +114,52 @@ def get_course_obj_from_mention(mention):
     split = mention.split(' ')
     dept = split[0]
     num = pad_course_num(split[1].upper())
+    # num = split[1].upper()
     course_obj = db.depts[dept].courses[num]
     return course_obj
 
 
 def save_submission(sub):
-    with open(r'C:\Users\Peter Froud\Documents\reddit ucsc bot\submission_pickle', 'wb') as file:
+    with open(r'C:\Users\Peter Froud\Documents\reddit ucsc bot\submission.pickle', 'wb') as file:
         pickle.dump(sub, file)
     file.close()
 
 
 def load_submission():
-    with open(r'C:\Users\Peter Froud\Documents\reddit ucsc bot\submission_pickle', 'rb') as file:
+    with open(r'C:\Users\Peter Froud\Documents\reddit ucsc bot\submission.pickle', 'rb') as file:
         sub = pickle.load(file)
     file.close()
     return sub
 
+
 # url = r.get_authorize_url('bananaphone', 'identity submit edit', True)
 # print(url)
 
-# with open(r'C:\Users\Peter Froud\Documents\reddit ucsc bot\access_information_pickle', 'wb') as file:
+# with open(r'C:\Users\Peter Froud\Documents\reddit ucsc bot\access_information.pickle', 'wb') as file:
 #     pickle.dump(r.get_access_information('code'), file)
 # file.close()
 
 # r = auth_reddit()
 
-# print('>loading database')
+print('>loading database')
 db = load_database()
+
+print(db)
 
 # print('>getting PRAW')
 # r = praw.Reddit(user_agent='desktop:ucsc-class-info-bot:v0.0.1 (by /u/ucsc-class-info-bot)')
 
 # print('>getting submission')
 # submission = r.get_submission(submission_id='3w0wt4')
-submission = load_submission()
+# submission = load_submission()
 
 # print('>finding mentions')
-mentions = get_mentions_in_submission(submission)
+# mentions = get_mentions_in_submission(submission)
+# print(mentions)
+# for m in mentions:
+#     print(get_course_obj_from_mention(m))
 
-for m in mentions:
-    print(get_course_obj_from_mention(m))
+# subreddit = r.get_subreddit('ucsc')
+# for submission in subreddit.get_new(limit=1):
+#     # pprint(vars(submission))
+#     print(submission)
