@@ -350,6 +350,12 @@ def get_database():
 
 
 def dump_to_markdown(db):
+    """Writes a file with all the classes in the database to a markdown file.
+    Github can't display it so this is not actually useful.
+
+    :param db:
+    :return:
+    """
     markdown_string = ''
     for _, dept in sorted(db.depts.items()):
         for __, course in sorted(dept.courses.items()):
@@ -364,7 +370,6 @@ def dump_to_markdown(db):
     file.close()
 
 
-# database_pickle_path = r'C:\Users\Peter Froud\Documents\reddit ucsc bot\database_files\class_database.pickle'
 database_pickle_path = os.path.join(os.path.dirname(__file__), r'database_files\course_database.pickle')
 
 
