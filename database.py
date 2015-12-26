@@ -2,11 +2,13 @@
 Given a string of a department and course number, pulls information about the course from the registrar.
 """
 
-import requests
-import re
-from bs4 import BeautifulSoup
-import pickle
-import os.path
+import requests  # pulls registrar pages
+import re  # regular expressions
+from bs4 import BeautifulSoup  # html parser
+import pickle  # serializer
+import os.path  # check if file exists, get file size
+import datetime
+import sys  # print without newline
 
 DEBUG = False
 
@@ -289,7 +291,7 @@ def get_department_object(dept_name):
     :rtype: Department
     """
     # if DEBUG:
-    print("running on \"" + dept_name + "\"")
+    sys.stdout.write("Building department \"" + dept_name + "\"...")
 
     new_dept = Department(dept_name)
     soup = get_soup_object(dept_name)
@@ -310,6 +312,8 @@ def get_department_object(dept_name):
 
     if dept_name == 'germ' or dept_name == 'econ':
         new_dept.add_course((get_first_course_no_bold(dept_name, every_strong_tag[0])))
+
+    sys.stdout.write(str(len(new_dept.courses)) + ' courses added.\n')
 
     return new_dept
 
@@ -337,8 +341,10 @@ def get_database():
     :return: CourseDatabase object with all Departments
     :rtype: CourseDatabase
     """
+    print('Starting the database build on {}.'.format(datetime.datetime.now()))
+    print('----------------------------------')
     db = CourseDatabase()
-    for current_dept in ['ams']:
+    for current_dept in departments:
         db.add_dept(get_department_object(current_dept))
     return db
 
@@ -361,6 +367,8 @@ def save_database():
     with open(database_pickle_path, 'wb') as file:
         pickle.dump(db, file)
     file.close()
+    print('----------------------------------')
+    print('Wrote {:,} bytes to path \"{}\".\n'.format(os.path.getsize(database_pickle_path), database_pickle_path))
     return db
 
 

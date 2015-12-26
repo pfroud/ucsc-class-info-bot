@@ -4,7 +4,7 @@ Scrapes the self text and comments of a reddit submission for mentions of course
 
 import praw  # python wrapper for reddit api
 import re  # regular expressions
-import pickle
+import pickle  # serializer
 # from pprint import pprint
 from database import load_database, pad_course_num, CourseDatabase, Department, Course
 
