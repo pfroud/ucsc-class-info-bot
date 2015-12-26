@@ -1,2 +1,5 @@
-# /r/ucsc-class-description-bot
-Looks through the /r/UCSC subreddit for mentions of classes and comments with information from the course catalog.
+# /r/UCSC class info bot
+
+Looks through the [/r/UCSC](https://www.reddit.com/r/ucsc) subreddit for mentions of classes and comments with information from the course catalog.
+
+Will go on [/u/ucsc-class-info-bot](https://www.reddit.com/user/ucsc-class-info-bot).
