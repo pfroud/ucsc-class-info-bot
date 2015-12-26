@@ -349,8 +349,23 @@ def get_database():
     return db
 
 
-# seems to only work with absolute path
-database_pickle_path = r'C:\Users\Peter Froud\Documents\reddit ucsc bot\database_files\class_database.pickle'
+def dump_to_markdown(db):
+    markdown_string = ''
+    for _, dept in sorted(db.depts.items()):
+        for __, course in sorted(dept.courses.items()):
+            markdown_string += '**{} {}: {}**\n'.format(course.dept.upper(), course.number, course.name)
+            markdown_string += '>{}\n\n'.format(course.description)
+            markdown_string += '&nbsp;\n\n'
+
+    path = os.path.join(os.path.dirname(__file__), r'database_files\database_dump.md')
+
+    with open(path, 'w') as file:
+        file.write(markdown_string)
+    file.close()
+
+
+# database_pickle_path = r'C:\Users\Peter Froud\Documents\reddit ucsc bot\database_files\class_database.pickle'
+database_pickle_path = os.path.join(os.path.dirname(__file__), r'database_files\class_database.pickle')
 
 
 def save_database():
@@ -358,9 +373,9 @@ def save_database():
 
     :return:
     """
-    # if os.path.isfile(database_pickle_path):
-    #     print('save_database(): database already exists. Use load_database() instead.')
-    #     return
+    if os.path.isfile(database_pickle_path):
+        print('save_database(): database already exists. Use load_database() instead.')
+        return
 
     db = get_database()
 
@@ -382,4 +397,7 @@ def load_database():
     file.close()
     return db
 
-print(save_database())
+
+the_db = load_database()
+
+dump_to_markdown(the_db)

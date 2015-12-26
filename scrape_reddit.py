@@ -5,6 +5,7 @@ Scrapes the self text and comments of a reddit submission for mentions of course
 import praw  # python wrapper for reddit api
 import re  # regular expressions
 import pickle  # serializer
+import os.path
 # from pprint import pprint
 from database import load_database, pad_course_num, CourseDatabase, Department, Course
 
@@ -119,14 +120,17 @@ def get_course_obj_from_mention(mention):
     return course_obj
 
 
+submission_pickle_path = os.path.join(os.path.dirname(__file__), 'submission.pickle')
+
+
 def save_submission(sub):
-    with open(r'C:\Users\Peter Froud\Documents\reddit ucsc bot\submission.pickle', 'wb') as file:
+    with open(submission_pickle_path, 'wb') as file:
         pickle.dump(sub, file)
     file.close()
 
 
 def load_submission():
-    with open(r'C:\Users\Peter Froud\Documents\reddit ucsc bot\submission.pickle', 'rb') as file:
+    with open(submission_pickle_path, 'rb') as file:
         sub = pickle.load(file)
     file.close()
     return sub
