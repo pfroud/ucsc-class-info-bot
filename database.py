@@ -349,25 +349,20 @@ def get_database():
     return db
 
 
-def dump_to_markdown(db):
-    """Writes a file with all the classes in the database to a markdown file.
-    Github can't display it so this is not actually useful.
+def course_to_markdown(course):
+    """Returns a markdown representation of a course for use in reddit comments. Example:
+    '**ECON 1: Into to Stuff**
+    >We learn about econ and things.'
 
-    :param db:
-    :return:
+    :param course: Course to get markdown of
+    :type course: Course
+    :return: string of markdown of the course
+    :rtype: str
     """
-    markdown_string = ''
-    for _, dept in sorted(db.depts.items()):
-        for __, course in sorted(dept.courses.items()):
-            markdown_string += '**{} {}: {}**\n'.format(course.dept.upper(), course.number, course.name)
-            markdown_string += '>{}\n\n'.format(course.description)
-            markdown_string += '&nbsp;\n\n'
+    markdown_string = '**{} {}: {}**\n'.format(course.dept.upper(), course.number.strip('0'), course.name)
+    markdown_string += '>{}\n\n'.format(course.description)
 
-    path = os.path.join(os.path.dirname(__file__), r'database_files\database_dump.md')
-
-    with open(path, 'w') as file:
-        file.write(markdown_string)
-    file.close()
+    return markdown_string
 
 
 database_pickle_path = os.path.join(os.path.dirname(__file__), r'database_files\course_database.pickle')
@@ -401,8 +396,3 @@ def load_database():
         db = pickle.load(file)
     file.close()
     return db
-
-
-the_db = load_database()
-
-dump_to_markdown(the_db)

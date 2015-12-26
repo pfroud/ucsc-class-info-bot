@@ -7,7 +7,7 @@ import re  # regular expressions
 import pickle  # serializer
 import os.path
 # from pprint import pprint
-from database import load_database, pad_course_num, CourseDatabase, Department, Course
+from database import load_database, pad_course_num, course_to_markdown, CourseDatabase, Department, Course
 
 # from get_course_info import get_course_object
 
@@ -120,6 +120,27 @@ def get_course_obj_from_mention(mention):
     return course_obj
 
 
+def get_markdown(db, mention_list):
+    if not mention_list:  # if list is empty
+        return None
+
+    markdown_string = ''
+
+    for mention in mention_list:
+        split = mention.split(' ')
+        dept = split[0]
+        num = pad_course_num(split[1].upper())
+        course_obj = db.depts[dept].courses[num]
+        markdown_string += course_to_markdown(course_obj)
+        markdown_string += '&nbsp;\n\n'
+
+    markdown_string += '---------------\n\n&nbsp;\n\n'
+    markdown_string += '*I am a bot. If I screw up, please comment or message me. ' + \
+                       '[I\'m open source!](https://github.com/pfroud/ucsc-class-info-bot)*'
+
+    return markdown_string
+
+
 submission_pickle_path = os.path.join(os.path.dirname(__file__), 'submission.pickle')
 
 
@@ -136,7 +157,7 @@ def load_submission():
     return sub
 
 
-# url = r.get_authorize_url('bananaphone', 'identity submit edit', True)
+# url = r.get_authorize_url('state', 'identity submit edit', True)
 # print(url)
 
 # with open(r'C:\Users\Peter Froud\Documents\reddit ucsc bot\access_information.pickle', 'wb') as file:
@@ -145,10 +166,11 @@ def load_submission():
 
 # r = auth_reddit()
 
-print('>loading database')
 db = load_database()
 
-print(db)
+thing = get_markdown(db, ['cmps 5j', 'ams 131', 'lit 1', 'chem 109'])
+
+print(thing)
 
 # print('>getting PRAW')
 # r = praw.Reddit(user_agent='desktop:ucsc-class-info-bot:v0.0.1 (by /u/ucsc-class-info-bot)')
@@ -164,6 +186,7 @@ print(db)
 #     print(get_course_obj_from_mention(m))
 
 # subreddit = r.get_subreddit('ucsc')
-# for submission in subreddit.get_new(limit=1):
-#     # pprint(vars(submission))
+# for submission in subreddit.get_new():
 #     print(submission)
+#     print(get_mentions_in_submission(submission))
+#     print('-------------------')
