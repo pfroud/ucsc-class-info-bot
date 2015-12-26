@@ -207,7 +207,7 @@ def get_course(dept_name, num_tag):
         return None
 
     name_tag = num_tag.next_sibling.next_sibling
-    name = name_tag.text[:-1]
+    name = name_tag.text.strip(' .')
 
     description_tag = name_tag.next_sibling.next_sibling
 
@@ -344,7 +344,7 @@ def get_database():
 
 
 # seems to only work with absolute path
-database_pickle_path = r'C:\Users\Peter Froud\Documents\reddit ucsc bot\database\class_database.pickle'
+database_pickle_path = r'C:\Users\Peter Froud\Documents\reddit ucsc bot\database_files\class_database.pickle'
 
 
 def save_database():
