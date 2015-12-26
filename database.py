@@ -365,7 +365,7 @@ def dump_to_markdown(db):
 
 
 # database_pickle_path = r'C:\Users\Peter Froud\Documents\reddit ucsc bot\database_files\class_database.pickle'
-database_pickle_path = os.path.join(os.path.dirname(__file__), r'database_files\class_database.pickle')
+database_pickle_path = os.path.join(os.path.dirname(__file__), r'database_files\course_database.pickle')
 
 
 def save_database():
