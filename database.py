@@ -32,7 +32,7 @@ lit_department_codes = {'Literature': 'lit',
                         'Spanish/Latin American/Latino Literatures': 'ltsp',
                         'World Literature and Cultural Studies': 'ltwl'}
 
-# used in has_course_number() below
+# used in _has_course_number() below
 regex_course_num = re.compile("[0-9]+[A-Za-z]?\.")
 
 # used only for college eight, those bastards
@@ -105,7 +105,7 @@ class Course:
         return '\"' + self.name + "\""
 
 
-def has_course_number(num_string):
+def _has_course_number(num_string):
     """Whether a string has a course number in it.
 
     :param num_string: string like '1.' or '1A.'
@@ -116,7 +116,7 @@ def has_course_number(num_string):
     return regex_course_num.match(num_string) is not None
 
 
-def is_last_course_in_p(strong_tag):
+def _is_last_course_in_p(strong_tag):
     """Whether the <strong> tag is in the last course in the paragraph.
 
     :param strong_tag: tag like <strong>1A.</strong>
@@ -130,7 +130,7 @@ def is_last_course_in_p(strong_tag):
     return distance_to_end <= 4
 
 
-def is_next_p_indented(num_tag):
+def _is_next_p_indented(num_tag):
     """Whether the next paragraph after this tag is indented.
 
     :param num_tag: tag like <strong>1A.</strong>
@@ -152,7 +152,7 @@ def is_next_p_indented(num_tag):
     return next_p.get('style') == 'margin-left: 30px;'
 
 
-def in_indented_paragraph(num_tag):
+def _in_indented_paragraph(num_tag):
     """Whether the tag is in an indented paragraph.
 
     :param num_tag: tag like <strong>1A.</strong>
@@ -163,7 +163,7 @@ def in_indented_paragraph(num_tag):
     return num_tag.parent.get('style') == 'margin-left: 30px;'
 
 
-def get_soup_object(dept_name):
+def _get_soup_object(dept_name):
     """Requests a page from the registrar and returns a BeautifulSoup object of it.
 
     :param dept_name: string like 'cmps'
@@ -182,9 +182,9 @@ def get_soup_object(dept_name):
     return BeautifulSoup(request_result.text, 'html.parser')
 
 
-def get_course(dept_name, num_tag):
+def _get_course(dept_name, num_tag):
     """Builds and returns a Course object from the number specified.
-    If the <strong> tag has more than just the number in it, use get_course_all_in_one().
+    If the <strong> tag has more than just the number in it, use _get_course_all_in_one().
 
     :param dept_name: name of the department like 'cmps'
     :type dept_name: str
@@ -201,9 +201,9 @@ def get_course(dept_name, num_tag):
     if dept_name == 'havc' and number == '152. Roman Eyes: Visual Culture and Power in the Ancient Roman World. ':
         if DEBUG:
             print('>>>>>>>>>> havc 152 special case')
-        return get_course_all_in_one('havc', num_tag)
+        return _get_course_all_in_one('havc', num_tag)
 
-    if is_last_course_in_p(num_tag) and is_next_p_indented(num_tag) and not in_indented_paragraph(num_tag):
+    if _is_last_course_in_p(num_tag) and _is_next_p_indented(num_tag) and not _in_indented_paragraph(num_tag):
         if DEBUG:
             print('   SKIPPING num_tag \"' + num_tag.text + "\"<<<<<<<<<<<<<<<<<<<<<")
         return None
@@ -222,7 +222,7 @@ def get_course(dept_name, num_tag):
     description = description_tag[2:]
 
     if dept_name in lit_department_codes.values():
-        real_name = get_real_lit_dept(num_tag).replace("\ufeff", "")
+        real_name = _get_real_lit_dept(num_tag).replace("\ufeff", "")
         # print("   real name is \"" + real_name + "\"")
 
         # Russian Lit department has no dept code, probably does not actually exist
@@ -234,7 +234,7 @@ def get_course(dept_name, num_tag):
         return Course(dept_name, number, name, description)
 
 
-def get_course_all_in_one(dept_name, num_tag):
+def _get_course_all_in_one(dept_name, num_tag):
     """Makes a Course object when the whole heading is in one <strong> tag.
 
     :param dept_name: Name of the department the course is in
@@ -263,7 +263,7 @@ def get_course_all_in_one(dept_name, num_tag):
     return Course(dept_name, course_num, course_name, course_description)
 
 
-def get_first_course_no_bold(dept_name, first_strong_tag):
+def _get_first_course_no_bold(dept_name, first_strong_tag):
     """Gets the first course when the number is not bolded.
     Use only for germ and econ departments.
 
@@ -282,7 +282,7 @@ def get_first_course_no_bold(dept_name, first_strong_tag):
     return Course(dept_name, number_1, first_strong_tag.text[:-1], description)
 
 
-def get_department_object(dept_name):
+def _get_department_object(dept_name):
     """Builds and returns a Department object with all courses.
 
     :param dept_name: name of the department to get classes for
@@ -294,31 +294,31 @@ def get_department_object(dept_name):
     sys.stdout.write("Building department \"" + dept_name + "\"...")
 
     new_dept = Department(dept_name)
-    soup = get_soup_object(dept_name)
+    soup = _get_soup_object(dept_name)
 
     every_strong_tag = soup.select("div.main-content strong")
 
     numbers_in_strongs = []
 
     for tag in every_strong_tag:
-        if has_course_number(tag.text):
+        if _has_course_number(tag.text):
             numbers_in_strongs.append(tag)
 
     for num_tag in numbers_in_strongs:
         if dept_name == 'clei':
-            new_dept.add_course(get_course_all_in_one('clei', num_tag))
+            new_dept.add_course(_get_course_all_in_one('clei', num_tag))
         else:
-            new_dept.add_course(get_course(dept_name, num_tag))
+            new_dept.add_course(_get_course(dept_name, num_tag))
 
     if dept_name == 'germ' or dept_name == 'econ':
-        new_dept.add_course((get_first_course_no_bold(dept_name, every_strong_tag[0])))
+        new_dept.add_course((_get_first_course_no_bold(dept_name, every_strong_tag[0])))
 
     sys.stdout.write(str(len(new_dept.courses)) + ' courses added.\n')
 
     return new_dept
 
 
-def get_real_lit_dept(num_tag):
+def _get_real_lit_dept(num_tag):
     """Gets the department for a course in the lit page, which has many sub-departments.
 
     :param num_tag: Tag of the number of a course
@@ -335,7 +335,7 @@ def get_real_lit_dept(num_tag):
     return real_dept
 
 
-def get_database():
+def build_database():
     """Builds and returns a CourseDatabase object.
 
     :return: CourseDatabase object with all Departments
@@ -345,7 +345,7 @@ def get_database():
     print('----------------------------------')
     db = CourseDatabase()
     for current_dept in departments:
-        db.add_dept(get_department_object(current_dept))
+        db.add_dept(_get_department_object(current_dept))
     return db
 
 
@@ -377,7 +377,7 @@ def save_database():
         print('save_database(): database already exists. Use load_database() instead.')
         return
 
-    db = get_database()
+    db = build_database()
 
     with open(database_pickle_path, 'wb') as file:
         pickle.dump(db, file)
