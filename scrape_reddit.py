@@ -7,7 +7,7 @@ import re  # regular expressions
 import pickle  # serializer
 import os.path
 # from pprint import pprint
-import database
+import database  # used for pad_course_num() and load_database()
 from database import CourseDatabase, Department, Course  # need this to de-pickle these classes
 
 # from get_course_info import get_course_object
@@ -21,7 +21,7 @@ from database import CourseDatabase, Department, Course  # need this to de-pickl
 regex = re.compile(" [0-9]+[A-Za-z]?")
 
 
-def _get_mentions_in_string(source):
+def _get_mentions_in_string(db, source):
     """
     Finds mentions of courses (department and number) in a string.
     :param source: string to look for courses in.
@@ -30,7 +30,7 @@ def _get_mentions_in_string(source):
 
     str_in = source.lower()
     courses_found = []
-    for subj in database.departments:  # iterate subjects
+    for subj in db.departments:  # iterate subjects
 
         # set start of search to beginning of string
         start_of_next_search = 0
@@ -71,20 +71,20 @@ def _get_mentions_in_string(source):
     return courses_found
 
 
-def _get_mentions_in_submission(submission_in):
+def _get_mentions_in_submission(db, submission_in):
     """
     Finds mentions of a course in a submission's title, selftext, and comments.
     :param submission_in: a praw submission object
     :return: an array of strings of course names
     """
     course_names = []
-    course_names.extend(_get_mentions_in_string(submission_in.title))
+    course_names.extend(_get_mentions_in_string(db, submission_in.title))
 
-    course_names.extend(_get_mentions_in_string(submission_in.selftext))
+    course_names.extend(_get_mentions_in_string(db, submission_in.selftext))
 
     flat_comments = praw.helpers.flatten_tree(submission_in.comments)
     for comment in flat_comments:
-        course_names.extend(_get_mentions_in_string(comment.body))
+        course_names.extend(_get_mentions_in_string(db, comment.body))
 
     # the list(set()) thing removes duplicates
     return list(set(course_names))
@@ -103,12 +103,12 @@ def auth_reddit():
     return red
 
 
-def _get_course_obj_from_mention(mention):
+def _get_course_obj_from_mention(db, mention):
     split = mention.split(' ')
     dept = split[0]
     num = database.pad_course_num(split[1].upper())
     # num = split[1].upper()
-    course_obj = d.depts[dept].courses[num]
+    course_obj = db.depts[dept].courses[num]
     return course_obj
 
 
@@ -119,8 +119,8 @@ def _get_markdown(db, mention_list):
     markdown_string = ''
 
     for mention in mention_list:
-        course_obj = _get_course_obj_from_mention(mention)
-        markdown_string += database.course_to_markdown(course_obj)
+        course_obj = _get_course_obj_from_mention(db, mention)
+        markdown_string += _course_to_markdown(course_obj)
         markdown_string += '&nbsp;\n\n'
 
     markdown_string += '---------------\n\n&nbsp;\n\n'
@@ -131,6 +131,22 @@ def _get_markdown(db, mention_list):
 
 
 submission_pickle_path = os.path.join(os.path.dirname(__file__), 'submission.pickle')
+
+
+def _course_to_markdown(course):
+    """Returns a markdown representation of a course for use in reddit comments. Example:
+    '**ECON 1: Into to Stuff**
+    >We learn about econ and things.'
+
+    :param course: Course to get markdown of
+    :type course: Course
+    :return: string of markdown of the course
+    :rtype: str
+    """
+    markdown_string = '**{} {}: {}**\n'.format(course.dept.upper(), course.number.strip('0'), course.name)
+    markdown_string += '>{}\n\n'.format(course.description)
+
+    return markdown_string
 
 
 def _save_submission(sub):
@@ -155,9 +171,9 @@ def _load_submission():
 
 # r = auth_reddit()
 
-d = database.load_database()
+the_db = database.load_database()
 
-thing = _get_markdown(d, ['cmps 5j', 'ams 131', 'lit 1', 'chem 109'])
+thing = _get_markdown(the_db, ['cmps 5j', 'ams 131', 'lit 1', 'chem 109'])
 
 print(thing)
 

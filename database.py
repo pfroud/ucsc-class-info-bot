@@ -7,7 +7,7 @@ import re  # regular expressions
 from bs4 import BeautifulSoup  # html parser
 import pickle  # serializer
 import os.path  # check if file exists, get file size
-import datetime
+import datetime  # added to output logs
 import sys  # print without newline
 
 DEBUG = False
@@ -347,22 +347,6 @@ def build_database():
     for current_dept in departments:
         db.add_dept(_get_department_object(current_dept))
     return db
-
-
-def course_to_markdown(course):
-    """Returns a markdown representation of a course for use in reddit comments. Example:
-    '**ECON 1: Into to Stuff**
-    >We learn about econ and things.'
-
-    :param course: Course to get markdown of
-    :type course: Course
-    :return: string of markdown of the course
-    :rtype: str
-    """
-    markdown_string = '**{} {}: {}**\n'.format(course.dept.upper(), course.number.strip('0'), course.name)
-    markdown_string += '>{}\n\n'.format(course.description)
-
-    return markdown_string
 
 
 database_pickle_path = os.path.join(os.path.dirname(__file__), r'database_files\course_database.pickle')
