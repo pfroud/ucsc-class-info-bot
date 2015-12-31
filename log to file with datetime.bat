@@ -1,3 +1,5 @@
+@echo off
+
 rem http://stackoverflow.com/a/1194991
 
 set hour=%time:~0,2%
@@ -25,4 +27,4 @@ set datetimef=%dayOfWeek%-%day%-%month%-%year%_at_%hour%-%min%-%secs%
 
 
 rem the '2>&1' redirects stderr
-echo hello world > logs\%datetimef%.txt 2>&1
+scrape_reddit.py > logs\%datetimef%.txt 2>&1

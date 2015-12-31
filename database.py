@@ -12,12 +12,12 @@ import sys  # print without newline
 
 DEBUG = False
 
-departments = ["acen", "aplx", "ams", "art", "artg", "astr", "bioc", "mcdb", "eeb", "bme", "chem", "chin", "clni",
+all_departments = ["acen", "aplx", "ams", "art", "artg", "astr", "bioc", "mcdb", "eeb", "bme", "chem", "chin", "clni",
                "clte", "cmmu", "cmpm", "cmpe", "cmps", "cowl", "cres", "crwn", "danm", "eart", "educ", "ee", "envs",
                "fmst", "film", "fren", "game", "gree", "hebr", "his", "hisc", "ital", "japn", "jwst", "krsg", "laad",
                "latn", "lals", "lgst", "ling", "math", "merr", "metx", "musc", "oaks", "ocea", "phil", "phye", "phys",
                "poli", "port", "punj", "russ", "scic", "socd", "socy", "span", "sphs", "stev", "tim", "thea", "ucdc",
-               "writ", "yidd", 'prtr', 'anth', 'psyc', 'havc', 'clei', 'econ', 'germ', 'lit']
+                   "writ", "yidd", 'prtr', 'anth', 'psyc', 'havc', 'clei', 'econ', 'germ', 'lit']
 
 lit_department_codes = {'Literature': 'lit',
                         'Creative Writing': 'ltcr',
@@ -344,7 +344,7 @@ def build_database():
     print('Starting the database build on {}.'.format(datetime.datetime.now()))
     print('----------------------------------')
     db = CourseDatabase()
-    for current_dept in departments:
+    for current_dept in all_departments:
         db.add_dept(_get_department_object(current_dept))
     return db
 

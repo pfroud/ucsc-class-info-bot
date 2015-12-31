@@ -6,7 +6,7 @@ import praw  # python wrapper for reddit api
 import re  # regular expressions
 import pickle  # serializer
 import os.path
-# from pprint import pprint
+from pprint import pprint
 import database  # used for pad_course_num() and load_database()
 from database import CourseDatabase, Department, Course  # need this to de-pickle these classes
 
@@ -21,16 +21,16 @@ from database import CourseDatabase, Department, Course  # need this to de-pickl
 regex = re.compile(" [0-9]+[A-Za-z]?")
 
 
-def _get_mentions_in_string(db, source):
+def _get_mentions_in_string(source_):
     """
     Finds mentions of courses (department and number) in a string.
-    :param source: string to look for courses in.
+    :param source_: string to look for courses in.
     :return: array of strings of course names
     """
 
-    str_in = source.lower()
+    str_in = source_.lower()
     courses_found = []
-    for subj in db.departments:  # iterate subjects
+    for subj in database.all_departments:  # iterate subjects
 
         # set start of search to beginning of string
         start_of_next_search = 0
@@ -71,20 +71,20 @@ def _get_mentions_in_string(db, source):
     return courses_found
 
 
-def _get_mentions_in_submission(db, submission_in):
+def get_mentions_in_submission(submission_):
     """
     Finds mentions of a course in a submission's title, selftext, and comments.
-    :param submission_in: a praw submission object
+    :param submission_: a praw submission object
     :return: an array of strings of course names
     """
     course_names = []
-    course_names.extend(_get_mentions_in_string(db, submission_in.title))
+    course_names.extend(_get_mentions_in_string(submission_.title))
 
-    course_names.extend(_get_mentions_in_string(db, submission_in.selftext))
+    course_names.extend(_get_mentions_in_string(submission_.selftext))
 
-    flat_comments = praw.helpers.flatten_tree(submission_in.comments)
+    flat_comments = praw.helpers.flatten_tree(submission_.comments)
     for comment in flat_comments:
-        course_names.extend(_get_mentions_in_string(db, comment.body))
+        course_names.extend(_get_mentions_in_string(comment.body))
 
     # the list(set()) thing removes duplicates
     return list(set(course_names))
@@ -99,27 +99,29 @@ def auth_reddit():
     with open('access_information.pickle', 'rb') as file:
         access_information = pickle.load(file)
     file.close()
+    print('Access info loaded.')
     red.set_access_credentials(**access_information)
+    print('Reddit authorized.')
     return red
 
 
-def _get_course_obj_from_mention(db, mention):
-    split = mention.split(' ')
-    dept = split[0]
+def _get_course_obj_from_mention(db_, mention_):
+    split = mention_.split(' ')
+    dept = split[0].lower()
     num = database.pad_course_num(split[1].upper())
     # num = split[1].upper()
-    course_obj = db.depts[dept].courses[num]
+    course_obj = db_.depts[dept].courses[num]
     return course_obj
 
 
-def _get_markdown(db, mention_list):
-    if not mention_list:  # if list is empty
+def get_markdown(db_, mention_list_):
+    if not mention_list_:  # if list is empty
         return None
 
     markdown_string = ''
 
-    for mention in mention_list:
-        course_obj = _get_course_obj_from_mention(db, mention)
+    for mention in mention_list_:
+        course_obj = _get_course_obj_from_mention(db_, mention)
         markdown_string += _course_to_markdown(course_obj)
         markdown_string += '&nbsp;\n\n'
 
@@ -131,66 +133,58 @@ def _get_markdown(db, mention_list):
 
 
 submission_pickle_path = os.path.join(os.path.dirname(__file__), 'submission.pickle')
+already_commented_pickle_path = os.path.join(os.path.dirname(__file__), 'already_commented.pickle')
 
 
-def _course_to_markdown(course):
+def _course_to_markdown(course_):
     """Returns a markdown representation of a course for use in reddit comments. Example:
     '**ECON 1: Into to Stuff**
     >We learn about econ and things.'
 
-    :param course: Course to get markdown of
-    :type course: Course
+    :param course_: Course to get markdown of
+    :type course_: Course
     :return: string of markdown of the course
     :rtype: str
     """
-    markdown_string = '**{} {}: {}**\n'.format(course.dept.upper(), course.number.strip('0'), course.name)
-    markdown_string += '>{}\n\n'.format(course.description)
+    markdown_string = '**{} {}: {}**\n'.format(course_.dept.upper(), course_.number.strip('0'), course_.name)
+    markdown_string += '>{}\n\n'.format(course_.description)
 
     return markdown_string
 
 
-def _save_submission(sub):
-    with open(submission_pickle_path, 'wb') as file:
-        pickle.dump(sub, file)
+def save_already_commented():
+    with open(already_commented_pickle_path, 'wb') as file:
+        pickle.dump(already_commented, file)
     file.close()
 
 
-def _load_submission():
-    with open(submission_pickle_path, 'rb') as file:
-        sub = pickle.load(file)
+def load_already_commented():
+    with open(already_commented_pickle_path, 'rb') as file:
+        a_c = pickle.load(file)
     file.close()
-    return sub
+    return a_c
 
 
-# url = r.get_authorize_url('state', 'identity submit edit', True)
-# print(url)
+def post_comment(sub_id):
+    if sub_id in already_commented.keys():
+        print(sub_id + ': already commented on that submission.')
+        return
+    submission = reddit.get_submission(submission_id=sub_id)
+    mentions_list = get_mentions_in_submission(submission)
+    submission.add_comment(get_markdown(db, mentions_list))
+    already_commented[sub_id] = mentions_list
+    save_already_commented()
 
-# with open(r'C:\Users\Peter Froud\Documents\reddit ucsc bot\access_information.pickle', 'wb') as file:
-#     pickle.dump(r.get_access_information('code'), file)
-# file.close()
 
-# r = auth_reddit()
+already_commented = load_already_commented()
+db = database.load_database()
+reddit = auth_reddit()
 
-the_db = database.load_database()
+post_comment('3yw5sz')
 
-thing = _get_markdown(the_db, ['cmps 5j', 'ams 131', 'lit 1', 'chem 109'])
 
-print(thing)
 
-# print('>getting PRAW')
-# r = praw.Reddit(user_agent='desktop:ucsc-class-info-bot:v0.0.1 (by /u/ucsc-class-info-bot)')
-
-# print('>getting submission')
-# submission = r.get_submission(submission_id='3w0wt4')
-# submission = _load_submission()
-
-# print('>finding mentions')
-# mentions = _get_mentions_in_submission(submission)
-# print(mentions)
-# for m in mentions:
-#     print(_get_course_obj_from_mention(m))
-
-# subreddit = r.get_subreddit('ucsc')
+# subreddit = reddit.get_subreddit('ucsc')
 # for submission in subreddit.get_new():
 #     print(submission)
 #     print(_get_mentions_in_submission(submission))
