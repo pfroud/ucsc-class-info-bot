@@ -1,6 +1,7 @@
 """
 Scrapes the self text and comments of a reddit submission for mentions of courses.
 """
+from datetime import datetime
 
 import praw  # python wrapper for reddit api
 import re  # regular expressions
@@ -95,13 +96,12 @@ def auth_reddit():
 
     :return:
     """
-    red = praw.Reddit(user_agent='desktop:ucsc-class-info-bot:v0.0.1 (by /u/ucsc-class-info-bot)', site_name='ucsc_bot')
+    red = praw.Reddit(user_agent = 'desktop:ucsc-class-info-bot:v0.0.1 (by /u/ucsc-class-info-bot)',
+                      site_name = 'ucsc_bot')
     with open('access_information.pickle', 'rb') as file:
         access_information = pickle.load(file)
     file.close()
-    print('Access info loaded.')
     red.set_access_credentials(**access_information)
-    print('Reddit authorized.')
     return red
 
 
@@ -165,27 +165,41 @@ def load_already_commented():
     return a_c
 
 
-def post_comment(sub_id):
-    if sub_id in already_commented.keys():
-        print(sub_id + ': already commented on that submission.')
-        return
-    submission = reddit.get_submission(submission_id=sub_id)
-    mentions_list = get_mentions_in_submission(submission)
-    submission.add_comment(get_markdown(db, mentions_list))
-    already_commented[sub_id] = mentions_list
-    save_already_commented()
+def post_comment(sub_):
+    sub_id = sub_.id
 
+    mentions_current = get_mentions_in_submission(sub_)
+    mentions_previous = already_commented.get(sub_id, [])
 
+    print('{id}{_}{author}{_}{title}{_}{mentions_current}{_}{mentions_previous}{_}{mentions_new}{_}{mentions_removed}'
+          .format(
+            id = sub_id,
+            author = sub_.author,
+            title = sub_.title,
+            mentions_current = mentions_current,
+            mentions_previous = mentions_previous,
+            mentions_new = [x for x in mentions_current if x not in mentions_previous],
+            mentions_removed = [x for x in mentions_previous if x not in mentions_current],
+            _ = '\t'))
+
+    # submission.add_comment(get_markdown(db, mentions_current))
+    # already_commented[sub_id] = mentions_current
+    # save_already_commented()
+
+# print('Started {}.'.format(datetime.now()))
 already_commented = load_already_commented()
 db = database.load_database()
 reddit = auth_reddit()
 
-post_comment('3yw5sz')
+print('id{_}author{_}title{_}current mentions{_}previous mentions{_}new mentions{_}removed mentions'.format(_ = '\t'))
 
+# post_comment('3yw5sz')  # on /r/bottesting
 
+# TODO
+# fix inevitable KeyError for 'chem 1n', ex
+# make it see CS and CE depts
 
-# subreddit = reddit.get_subreddit('ucsc')
-# for submission in subreddit.get_new():
-#     print(submission)
-#     print(_get_mentions_in_submission(submission))
-#     print('-------------------')
+subreddit = reddit.get_subreddit('ucsc')
+for submission in subreddit.get_new():
+    # print(submission)
+    post_comment(submission)

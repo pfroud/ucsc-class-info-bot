@@ -7,7 +7,7 @@ import re  # regular expressions
 from bs4 import BeautifulSoup  # html parser
 import pickle  # serializer
 import os.path  # check if file exists, get file size
-import datetime  # added to output logs
+from datetime import datetime  # added to output logs
 import sys  # print without newline
 
 DEBUG = False
@@ -341,7 +341,7 @@ def build_database():
     :return: CourseDatabase object with all Departments
     :rtype: CourseDatabase
     """
-    print('Starting the database build on {}.'.format(datetime.datetime.now()))
+    print('Starting the database build on {}.'.format(datetime.now()))
     print('----------------------------------')
     db = CourseDatabase()
     for current_dept in all_departments:
