@@ -108,9 +108,16 @@ def auth_reddit():
 def _get_course_obj_from_mention(db_, mention_):
     split = mention_.split(' ')
     dept = split[0].lower()
+    if dept == 'cs':
+        dept = 'cmps'
+    if dept == 'ce':
+        dept = 'cmpe'
     num = database.pad_course_num(split[1].upper())
     # num = split[1].upper()
-    course_obj = db_.depts[dept].courses[num]
+    try:
+        course_obj = db_.depts[dept].courses[num]
+    except KeyError:
+        return None
     return course_obj
 
 
@@ -118,15 +125,16 @@ def get_markdown(db_, mention_list_):
     if not mention_list_:  # if list is empty
         return None
 
-    markdown_string = ''
+    markdown_string = 'Classes mentioned in this thread:\n\n&nbsp;\n\n'
 
     for mention in mention_list_:
         course_obj = _get_course_obj_from_mention(db_, mention)
-        markdown_string += _course_to_markdown(course_obj)
-        markdown_string += '&nbsp;\n\n'
+        if course_obj is None:  # excepted Keyerror
+            continue
+        markdown_string += _course_to_markdown(course_obj) + '&nbsp;\n\n'
 
-    markdown_string += '---------------\n\n&nbsp;\n\n'
-    markdown_string += '*I am a bot. If I screw up, please comment or message me. ' + \
+    markdown_string += '---------------\n\n&nbsp;\n\n' + \
+                       '*I am a bot. If I screw up, please comment or message me. ' + \
                        '[I\'m open source!](https://github.com/pfroud/ucsc-class-info-bot)*'
 
     return markdown_string
@@ -172,7 +180,7 @@ def post_comment(sub_):
     mentions_previous = already_commented.get(sub_id, [])
 
     print('{id}{_}{author}{_}{title}{_}{mentions_current}{_}{mentions_previous}{_}{mentions_new}{_}{mentions_removed}'
-          .format(
+        .format(
             id = sub_id,
             author = sub_.author,
             title = sub_.title,
@@ -186,6 +194,7 @@ def post_comment(sub_):
     # already_commented[sub_id] = mentions_current
     # save_already_commented()
 
+
 # print('Started {}.'.format(datetime.now()))
 already_commented = load_already_commented()
 db = database.load_database()
@@ -194,10 +203,6 @@ reddit = auth_reddit()
 print('id{_}author{_}title{_}current mentions{_}previous mentions{_}new mentions{_}removed mentions'.format(_ = '\t'))
 
 # post_comment('3yw5sz')  # on /r/bottesting
-
-# TODO
-# fix inevitable KeyError for 'chem 1n', ex
-# make it see CS and CE depts
 
 subreddit = reddit.get_subreddit('ucsc')
 for submission in subreddit.get_new():
