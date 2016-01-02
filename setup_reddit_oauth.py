@@ -1,3 +1,7 @@
+"""
+Used to set up reddit api oauth.
+"""
+
 import praw
 import pickle
 

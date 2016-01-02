@@ -23,10 +23,12 @@ regex = re.compile(" [0-9]+[A-Za-z]?")
 
 
 def _get_mentions_in_string(source_):
-    """
-    Finds mentions of courses (department and number) in a string.
+    """Finds mentions of courses (department and number) in a string.
+
     :param source_: string to look for courses in.
+    :type source_: str
     :return: array of strings of course names
+    :rtype: list
     """
 
     str_in = source_.lower()
@@ -73,10 +75,12 @@ def _get_mentions_in_string(source_):
 
 
 def get_mentions_in_submission(submission_):
-    """
-    Finds mentions of a course in a submission's title, selftext, and comments.
+    """Finds mentions of a course in a submission's title, selftext, and comments.
+
     :param submission_: a praw submission object
+    :type submission_: praw.objects.Submission
     :return: an array of strings of course names
+    :rtype: list
     """
     course_names = []
     course_names.extend(_get_mentions_in_string(submission_.title))
@@ -92,9 +96,10 @@ def get_mentions_in_submission(submission_):
 
 
 def auth_reddit():
-    """
+    """Load access information and return PRAW reddit api context.
 
-    :return:
+    :return: praw instance
+    :rtype praw.__init__.AuthenticatedReddit
     """
     red = praw.Reddit(user_agent = 'desktop:ucsc-class-info-bot:v0.0.1 (by /u/ucsc-class-info-bot)',
                       site_name = 'ucsc_bot')
@@ -106,22 +111,44 @@ def auth_reddit():
 
 
 def _get_course_obj_from_mention(db_, mention_):
+    """Converts mention of course to course object
+
+    :param db_: course database with course info
+    :type db_: CourseDatabase
+    :param mention_: string of course mention, like 'econ 1'
+    :type mention_: str
+    :return: course database from the mention
+    :rtype: Course
+    """
     split = mention_.split(' ')
+
     dept = split[0].lower()
     if dept == 'cs':
         dept = 'cmps'
     if dept == 'ce':
         dept = 'cmpe'
+
     num = database.pad_course_num(split[1].upper())
     # num = split[1].upper()
+
     try:
         course_obj = db_.depts[dept].courses[num]
     except KeyError:
         return None
+
     return course_obj
 
 
 def get_markdown(db_, mention_list_):
+    """Returns a markdown comment with info about the classes mentioned in the list
+
+    :param db_: course database with info
+    :type db_: CourseDatabase
+    :param mention_list_: list of mentions, like ['econ 1', 'cmps 5j']
+    :type mention_list_: list
+    :return: string of markdown comment
+    :rtype str
+    """
     if not mention_list_:  # if list is empty
         return None
 
@@ -161,29 +188,40 @@ def _course_to_markdown(course_):
 
 
 def save_already_commented():
+    """Saves to disk the dict of posts that have already been commented on"""
     with open(already_commented_pickle_path, 'wb') as file:
         pickle.dump(already_commented, file)
     file.close()
 
 
 def load_already_commented():
+    """Loads from disk the dict of posts that have already been commented on
+
+    :return: dict of posts that have already been commented on
+    :rtype: dict
+    """
     with open(already_commented_pickle_path, 'rb') as file:
         a_c = pickle.load(file)
     file.close()
     return a_c
 
 
-def post_comment(sub_):
-    sub_id = sub_.id
+def post_comment(submission_):
+    """Posts a comment on the submission with info about the courses mentioned
 
-    mentions_current = get_mentions_in_submission(sub_)
+    :param submission_: submission object to post the comment to
+    :type submission_: praw.objects.Submission
+    """
+    sub_id = submission_.id
+
+    mentions_current = get_mentions_in_submission(submission_)
     mentions_previous = already_commented.get(sub_id, [])
 
     print('{id}{_}{author}{_}{title}{_}{mentions_current}{_}{mentions_previous}{_}{mentions_new}{_}{mentions_removed}'
         .format(
             id = sub_id,
-            author = sub_.author,
-            title = sub_.title,
+            author = submission_.author,
+            title = submission_.title,
             mentions_current = mentions_current,
             mentions_previous = mentions_previous,
             mentions_new = [x for x in mentions_current if x not in mentions_previous],

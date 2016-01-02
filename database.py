@@ -49,6 +49,10 @@ class CourseDatabase:
         self.num_courses = 0
 
     def add_dept(self, new_dept):
+        """Add a department to the course database.
+        :param new_dept: Department object to add
+        :type new_dept: Department
+        """
         self.depts[new_dept.name] = new_dept
         self.num_courses += len(new_dept.courses)
 
@@ -67,6 +71,10 @@ class Department:
         self.name = name
 
     def add_course(self, new_course):
+        """Adds a course to the department.
+        :param new_course: Course to add.
+        :type new_course: Course
+        """
         if new_course is not None:
             self.courses[new_course.number] = new_course
 
@@ -355,10 +363,7 @@ database_pickle_path = os.path.join(os.path.dirname(__file__), r'database_files\
 
 
 def save_database():
-    """
-
-    :return:
-    """
+    """Saves the database to a file on disk."""
     if os.path.isfile(database_pickle_path):
         print('save_database(): database already exists. Use load_database() instead.')
         return
@@ -370,13 +375,13 @@ def save_database():
     file.close()
     print('----------------------------------')
     print('Wrote {:,} bytes to path \"{}\".\n'.format(os.path.getsize(database_pickle_path), database_pickle_path))
-    return db
 
 
 def load_database():
-    """
+    """Reads a course database from file on disk.
 
-    :return:
+    :return: course database read from file
+    :rtype: CourseDatabase
     """
     with open(database_pickle_path, 'rb') as file:
         db = pickle.load(file)
