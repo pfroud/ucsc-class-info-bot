@@ -2,7 +2,6 @@
 Scrapes the self text and comments of a reddit submission for mentions of courses.
 """
 from datetime import datetime
-
 import praw  # python wrapper for reddit api
 import re  # regular expressions
 import pickle  # serializer
@@ -11,12 +10,9 @@ from pprint import pprint
 import database  # used for pad_course_num() and load_database()
 from database import CourseDatabase, Department, Course  # need this to de-pickle these classes
 
-# from get_course_info import get_course_object
-
 # http://praw.readthedocs.org/en/stable/pages/writing_a_bot.html
 # http://praw.readthedocs.org/en/stable/pages/comment_parsing.html 
 
-# scraped from https://pisa.ucsc.edu/cs9/prd/sr9_2013/index.php
 
 # previously " ?[0-9]+[A-Za-z]?"
 regex = re.compile(" [0-9]+[A-Za-z]?")
@@ -89,6 +85,8 @@ def get_mentions_in_submission(submission_):
 
     flat_comments = praw.helpers.flatten_tree(submission_.comments)
     for comment in flat_comments:
+        if comment.author.name == 'ucsc-class-info-bot':
+            continue
         course_names.extend(_get_mentions_in_string(comment.body))
 
     # the list(set()) thing removes duplicates
@@ -123,10 +121,10 @@ def _get_course_obj_from_mention(db_, mention_):
     split = mention_.split(' ')
 
     dept = split[0].lower()
-    if dept == 'cs':
-        dept = 'cmps'
-    if dept == 'ce':
-        dept = 'cmpe'
+    # if dept == 'cs':
+    #     dept = 'cmps'
+    # if dept == 'ce':
+    #     dept = 'cmpe'
 
     num = database.pad_course_num(split[1].upper())
     # num = split[1].upper()
@@ -168,7 +166,7 @@ def get_markdown(db_, mention_list_):
 
 
 submission_pickle_path = os.path.join(os.path.dirname(__file__), 'submission.pickle')
-already_commented_pickle_path = os.path.join(os.path.dirname(__file__), 'already_commented.pickle')
+posts_with_comments_pickle_path = os.path.join(os.path.dirname(__file__), 'posts_with_comments.pickle')
 
 
 def _course_to_markdown(course_):
@@ -187,20 +185,20 @@ def _course_to_markdown(course_):
     return markdown_string
 
 
-def save_already_commented():
+def save_posts_with_comments():
     """Saves to disk the dict of posts that have already been commented on"""
-    with open(already_commented_pickle_path, 'wb') as file:
-        pickle.dump(already_commented, file)
+    with open(posts_with_comments_pickle_path, 'wb') as file:
+        pickle.dump(posts_with_comments, file)
     file.close()
 
 
-def load_already_commented():
+def load_posts_with_comments():
     """Loads from disk the dict of posts that have already been commented on
 
     :return: dict of posts that have already been commented on
     :rtype: dict
     """
-    with open(already_commented_pickle_path, 'rb') as file:
+    with open(posts_with_comments_pickle_path, 'rb') as file:
         a_c = pickle.load(file)
     file.close()
     return a_c
@@ -212,14 +210,18 @@ def post_comment(submission_):
     :param submission_: submission object to post the comment to
     :type submission_: praw.objects.Submission
     """
-    sub_id = submission_.id
+    submission_id = submission_.id
 
     mentions_current = get_mentions_in_submission(submission_)
-    mentions_previous = already_commented.get(sub_id, [])
+
+    if submission_id in posts_with_comments.keys():
+        mentions_previous = posts_with_comments[submission_id].mentions_list
+    else:
+        mentions_previous = []
 
     print('{id}{_}{author}{_}{title}{_}{mentions_current}{_}{mentions_previous}{_}{mentions_new}{_}{mentions_removed}'
         .format(
-            id = sub_id,
+            id = submission_id,
             author = submission_.author,
             title = submission_.title,
             mentions_current = mentions_current,
@@ -228,21 +230,33 @@ def post_comment(submission_):
             mentions_removed = [x for x in mentions_previous if x not in mentions_current],
             _ = '\t'))
 
-    # submission.add_comment(get_markdown(db, mentions_current))
-    # already_commented[sub_id] = mentions_current
-    # save_already_commented()
+    # comment = submission.add_comment(get_markdown(db, mentions_current))
+    # posts_with_comments[submission_id] = ExistingComment(comment.id, mentions_current)
+
+
+class ExistingComment:
+    """Info about an existing comment with class info."""
+    def __init__(self, comment_id_, mentions_):
+        self.comment_id = comment_id_
+        self.mentions_list = mentions_
+
+    def __str__(self):
+        return "\"{}\"->\"{}\"".format(self.comment_id, self.mentions_list)
 
 
 # print('Started {}.'.format(datetime.now()))
-already_commented = load_already_commented()
+posts_with_comments = load_posts_with_comments()
 db = database.load_database()
 reddit = auth_reddit()
 
 print('id{_}author{_}title{_}current mentions{_}previous mentions{_}new mentions{_}removed mentions'.format(_ = '\t'))
 
-# post_comment('3yw5sz')  # on /r/bottesting
+post_comment(reddit.get_submission(submission_id='3yw5sz'))  # on /r/bottesting
 
-subreddit = reddit.get_subreddit('ucsc')
-for submission in subreddit.get_new():
-    # print(submission)
-    post_comment(submission)
+
+# subreddit = reddit.get_subreddit('ucsc')
+# for submission in subreddit.get_new():
+#     # print(submission)
+#     post_comment(submission)
+
+save_posts_with_comments()
