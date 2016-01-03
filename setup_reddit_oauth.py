@@ -32,10 +32,15 @@ reddit = praw.Reddit(user_agent = 'desktop:ucsc-class-info-bot:v0.0.1 (by /u/ucs
 # save_access_information()
 
 
+# print(posts_with_comments['3yw5sz'])
+# exit()
 # def rebuild_posts_with_comments():
 #     """Make a new posts_with_comments file."""
-#     submission = reddit.get_submission(submission_id='3yw5sz')
+#     submission = reddit.get_submission(submission_id='3yw5sz')  # the post on /r/bottesting
 #     # posts_with_comments = dict()  # put this before call
 #     the_comment = submission.comments[0]
 #     posts_with_comments[submission.id] = ExistingComment(the_comment.id, get_mentions_in_submission(submission))
 #     save_posts_with_comments()
+# posts_with_comments = dict()
+# rebuild_posts_with_comments()
+# exit()

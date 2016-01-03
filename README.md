@@ -7,3 +7,5 @@ Will go on [/u/ucsc-class-info-bot](https://www.reddit.com/user/ucsc-class-info-
 ### Known bugs
 
 * Won't recognize CS as CMPS or CMPE as CMPE
+* In the comment, classes are sorted by departament name.
+Ideally they would be sorted by the order in which they're mentioned.

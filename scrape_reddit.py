@@ -70,6 +70,24 @@ def _get_mentions_in_string(source_):
     return courses_found
 
 
+def _remove_list_duplicates_preserve_order(input_list):
+    """Removes duplicates from a list, while preserving order.
+    To do this easily without preserving order, do list(set(input_list)).
+
+    :param input_list:
+     :type input_list: list
+    :return:
+    :rtype: list
+    """
+    new_list = []
+
+    for i in input_list:
+        if i not in new_list:
+            new_list.append(i)
+
+    return new_list
+
+
 def get_mentions_in_submission(submission_):
     """Finds mentions of a course in a submission's title, selftext, and comments.
 
@@ -89,8 +107,7 @@ def get_mentions_in_submission(submission_):
             continue
         course_names.extend(_get_mentions_in_string(comment.body))
 
-    # the list(set()) thing removes duplicates
-    return list(set(course_names))
+    return _remove_list_duplicates_preserve_order(course_names)
 
 
 def auth_reddit():
@@ -165,7 +182,6 @@ def get_markdown(db_, mention_list_):
     return markdown_string
 
 
-submission_pickle_path = os.path.join(os.path.dirname(__file__), 'submission.pickle')
 posts_with_comments_pickle_path = os.path.join(os.path.dirname(__file__), 'posts_with_comments.pickle')
 
 
@@ -214,28 +230,39 @@ def post_comment(submission_):
 
     mentions_current = get_mentions_in_submission(submission_)
 
-    if submission_id in posts_with_comments.keys():
-        mentions_previous = posts_with_comments[submission_id].mentions_list
+    have_already_commented = submission_id in posts_with_comments.keys()
+
+    a_c_obj = None
+
+    if have_already_commented:
+        a_c_obj = posts_with_comments[submission_id]
+        mentions_previous = a_c_obj.mentions_list
     else:
         mentions_previous = []
 
-    print('{id}{_}{author}{_}{title}{_}{mentions_current}{_}{mentions_previous}{_}{mentions_new}{_}{mentions_removed}'
-        .format(
-            id = submission_id,
-            author = submission_.author,
-            title = submission_.title,
-            mentions_current = mentions_current,
-            mentions_previous = mentions_previous,
-            mentions_new = [x for x in mentions_current if x not in mentions_previous],
-            mentions_removed = [x for x in mentions_previous if x not in mentions_current],
-            _ = '\t'))
+    # print('{id}{_}{author}{_}{title}{_}{mentions_current}{_}{mentions_previous}{_}{mentions_new}{_}{mentions_removed}'
+    #     .format(
+    #         id = submission_id,
+    #         author = submission_.author,
+    #         title = submission_.title,
+    #         mentions_current = mentions_current,
+    #         mentions_previous = mentions_previous,
+    #         mentions_new = [x for x in mentions_current if x not in mentions_previous],
+    #         mentions_removed = [x for x in mentions_previous if x not in mentions_current],
+    #         _ = '\t'))
 
-    # comment = submission.add_comment(get_markdown(db, mentions_current))
-    # posts_with_comments[submission_id] = ExistingComment(comment.id, mentions_current)
+    if have_already_commented:
+        comment = reddit.get_info(thing_id = 't1_' + a_c_obj.comment_id)
+        comment.edit(get_markdown(db, mentions_current))
+        posts_with_comments[submission_id].mentions_list = mentions_current
+    else:
+        comment = submission_.add_comment(get_markdown(db, mentions_current))
+        posts_with_comments[submission_id] = ExistingComment(comment.id, mentions_current)
 
 
 class ExistingComment:
     """Info about an existing comment with class info."""
+
     def __init__(self, comment_id_, mentions_):
         self.comment_id = comment_id_
         self.mentions_list = mentions_
@@ -249,10 +276,9 @@ posts_with_comments = load_posts_with_comments()
 db = database.load_database()
 reddit = auth_reddit()
 
-print('id{_}author{_}title{_}current mentions{_}previous mentions{_}new mentions{_}removed mentions'.format(_ = '\t'))
+# print('id{_}author{_}title{_}current mentions{_}previous mentions{_}new mentions{_}removed mentions'.format(_ = '\t'))
 
-post_comment(reddit.get_submission(submission_id='3yw5sz'))  # on /r/bottesting
-
+post_comment(reddit.get_submission(submission_id = '3yw5sz'))  # on /r/bottesting
 
 # subreddit = reddit.get_subreddit('ucsc')
 # for submission in subreddit.get_new():
