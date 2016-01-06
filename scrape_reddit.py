@@ -242,43 +242,34 @@ def post_comment(submission_):
         print_csv_row(submission_, 'No mentions in thread.', [], [])
         return
 
-    have_already_commented = submission_id in posts_with_comments.keys()
+    if submission_id in posts_with_comments.keys():  # already have a comment with class info
+        already_commented_obj = posts_with_comments[submission_id]
+        mentions_previous = already_commented_obj.mentions_list
 
-    a_c_obj = None
+        if mentions_current == mentions_previous:  # already commented, but no new classes have been mentioned
+            print_csv_row(submission_, 'No new mentions.', mentions_current, mentions_previous)
+            return
 
-    if have_already_commented:
-        a_c_obj = posts_with_comments[submission_id]
-        mentions_previous = a_c_obj.mentions_list
-    else:
-        mentions_previous = []
-
-    if mentions_current == mentions_previous:  # no new classes have been mentioned
-        print_csv_row(submission_, 'No new mentions.', mentions_current, mentions_previous)
-        return
-
-    if have_already_commented:
-        comment = reddit.get_info(thing_id = 't1_' + a_c_obj.comment_id)
-        comment.edit(get_markdown(db, mentions_current))
+        existing_comment = reddit.get_info(thing_id = 't1_' + already_commented_obj.comment_id)
+        existing_comment.edit(get_markdown(db, mentions_current))
         posts_with_comments[submission_id].mentions_list = mentions_current
         print_csv_row(submission_, 'Edited comment.', mentions_current, mentions_previous)
-        return
     else:
-        comment = submission_.add_comment(get_markdown(db, mentions_current))
-        posts_with_comments[submission_id] = ExistingComment(comment.id, mentions_current)
-        print_csv_row(submission_, 'Comment added.', mentions_current, mentions_previous)
-        return
+        new_comment = submission_.add_comment(get_markdown(db, mentions_current))
+        posts_with_comments[submission_id] = ExistingComment(new_comment.id, mentions_current)
+        print_csv_row(submission_, 'Comment added.', mentions_current, [])
 
 
 def print_csv_row(submission_, action, mentions_current, mentions_previous):
-    """
+    """Prints a CSV row to stdout to be used as a log about what happened with a comment.
 
-    :param submission_:
+    :param submission_: Submission object that you are commenting on
     :type submission_:  praw.objects.Submission
-    :param action:
+    :param action: string describing the action taken
     :type action: str
-    :param mentions_current:
+    :param mentions_current: list of current class mentions
     :type mentions_current: list
-    :param mentions_previous:
+    :param mentions_previous: list of class mentions last known about
     :type mentions_previous: list
     """
     print(  # I have put the string on it's own line b/c PyCharm's formatter and PEP inspector want different things
