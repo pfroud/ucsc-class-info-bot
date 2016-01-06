@@ -1,6 +1,4 @@
-"""
-Used to set up reddit api oauth.
-"""
+"""Used to set up reddit api oauth. Also holds some methods for one-time use."""
 
 import praw
 import pickle

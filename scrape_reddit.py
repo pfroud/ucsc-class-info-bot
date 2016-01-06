@@ -7,6 +7,7 @@ import re  # regular expressions
 import pickle  # serializer
 import os.path
 from pprint import pprint
+from dept_names import dept_names
 import database  # used for pad_course_num() and load_database()
 from database import CourseDatabase, Department, Course  # need this to de-pickle these classes
 
@@ -195,6 +196,11 @@ def _course_to_markdown(course_):
     :return: string of markdown of the course
     :rtype: str
     """
+
+    # TODO
+    # add the department name?
+    # dept_name = dept_names[course_.dept]
+
     markdown_string = '**{} {}: {}**\n'.format(course_.dept.upper(), course_.number.strip('0'), course_.name)
     markdown_string += '>{}\n\n'.format(course_.description)
 
@@ -230,6 +236,9 @@ def post_comment(submission_):
 
     mentions_current = get_mentions_in_submission(submission_)
 
+    if not mentions_current:  # no mentions in the submission
+        return
+
     have_already_commented = submission_id in posts_with_comments.keys()
 
     a_c_obj = None
@@ -240,16 +249,21 @@ def post_comment(submission_):
     else:
         mentions_previous = []
 
-    # print('{id}{_}{author}{_}{title}{_}{mentions_current}{_}{mentions_previous}{_}{mentions_new}{_}{mentions_removed}'
-    #     .format(
-    #         id = submission_id,
-    #         author = submission_.author,
-    #         title = submission_.title,
-    #         mentions_current = mentions_current,
-    #         mentions_previous = mentions_previous,
-    #         mentions_new = [x for x in mentions_current if x not in mentions_previous],
-    #         mentions_removed = [x for x in mentions_previous if x not in mentions_current],
-    #         _ = '\t'))
+    print(  # I have put the string on it's own line b/c PyCharm's formatter and PEP inspector want different things
+            '{id}{_}{author}{_}{title}{_}{mentions_current}{_}{mentions_previous}{_}{mentions_new}{_}{mentions_removed}'
+                .format(
+                    id = submission_id,
+                    author = submission_.author,
+                    title = submission_.title,
+                    mentions_current = mentions_current,
+                    mentions_previous = mentions_previous,
+                    mentions_new = [x for x in mentions_current if x not in mentions_previous],
+                    mentions_removed = [x for x in mentions_previous if x not in mentions_current],
+                    _ = '\t'))
+
+    if mentions_current == mentions_previous:  # no new classes have been mentioned
+        print('no new mentions.')
+        return
 
     if have_already_commented:
         comment = reddit.get_info(thing_id = 't1_' + a_c_obj.comment_id)
