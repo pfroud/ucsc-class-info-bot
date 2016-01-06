@@ -231,12 +231,15 @@ def post_comment(submission_):
 
     :param submission_: submission object to post the comment to
     :type submission_: praw.objects.Submission
+    :return: message about the action taken.
+    :rtype: str
     """
     submission_id = submission_.id
 
     mentions_current = get_mentions_in_submission(submission_)
 
     if not mentions_current:  # no mentions in the submission
+        print_csv_row(submission_, 'No mentions in thread.', [], [])
         return
 
     have_already_commented = submission_id in posts_with_comments.keys()
@@ -249,29 +252,45 @@ def post_comment(submission_):
     else:
         mentions_previous = []
 
-    print(  # I have put the string on it's own line b/c PyCharm's formatter and PEP inspector want different things
-            '{id}{_}{author}{_}{title}{_}{mentions_current}{_}{mentions_previous}{_}{mentions_new}{_}{mentions_removed}'
-                .format(
-                    id = submission_id,
-                    author = submission_.author,
-                    title = submission_.title,
-                    mentions_current = mentions_current,
-                    mentions_previous = mentions_previous,
-                    mentions_new = [x for x in mentions_current if x not in mentions_previous],
-                    mentions_removed = [x for x in mentions_previous if x not in mentions_current],
-                    _ = '\t'))
-
     if mentions_current == mentions_previous:  # no new classes have been mentioned
-        print('no new mentions.')
+        print_csv_row(submission_, 'No new mentions.', mentions_current, mentions_previous)
         return
 
     if have_already_commented:
         comment = reddit.get_info(thing_id = 't1_' + a_c_obj.comment_id)
         comment.edit(get_markdown(db, mentions_current))
         posts_with_comments[submission_id].mentions_list = mentions_current
+        print_csv_row(submission_, 'Edited comment.', mentions_current, mentions_previous)
+        return
     else:
         comment = submission_.add_comment(get_markdown(db, mentions_current))
         posts_with_comments[submission_id] = ExistingComment(comment.id, mentions_current)
+        print_csv_row(submission_, 'Comment added.', mentions_current, mentions_previous)
+        return
+
+
+def print_csv_row(submission_, action, mentions_current, mentions_previous):
+    """
+
+    :param submission_:
+    :type submission_:  praw.objects.Submission
+    :param action:
+    :type action: str
+    :param mentions_current:
+    :type mentions_current: list
+    :param mentions_previous:
+    :type mentions_previous: list
+    """
+    print(  # I have put the string on it's own line b/c PyCharm's formatter and PEP inspector want different things
+            '{id}{_}{author}{_}{title}{_}{action}{_}{mentions_current}{_}{mentions_previous}'
+                .format(
+                    id = submission_.id,
+                    author = submission_.author,
+                    title = submission_.title,
+                    action = action,
+                    mentions_current = mentions_current,
+                    mentions_previous = mentions_previous,
+                    _ = '\t'))
 
 
 class ExistingComment:
@@ -290,7 +309,7 @@ posts_with_comments = load_posts_with_comments()
 db = database.load_database()
 reddit = auth_reddit()
 
-# print('id{_}author{_}title{_}current mentions{_}previous mentions{_}new mentions{_}removed mentions'.format(_ = '\t'))
+print('id{_}author{_}title{_}action{_}current mentions{_}previous mentions'.format(_ = '\t'))
 
 post_comment(reddit.get_submission(submission_id = '3yw5sz'))  # on /r/bottesting
 
