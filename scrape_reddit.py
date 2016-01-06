@@ -28,9 +28,14 @@ def _get_mentions_in_string(source_):
     :rtype: list
     """
 
+    # TODO need to tweak this so it can see:
+    # 3zor5k: 'Math19B'
+    # 3zmpwg: 'HAVC40 or HAVC45'
+
     str_in = source_.lower()
     courses_found = []
-    for subj in database.all_departments:  # iterate subjects
+    # for subj in database.all_departments:  # iterate subjects
+    for subj in ['havc']:  # iterate subjects
 
         # set start of search to beginning of string
         start_of_next_search = 0
@@ -197,8 +202,7 @@ def _course_to_markdown(course_):
     :rtype: str
     """
 
-    # TODO
-    # add the department name?
+    # TODO add the department name?
     # dept_name = dept_names[course_.dept]
 
     markdown_string = '**{} {}: {}**\n'.format(course_.dept.upper(), course_.number.strip('0'), course_.name)
@@ -226,11 +230,13 @@ def load_posts_with_comments():
     return a_c
 
 
-def post_comment(submission_):
+def post_comment(submission_, actually_do_it = True):
     """Posts a comment on the submission with info about the courses mentioned
 
     :param submission_: submission object to post the comment to
     :type submission_: praw.objects.Submission
+    :param actually_do_it: whether to actually post a comment to reddit.com
+    :type actually_do_it: bool
     :return: message about the action taken.
     :rtype: str
     """
@@ -239,7 +245,7 @@ def post_comment(submission_):
     mentions_current = get_mentions_in_submission(submission_)
 
     if not mentions_current:  # no mentions in the submission
-        print_csv_row(submission_, 'No mentions in thread.', [], [])
+        _print_csv_row(submission_, 'No mentions in thread.', [], [])
         return
 
     if submission_id in posts_with_comments.keys():  # already have a comment with class info
@@ -247,20 +253,22 @@ def post_comment(submission_):
         mentions_previous = already_commented_obj.mentions_list
 
         if mentions_current == mentions_previous:  # already commented, but no new classes have been mentioned
-            print_csv_row(submission_, 'No new mentions.', mentions_current, mentions_previous)
+            _print_csv_row(submission_, 'No new mentions.', mentions_current, mentions_previous)
             return
 
-        existing_comment = reddit.get_info(thing_id = 't1_' + already_commented_obj.comment_id)
-        existing_comment.edit(get_markdown(db, mentions_current))
-        posts_with_comments[submission_id].mentions_list = mentions_current
-        print_csv_row(submission_, 'Edited comment.', mentions_current, mentions_previous)
+        if actually_do_it:
+            existing_comment = reddit.get_info(thing_id = 't1_' + already_commented_obj.comment_id)
+            existing_comment.edit(get_markdown(db, mentions_current))
+            posts_with_comments[submission_id].mentions_list = mentions_current
+        _print_csv_row(submission_, 'Edited comment.', mentions_current, mentions_previous)
     else:
-        new_comment = submission_.add_comment(get_markdown(db, mentions_current))
-        posts_with_comments[submission_id] = ExistingComment(new_comment.id, mentions_current)
-        print_csv_row(submission_, 'Comment added.', mentions_current, [])
+        if actually_do_it:
+            new_comment = submission_.add_comment(get_markdown(db, mentions_current))
+            posts_with_comments[submission_id] = ExistingComment(new_comment.id, mentions_current)
+        _print_csv_row(submission_, 'Comment added.', mentions_current, [])
 
 
-def print_csv_row(submission_, action, mentions_current, mentions_previous):
+def _print_csv_row(submission_, action, mentions_current, mentions_previous):
     """Prints a CSV row to stdout to be used as a log about what happened with a comment.
 
     :param submission_: Submission object that you are commenting on
@@ -295,6 +303,9 @@ class ExistingComment:
         return "\"{}\"->\"{}\"".format(self.comment_id, self.mentions_list)
 
 
+print(_get_mentions_in_string('HAVC40'))
+exit()
+
 # print('Started {}.'.format(datetime.now()))
 posts_with_comments = load_posts_with_comments()
 db = database.load_database()
@@ -302,11 +313,11 @@ reddit = auth_reddit()
 
 print('id{_}author{_}title{_}action{_}current mentions{_}previous mentions'.format(_ = '\t'))
 
-post_comment(reddit.get_submission(submission_id = '3yw5sz'))  # on /r/bottesting
+# post_comment(reddit.get_submission(submission_id = '3yw5sz'))  # on /r/bottesting
 
-# subreddit = reddit.get_subreddit('ucsc')
-# for submission in subreddit.get_new():
-#     # print(submission)
-#     post_comment(submission)
+subreddit = reddit.get_subreddit('ucsc')
+for submission in subreddit.get_new():
+    # print(submission)
+    post_comment(submission)
 
 save_posts_with_comments()
