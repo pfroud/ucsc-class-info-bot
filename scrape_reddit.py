@@ -15,8 +15,7 @@ from database import CourseDatabase, Department, Course  # need this to de-pickl
 # http://praw.readthedocs.org/en/stable/pages/comment_parsing.html 
 
 
-# previously " ?[0-9]+[A-Za-z]?"
-regex = re.compile(" [0-9]+[A-Za-z]?")
+regex = re.compile(" ?[0-9]+[A-Za-z]?")
 
 
 def _get_mentions_in_string(source_):
@@ -28,19 +27,14 @@ def _get_mentions_in_string(source_):
     :rtype: list
     """
 
-    # TODO need to tweak this so it can see:
-    # 3zor5k: 'Math19B'
-    # 3zmpwg: 'HAVC40 or HAVC45'
-
     str_in = source_.lower()
     courses_found = []
-    # for subj in database.all_departments:  # iterate subjects
-    for subj in ['havc']:  # iterate subjects
+    for subj in database.all_departments:  # iterate subjects
 
         # set start of search to beginning of string
         start_of_next_search = 0
 
-        # search until reached end of sring
+        # search until reached end of string
         while start_of_next_search < len(str_in):
 
             # trim away part of string already searched through
@@ -66,6 +60,9 @@ def _get_mentions_in_string(source_):
 
                     # string with subject and course number
                     subj_with_number = trimmed_str[subj_start_index: subj_end_index + regex_result.end()]
+
+                    # move the start of next search past the number we found
+                    start_of_next_search += regex_result.end()
 
                     courses_found.append(subj_with_number)
 
@@ -303,13 +300,13 @@ class ExistingComment:
         return "\"{}\"->\"{}\"".format(self.comment_id, self.mentions_list)
 
 
-print(_get_mentions_in_string('HAVC40'))
-exit()
-
 # print('Started {}.'.format(datetime.now()))
 posts_with_comments = load_posts_with_comments()
 db = database.load_database()
 reddit = auth_reddit()
+
+print(get_mentions_in_submission(reddit.get_submission(submission_id = '3zmpwg')))
+exit()
 
 print('id{_}author{_}title{_}action{_}current mentions{_}previous mentions'.format(_ = '\t'))
 
