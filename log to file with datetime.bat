@@ -28,3 +28,7 @@ set datetimef=%dayOfWeek%-%day%-%month%-%year%_at_%hour%-%min%-%secs%
 
 rem the '2>&1' redirects stderr
 scrape_reddit.py > logs\%datetimef%.txt 2>&1
+rem scrape_reddit.py | wtee logs\%datetimef%.csv
+
+rem makes an audible beep sound
+echo 

@@ -221,6 +221,9 @@ def load_posts_with_comments():
     :return: dict of posts that have already been commented on
     :rtype: dict
     """
+    if not os.path.isfile(posts_with_comments_pickle_path):
+        return dict()
+
     with open(posts_with_comments_pickle_path, 'rb') as file:
         a_c = pickle.load(file)
     file.close()
@@ -258,7 +261,8 @@ def post_comment(submission_, actually_do_it = True):
             existing_comment.edit(get_markdown(db, mentions_current))
             posts_with_comments[submission_id].mentions_list = mentions_current
         _print_csv_row(submission_, 'Edited comment.', mentions_current, mentions_previous)
-    else:
+
+    else:  # no comment with class info, post a new one
         if actually_do_it:
             new_comment = submission_.add_comment(get_markdown(db, mentions_current))
             posts_with_comments[submission_id] = ExistingComment(new_comment.id, mentions_current)
@@ -299,14 +303,10 @@ class ExistingComment:
     def __str__(self):
         return "\"{}\"->\"{}\"".format(self.comment_id, self.mentions_list)
 
-
-# print('Started {}.'.format(datetime.now()))
+print('Started {}.'.format(datetime.now()))
 posts_with_comments = load_posts_with_comments()
 db = database.load_database()
 reddit = auth_reddit()
-
-print(get_mentions_in_submission(reddit.get_submission(submission_id = '3zmpwg')))
-exit()
 
 print('id{_}author{_}title{_}action{_}current mentions{_}previous mentions'.format(_ = '\t'))
 
@@ -314,7 +314,5 @@ print('id{_}author{_}title{_}action{_}current mentions{_}previous mentions'.form
 
 subreddit = reddit.get_subreddit('ucsc')
 for submission in subreddit.get_new():
-    # print(submission)
     post_comment(submission)
-
-save_posts_with_comments()
+    save_posts_with_comments()  # in case it crashes
