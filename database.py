@@ -359,7 +359,7 @@ def build_database():
     return db
 
 
-database_pickle_path = os.path.join(os.path.dirname(__file__), r'database_files\course_database.pickle')
+database_pickle_path = os.path.join(os.path.dirname(__file__), r'pickle\course_database.pickle')
 
 
 def save_database():

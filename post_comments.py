@@ -2,7 +2,7 @@
 l
 """
 
-import reddit_tools
+import tools
 import database
 import find_mentions  # should remove after refactor done
 
@@ -19,10 +19,10 @@ def post_comment(submission_, actually_do_it = True):
     """
     submission_id = submission_.id
 
-    mentions_current = find_mentions.get_mentions_in_submission(submission_)
+    mentions_current = find_mentions.find_mentions(submission_)
 
     if not mentions_current:  # no mentions in the submission
-        _print_csv_row(submission_, 'No mentions in thread.', [], [])
+        tools.print_csv_row(submission_, 'No mentions in thread.', [], [])
         return
 
     if submission_id in posts_with_comments.keys():  # already have a comment with class info
@@ -30,20 +30,20 @@ def post_comment(submission_, actually_do_it = True):
         mentions_previous = already_commented_obj.mentions_list
 
         if mentions_current == mentions_previous:  # already commented, but no new classes have been mentioned
-            _print_csv_row(submission_, 'No new mentions.', mentions_current, mentions_previous)
+            tools.print_csv_row(submission_, 'No new mentions.', mentions_current, mentions_previous)
             return
 
         if actually_do_it:
             existing_comment = reddit.get_info(thing_id = 't1_' + already_commented_obj.comment_id)
             existing_comment.edit(get_markdown(db, mentions_current))
             posts_with_comments[submission_id].mentions_list = mentions_current
-        _print_csv_row(submission_, 'Edited comment.', mentions_current, mentions_previous)
+        tools.print_csv_row(submission_, 'Edited comment.', mentions_current, mentions_previous)
 
     else:  # no comment with class info, post a new one
         if actually_do_it:
             new_comment = submission_.add_comment(get_markdown(db, mentions_current))
             posts_with_comments[submission_id] = ExistingComment(new_comment.id, mentions_current)
-        _print_csv_row(submission_, 'Comment added.', mentions_current, [])
+        tools.print_csv_row(submission_, 'Comment added.', mentions_current, [])
 
 
 def _course_to_markdown(course_):
@@ -64,30 +64,6 @@ def _course_to_markdown(course_):
     markdown_string += '>{}\n\n'.format(course_.description)
 
     return markdown_string
-
-
-def _print_csv_row(submission_, action, mentions_current, mentions_previous):
-    """Prints a CSV row to stdout to be used as a log about what happened with a comment.
-
-    :param submission_: Submission object that you are commenting on
-    :type submission_:  praw.objects.Submission
-    :param action: string describing the action taken
-    :type action: str
-    :param mentions_current: list of current class mentions
-    :type mentions_current: list
-    :param mentions_previous: list of class mentions last known about
-    :type mentions_previous: list
-    """
-    print(  # I have put the string on it's own line b/c PyCharm's formatter and PEP inspector want different things
-            '{id}{_}{author}{_}{title}{_}{action}{_}{mentions_current}{_}{mentions_previous}'
-                .format(
-                    id = submission_.id,
-                    author = submission_.author,
-                    title = submission_.title,
-                    action = action,
-                    mentions_current = mentions_current,
-                    mentions_previous = mentions_previous,
-                    _ = '\t'))
 
 
 class ExistingComment:
@@ -158,10 +134,6 @@ def get_markdown(db_, mention_list_):
     return markdown_string
 
 db = database.load_database()
-reddit = reddit_tools.auth_reddit()
-posts_with_comments = reddit_tools.load_posts_with_comments()
+reddit = tools.auth_reddit()
+posts_with_comments = tools.load_posts_with_comments()
 
-subreddit = reddit.get_subreddit('ucsc')
-for submission in subreddit.get_new():
-    post_comment(submission)
-    reddit_tools.save_posts_with_comments(posts_with_comments)  # in case it crashes
