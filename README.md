@@ -19,7 +19,7 @@ In September 2015 I threw this in a text doc and forgot about it:
 >And you magically look up the class name and description, either through a class search, or on each department's website.
 
 >It's so easy!
->
+
 Two months later, I came across the file with the idea and decided to bring it to life.
 
 To the surprise of absolutely nobody, it was not *'so easy'*, although I am still using that regex.
