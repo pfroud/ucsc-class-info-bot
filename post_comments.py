@@ -3,7 +3,7 @@ l
 """
 
 import tools
-import database
+import build_database
 import find_mentions  # should remove after refactor done
 
 
@@ -95,7 +95,7 @@ def _get_course_obj_from_mention(db_, mention_):
     # if dept == 'ce':
     #     dept = 'cmpe'
 
-    num = database.pad_course_num(split[1].upper())
+    num = build_database.pad_course_num(split[1].upper())
     # num = split[1].upper()
 
     try:
@@ -133,7 +133,7 @@ def get_markdown(db_, mention_list_):
 
     return markdown_string
 
-db = database.load_database()
+db = build_database.load_database()
 reddit = tools.auth_reddit()
 posts_with_comments = tools.load_posts_with_comments()
 

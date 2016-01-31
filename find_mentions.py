@@ -4,7 +4,7 @@ Scrapes the self text and comments of a reddit submission for mentions of course
 
 import praw  # python wrapper for reddit api
 import re  # regular expressions
-import database  # used for pad_course_num() and load_database()
+import build_database  # used for pad_course_num() and load_database()
 import tools
 import pickle
 import os.path
@@ -24,7 +24,7 @@ def _get_mentions_in_string(source_):
 
     str_in = source_.lower()
     courses_found = []
-    for subj in database.all_departments:  # iterate subjects
+    for subj in build_database.all_departments:  # iterate subjects
 
         # set start of search to beginning of string
         start_of_next_search = 0
