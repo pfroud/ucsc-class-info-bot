@@ -53,7 +53,7 @@ def get_mentions_in_submission(submission_):
     if not mentions_list:  # if list is empty
         return None
     else:
-        return PostWithMentions(submission.id, _remove_list_duplicates_preserve_order(mentions_list))
+        return PostWithMentions(submission_.id, _remove_list_duplicates_preserve_order(mentions_list))
 
 
 def _get_mentions_in_string(source_):
@@ -129,9 +129,9 @@ def _remove_list_duplicates_preserve_order(input_list):
     return new_list
 
 
-def _save_found_mentions():
+def _save_found_mentions(posts_list):
     with open("pickle/found_mentions.pickle", 'wb') as file:
-        pickle.dump(list_of_posts_with_mentions, file)
+        pickle.dump(posts_list, file)
     file.close()
 
 # make sure saving found_mentions worked
@@ -142,23 +142,30 @@ def _save_found_mentions():
 #         print(str(post_with_mention))
 # exit()
 
-DEBUG = True
-reddit = tools.auth_reddit()
 
-if DEBUG:
-    print('id{_}author{_}title{_}mentions'.format(_ = '\t'))
+def find_mentions():
+    """
 
-subreddit = reddit.get_subreddit('ucsc')
-list_of_posts_with_mentions = []
+    :return:
+    """
 
-for submission in subreddit.get_new(limit = 25):
-    found_mentions = get_mentions_in_submission(submission)
-    if found_mentions is not None:
-        list_of_posts_with_mentions.append(found_mentions)
+    _debug = True
+    reddit = tools.auth_reddit()
 
-_save_found_mentions()
+    if _debug:
+        print('id{_}author{_}title{_}mentions'.format(_ = '\t'))
 
-if DEBUG:
-    print("------------------------------")
-    for post_with_mention in list_of_posts_with_mentions:
-        print(str(post_with_mention))
+    subreddit = reddit.get_subreddit('ucsc')
+    list_of_posts_with_mentions = []
+
+    for submission in subreddit.get_new(limit = 25):
+        found_mentions = get_mentions_in_submission(submission)
+        if found_mentions is not None:
+            list_of_posts_with_mentions.append(found_mentions)
+
+    _save_found_mentions(list_of_posts_with_mentions)
+
+    if _debug:
+        print("------------------------------")
+        for post_with_mention in list_of_posts_with_mentions:
+            print(str(post_with_mention))

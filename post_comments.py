@@ -3,9 +3,12 @@ l
 """
 
 import build_database
-import find_mentions  # should remove after refactor done
 import tools
 import pickle
+
+# need these to de-pickle:
+from build_database import CourseDatabase, Department, Course
+from find_mentions import PostWithMentions
 
 
 class ExistingComment:
@@ -19,19 +22,18 @@ class ExistingComment:
         return "\"{}\"->\"{}\"".format(self.comment_id, self.mentions_list)
 
 
-def post_comment(submission_, actually_do_it = True):
+def post_comment(submission_, actually_do_it = False):
     """Posts a comment on the submission with info about the courses mentioned
 
     :param submission_: submission object to post the comment to
     :type submission_: praw.objects.Submission
     :param actually_do_it: whether to actually post a comment to reddit.com
     :type actually_do_it: bool
-    :return: message about the action taken.
-    :rtype: str
+    :return:
     """
     submission_id = submission_.id
 
-    mentions_current = find_mentions.get_mentions_in_submission(submission_)
+    mentions_current = posts_with_comments[submission_id]
 
     if not mentions_current:  # no mentions in the submission
         tools.print_csv_row(submission_, 'No mentions in thread.', [], [])
@@ -45,6 +47,7 @@ def post_comment(submission_, actually_do_it = True):
             tools.print_csv_row(submission_, 'No new mentions.', mentions_current, mentions_previous)
             return
 
+        # comment needs to be updated
         if actually_do_it:
             existing_comment = reddit.get_info(thing_id = 't1_' + already_commented_obj.comment_id)
             existing_comment.edit(_get_comment(db, mentions_current))
@@ -141,9 +144,12 @@ def _load_found_mentions():
     file.close()
     return mentions
 
+print("running post_comments")
+
 db = build_database.load_database()
 reddit = tools.auth_reddit()
 posts_with_comments = tools.load_posts_with_comments()
 found_mentions = _load_found_mentions()
 
-# start here
+current_mention = found_mentions.pop()
+post_comment(reddit.get_submission(submission_id = current_mention.post_id))
