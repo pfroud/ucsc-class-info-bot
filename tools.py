@@ -84,7 +84,7 @@ def _save_access_information(r_):
 # _save_access_information()
 
 
-def load_posts_with_comments():
+def load_existing_posts_with_comments():
     """Loads from disk the dict of posts that have already been commented on
 
     :return: dict of posts that have already been commented on

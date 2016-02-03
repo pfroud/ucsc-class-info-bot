@@ -22,43 +22,40 @@ class ExistingComment:
         return "\"{}\"->\"{}\"".format(self.comment_id, self.mentions_list)
 
 
-def post_comment(submission_, actually_do_it = False):
+def post_comment(new_mention_object, actually_do_it = False):
     """Posts a comment on the submission with info about the courses mentioned
 
-    :param submission_: submission object to post the comment to
-    :type submission_: praw.objects.Submission
+    :param new_mention_object:
+    :type new_mention_object: PostWithMentions
     :param actually_do_it: whether to actually post a comment to reddit.com
     :type actually_do_it: bool
     :return:
     """
-    submission_id = submission_.id
+    submission_id = new_mention_object.post_id
+    submission_object = reddit.get_submission(submission_id = submission_id)
 
-    mentions_current = posts_with_comments[submission_id]
+    mentions_new = new_mention_object.mentions_list
 
-    if not mentions_current:  # no mentions in the submission
-        tools.print_csv_row(submission_, 'No mentions in thread.', [], [])
-        return
-
-    if submission_id in posts_with_comments.keys():  # already have a comment with class info
-        already_commented_obj = posts_with_comments[submission_id]
+    if submission_id in existing_posts_with_comments.keys():  # already have a comment with class info
+        already_commented_obj = existing_posts_with_comments[submission_id]
         mentions_previous = already_commented_obj.mentions_list
 
-        if mentions_current == mentions_previous:  # already commented, but no new classes have been mentioned
-            tools.print_csv_row(submission_, 'No new mentions.', mentions_current, mentions_previous)
+        if mentions_new == mentions_previous:  # already commented, but no new classes have been mentioned
+            tools.print_csv_row(submission_object, 'No new mentions.', mentions_new, mentions_previous)
             return
 
         # comment needs to be updated
         if actually_do_it:
             existing_comment = reddit.get_info(thing_id = 't1_' + already_commented_obj.comment_id)
-            existing_comment.edit(_get_comment(db, mentions_current))
-            posts_with_comments[submission_id].mentions_list = mentions_current
-        tools.print_csv_row(submission_, 'Edited comment.', mentions_current, mentions_previous)
+            existing_comment.edit(_get_comment(db, mentions_new))
+            existing_posts_with_comments[submission_id].mentions_list = mentions_new
+        tools.print_csv_row(submission_object, 'Edited comment.', mentions_new, mentions_previous)
 
     else:  # no comment with class info, post a new one
         if actually_do_it:
-            new_comment = submission_.add_comment(_get_comment(db, mentions_current))
-            posts_with_comments[submission_id] = ExistingComment(new_comment.id, mentions_current)
-        tools.print_csv_row(submission_, 'Comment added.', mentions_current, [])
+            new_comment = submission_object.add_comment(_get_comment(db, mentions_new))
+            existing_posts_with_comments[submission_id] = ExistingComment(new_comment.id, mentions_new)
+        tools.print_csv_row(submission_object, 'Comment added.', mentions_new, [])
 
 
 def _course_to_markdown(course_):
@@ -144,12 +141,13 @@ def _load_found_mentions():
     file.close()
     return mentions
 
-print("running post_comments")
 
 db = build_database.load_database()
 reddit = tools.auth_reddit()
-posts_with_comments = tools.load_posts_with_comments()
-found_mentions = _load_found_mentions()
+existing_posts_with_comments = tools.load_existing_posts_with_comments()  # currently returns empty dict
+new_mentions_list = _load_found_mentions()
 
-current_mention = found_mentions.pop()
-post_comment(reddit.get_submission(submission_id = current_mention.post_id))
+# new_mention = new_mentions_list.pop()
+for new_mention in new_mentions_list:
+    post_comment(new_mention)
+

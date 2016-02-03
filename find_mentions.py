@@ -134,14 +134,6 @@ def _save_found_mentions(posts_list):
         pickle.dump(posts_list, file)
     file.close()
 
-# make sure saving found_mentions worked
-# with open("pickle/found_mentions.pickle", 'rb') as file:
-#     p_w_c = pickle.load(file)
-# file.close()
-# for post_with_mention in p_w_c:
-#         print(str(post_with_mention))
-# exit()
-
 
 def find_mentions():
     """
