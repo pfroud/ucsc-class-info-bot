@@ -2,9 +2,21 @@
 l
 """
 
-import tools
 import build_database
 import find_mentions  # should remove after refactor done
+import tools
+import pickle
+
+
+class ExistingComment:
+    """Info about an existing comment with class info."""
+
+    def __init__(self, comment_id_, mentions_):
+        self.comment_id = comment_id_
+        self.mentions_list = mentions_
+
+    def __str__(self):
+        return "\"{}\"->\"{}\"".format(self.comment_id, self.mentions_list)
 
 
 def post_comment(submission_, actually_do_it = True):
@@ -19,7 +31,7 @@ def post_comment(submission_, actually_do_it = True):
     """
     submission_id = submission_.id
 
-    mentions_current = find_mentions.find_mentions(submission_)
+    mentions_current = find_mentions.get_mentions_in_submission(submission_)
 
     if not mentions_current:  # no mentions in the submission
         tools.print_csv_row(submission_, 'No mentions in thread.', [], [])
@@ -35,13 +47,13 @@ def post_comment(submission_, actually_do_it = True):
 
         if actually_do_it:
             existing_comment = reddit.get_info(thing_id = 't1_' + already_commented_obj.comment_id)
-            existing_comment.edit(get_markdown(db, mentions_current))
+            existing_comment.edit(_get_comment(db, mentions_current))
             posts_with_comments[submission_id].mentions_list = mentions_current
         tools.print_csv_row(submission_, 'Edited comment.', mentions_current, mentions_previous)
 
     else:  # no comment with class info, post a new one
         if actually_do_it:
-            new_comment = submission_.add_comment(get_markdown(db, mentions_current))
+            new_comment = submission_.add_comment(_get_comment(db, mentions_current))
             posts_with_comments[submission_id] = ExistingComment(new_comment.id, mentions_current)
         tools.print_csv_row(submission_, 'Comment added.', mentions_current, [])
 
@@ -66,18 +78,7 @@ def _course_to_markdown(course_):
     return markdown_string
 
 
-class ExistingComment:
-    """Info about an existing comment with class info."""
-
-    def __init__(self, comment_id_, mentions_):
-        self.comment_id = comment_id_
-        self.mentions_list = mentions_
-
-    def __str__(self):
-        return "\"{}\"->\"{}\"".format(self.comment_id, self.mentions_list)
-
-
-def _get_course_obj_from_mention(db_, mention_):
+def _mention_to_course_object(db_, mention_):
     """Converts mention of course to course object
 
     :param db_: course database with course info
@@ -95,7 +96,7 @@ def _get_course_obj_from_mention(db_, mention_):
     # if dept == 'ce':
     #     dept = 'cmpe'
 
-    num = build_database.pad_course_num(split[1].upper())
+    num = build_database.pad_course_num(split[1].upper())  # eventually get rid of this
     # num = split[1].upper()
 
     try:
@@ -106,7 +107,7 @@ def _get_course_obj_from_mention(db_, mention_):
     return course_obj
 
 
-def get_markdown(db_, mention_list_):
+def _get_comment(db_, mention_list_):
     """Returns a markdown comment with info about the classes mentioned in the list
 
     :param db_: course database with info
@@ -122,7 +123,7 @@ def get_markdown(db_, mention_list_):
     markdown_string = 'Classes mentioned in this thread:\n\n&nbsp;\n\n'
 
     for mention in mention_list_:
-        course_obj = _get_course_obj_from_mention(db_, mention)
+        course_obj = _mention_to_course_object(db_, mention)
         if course_obj is None:  # excepted Keyerror
             continue
         markdown_string += _course_to_markdown(course_obj) + '&nbsp;\n\n'
@@ -133,7 +134,16 @@ def get_markdown(db_, mention_list_):
 
     return markdown_string
 
+
+def _load_found_mentions():
+    with open("pickle/found_mentions.pickle", 'rb') as file:
+        mentions = pickle.load(file)
+    file.close()
+    return mentions
+
 db = build_database.load_database()
 reddit = tools.auth_reddit()
 posts_with_comments = tools.load_posts_with_comments()
+found_mentions = _load_found_mentions()
 
+# start here

@@ -13,6 +13,49 @@ import os.path
 regex = re.compile(" ?[0-9]+[A-Za-z]?")
 
 
+class PostWithMentions:
+    """m"""
+
+    def __init__(self, post_id, mentions_list):
+        self.post_id = post_id
+        self.mentions_list = mentions_list
+
+    def __str__(self):
+        return "mentions in post id {}: {}".format(self.post_id, self.mentions_list)
+
+
+def get_mentions_in_submission(submission_):
+    """Finds mentions of a course in a submission's title, selftext, and comments.
+
+    :param submission_: a praw submission object
+    :type submission_: praw.objects.Submission
+    :return: an array of strings of course names
+    :rtype: list
+    """
+    mentions_list = []
+    mentions_list.extend(_get_mentions_in_string(submission_.title))
+
+    mentions_list.extend(_get_mentions_in_string(submission_.selftext))
+
+    flat_comments = praw.helpers.flatten_tree(submission_.comments)
+    for comment in flat_comments:
+        if comment.author.name == 'ucsc-class-info-bot':
+            continue
+        mentions_list.extend(_get_mentions_in_string(comment.body))
+
+    print('{id}{_}{author}{_}{title}{_}{mentions}'
+          .format(id = submission_.id,
+                  author = submission_.author,
+                  title = submission_.title,
+                  mentions = mentions_list,
+                  _ = '\t'))
+
+    if not mentions_list:  # if list is empty
+        return None
+    else:
+        return PostWithMentions(submission.id, _remove_list_duplicates_preserve_order(mentions_list))
+
+
 def _get_mentions_in_string(source_):
     """Finds mentions of courses (department and number) in a string.
 
@@ -86,50 +129,13 @@ def _remove_list_duplicates_preserve_order(input_list):
     return new_list
 
 
-def find_mentions(submission_):
-    """Finds mentions of a course in a submission's title, selftext, and comments.
+def _save_found_mentions():
+    with open("pickle/found_mentions.pickle", 'wb') as file:
+        pickle.dump(list_of_posts_with_mentions, file)
+    file.close()
 
-    :param submission_: a praw submission object
-    :type submission_: praw.objects.Submission
-    :return: an array of strings of course names
-    :rtype: list
-    """
-    mentions_list = []
-    mentions_list.extend(_get_mentions_in_string(submission_.title))
-
-    mentions_list.extend(_get_mentions_in_string(submission_.selftext))
-
-    flat_comments = praw.helpers.flatten_tree(submission_.comments)
-    for comment in flat_comments:
-        if comment.author.name == 'ucsc-class-info-bot':
-            continue
-        mentions_list.extend(_get_mentions_in_string(comment.body))
-
-    print('{id}{_}{author}{_}{title}{_}{mentions}'
-          .format(id = submission_.id,
-                  author = submission_.author,
-                  title = submission_.title,
-                  mentions = mentions_list,
-                  _ = '\t'))
-
-    if not mentions_list:  # if list is empty
-        return None
-    else:
-        return PostWithMentions(submission.id, _remove_list_duplicates_preserve_order(mentions_list))
-
-
-class PostWithMentions:
-    """m"""
-
-    def __init__(self, post_id, mentions_list):
-        self.post_id = post_id
-        self.mentions_list = mentions_list
-
-    def __str__(self):
-        return "mentions in post id {}: {}".format(self.post_id, self.mentions_list)
-
-
-# with open("pickle/posts_with_comments.pickle", 'rb') as file:
+# make sure saving found_mentions worked
+# with open("pickle/found_mentions.pickle", 'rb') as file:
 #     p_w_c = pickle.load(file)
 # file.close()
 # for post_with_mention in p_w_c:
@@ -137,31 +143,22 @@ class PostWithMentions:
 # exit()
 
 DEBUG = True
-
 reddit = tools.auth_reddit()
 
 if DEBUG:
     print('id{_}author{_}title{_}mentions'.format(_ = '\t'))
 
-
 subreddit = reddit.get_subreddit('ucsc')
 list_of_posts_with_mentions = []
 
 for submission in subreddit.get_new(limit = 25):
-    found_mentions = find_mentions(submission)
+    found_mentions = get_mentions_in_submission(submission)
     if found_mentions is not None:
         list_of_posts_with_mentions.append(found_mentions)
 
-# posts_with_comments_pickle_path = os.path.join(os.path.dirname(__file__), 'pickle/posts_with_comments.pickle')
-with open("pickle/posts_with_comments.pickle", 'wb') as file:
-    pickle.dump(list_of_posts_with_mentions, file)
-file.close()
+_save_found_mentions()
 
 if DEBUG:
     print("------------------------------")
     for post_with_mention in list_of_posts_with_mentions:
         print(str(post_with_mention))
-
-# post_comment(reddit.get_submission(submission_id = '3yw5sz'))  # on /r/bottesting
-
-
