@@ -5,10 +5,10 @@ l
 import build_database
 import tools
 import pickle
+import os.path
 
-# need these to de-pickle:
-from build_database import CourseDatabase, Department, Course
-from find_mentions import PostWithMentions
+from build_database import CourseDatabase, Department, Course  # need this to de-pickle course_database.pickle
+from find_mentions import PostWithMentions  # need this to de-pickle found_mentions.pickle
 
 
 class ExistingComment:
@@ -20,6 +20,30 @@ class ExistingComment:
 
     def __str__(self):
         return "\"{}\"->\"{}\"".format(self.comment_id, self.mentions_list)
+
+
+def print_csv_row(submission_, action, mentions_current, mentions_previous):
+    """Prints a CSV row to stdout to be used as a log about what happened with a comment.
+
+    :param submission_: Submission object that you are commenting on
+    :type submission_:  praw.objects.Submission
+    :param action: string describing the action taken
+    :type action: str
+    :param mentions_current: list of current class mentions
+    :type mentions_current: list
+    :param mentions_previous: list of class mentions last known about
+    :type mentions_previous: list
+    """
+    print(  # I have put the string on it's own line b/c PyCharm's formatter and PEP inspector want different things
+            '{id}{_}{author}{_}{title}{_}{action}{_}{mentions_current}{_}{mentions_previous}'
+                .format(
+                    id = submission_.id,
+                    author = submission_.author,
+                    title = submission_.title,
+                    action = action,
+                    mentions_current = mentions_current,
+                    mentions_previous = mentions_previous,
+                    _ = '\t'))
 
 
 def post_comment(new_mention_object, actually_do_it = False):
@@ -40,8 +64,8 @@ def post_comment(new_mention_object, actually_do_it = False):
         already_commented_obj = existing_posts_with_comments[submission_id]
         mentions_previous = already_commented_obj.mentions_list
 
-        if mentions_new == mentions_previous:  # already commented, but no new classes have been mentioned
-            tools.print_csv_row(submission_object, 'No new mentions.', mentions_new, mentions_previous)
+        if mentions_new == mentions_previous:  # already have comment, but no new classes have been mentioned
+            print_csv_row(submission_object, 'No new mentions.', mentions_new, mentions_previous)
             return
 
         # comment needs to be updated
@@ -49,13 +73,15 @@ def post_comment(new_mention_object, actually_do_it = False):
             existing_comment = reddit.get_info(thing_id = 't1_' + already_commented_obj.comment_id)
             existing_comment.edit(_get_comment(db, mentions_new))
             existing_posts_with_comments[submission_id].mentions_list = mentions_new
-        tools.print_csv_row(submission_object, 'Edited comment.', mentions_new, mentions_previous)
+            _save_posts_with_comments(existing_posts_with_comments)
+        print_csv_row(submission_object, 'Edited comment.', mentions_new, mentions_previous)
 
     else:  # no comment with class info, post a new one
         if actually_do_it:
             new_comment = submission_object.add_comment(_get_comment(db, mentions_new))
             existing_posts_with_comments[submission_id] = ExistingComment(new_comment.id, mentions_new)
-        tools.print_csv_row(submission_object, 'Comment added.', mentions_new, [])
+            _save_posts_with_comments(existing_posts_with_comments)
+        print_csv_row(submission_object, 'Comment added.', mentions_new, [])
 
 
 def _course_to_markdown(course_):
@@ -135,7 +161,38 @@ def _get_comment(db_, mention_list_):
     return markdown_string
 
 
+def _load_posts_with_comments():
+    """Loads from disk the dict of posts that have already been commented on
+
+    :return: dict of ExistingComment objects of posts that have already been commented on
+    :rtype: dict
+    """
+    if not os.path.isfile("pickle/posts_with_comments.pickle"):
+        return dict()
+
+    with open("pickle/posts_with_comments.pickle", 'rb') as file:
+        a_c = pickle.load(file)
+    file.close()
+    return a_c
+
+
+def _save_posts_with_comments(posts_with_comments):
+    """Saves to disk the dict of posts that have already been commented on.
+
+    :param posts_with_comments: dict of ExistingComment objects of posts that already have comments on them
+    :type posts_with_comments: dict
+    """
+    with open("pickle/posts_with_comments.pickle", 'wb') as file:
+        pickle.dump(posts_with_comments, file)
+    file.close()
+
+
 def _load_found_mentions():
+    """Loads from disk the list of found mentions from the last run of find_mentions().
+
+    :return: list of strings of mentions
+    :rtype: list
+    """
     with open("pickle/found_mentions.pickle", 'rb') as file:
         mentions = pickle.load(file)
     file.close()
@@ -144,10 +201,8 @@ def _load_found_mentions():
 
 db = build_database.load_database()
 reddit = tools.auth_reddit()
-existing_posts_with_comments = tools.load_existing_posts_with_comments()  # currently returns empty dict
+existing_posts_with_comments = _load_posts_with_comments()  # currently returns empty dict
 new_mentions_list = _load_found_mentions()
 
-# new_mention = new_mentions_list.pop()
-for new_mention in new_mentions_list:
-    post_comment(new_mention)
-
+new_mention = new_mentions_list.pop()
+post_comment(new_mention)

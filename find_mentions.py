@@ -2,13 +2,11 @@
 Scrapes the self text and comments of a reddit submission for mentions of courses.
 """
 
-import praw  # python wrapper for reddit api
 import re  # regular expressions
+import praw  # python wrapper for reddit api
 import build_database  # used for pad_course_num() and load_database()
 import tools
 import pickle
-import os.path
-
 
 regex = re.compile(" ?[0-9]+[A-Za-z]?")
 
@@ -24,7 +22,7 @@ class PostWithMentions:
         return "mentions in post id {}: {}".format(self.post_id, self.mentions_list)
 
 
-def get_mentions_in_submission(submission_):
+def _get_mentions_in_submission(submission_):
     """Finds mentions of a course in a submission's title, selftext, and comments.
 
     :param submission_: a praw submission object
@@ -129,9 +127,14 @@ def _remove_list_duplicates_preserve_order(input_list):
     return new_list
 
 
-def _save_found_mentions(posts_list):
+def _save_found_mentions(found_mentions):
+    """Saves to disk mentions found from from the last run of find_mentions().
+
+    :param found_mentions: list of strings of mentions
+    :type found_mentions: list
+    """
     with open("pickle/found_mentions.pickle", 'wb') as file:
-        pickle.dump(posts_list, file)
+        pickle.dump(found_mentions, file)
     file.close()
 
 
@@ -151,7 +154,7 @@ def find_mentions():
     list_of_posts_with_mentions = []
 
     for submission in subreddit.get_new(limit = 25):
-        found_mentions = get_mentions_in_submission(submission)
+        found_mentions = _get_mentions_in_submission(submission)
         if found_mentions is not None:
             list_of_posts_with_mentions.append(found_mentions)
 
@@ -161,3 +164,7 @@ def find_mentions():
         print("------------------------------")
         for post_with_mention in list_of_posts_with_mentions:
             print(str(post_with_mention))
+
+
+if __name__ == "__main__":
+    find_mentions()

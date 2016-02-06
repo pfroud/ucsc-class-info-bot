@@ -1,21 +1,7 @@
-"""Used to set up reddit api oauth. Also holds some methods for one-time use."""
+"""Used to set up reddit api oauth."""
 
-import praw
 import pickle
-import os.path
-
-posts_with_comments_pickle_path = os.path.join(os.path.dirname(__file__), 'pickle/posts_with_comments.pickle')
-
-
-def save_posts_with_comments(posts_with_comments):
-    """Saves to disk the dict of posts that have already been commented on.
-
-    :param posts_with_comments: dict of posts that already have comments on them
-    :type posts_with_comments: dict
-    """
-    with open(posts_with_comments_pickle_path, 'wb') as file:
-        pickle.dump(posts_with_comments, file)
-    file.close()
+import praw
 
 
 def auth_reddit():
@@ -42,30 +28,6 @@ def _get_code(r_):
     print(url)
 
 
-def print_csv_row(submission_, action, mentions_current, mentions_previous):
-    """Prints a CSV row to stdout to be used as a log about what happened with a comment.
-
-    :param submission_: Submission object that you are commenting on
-    :type submission_:  praw.objects.Submission
-    :param action: string describing the action taken
-    :type action: str
-    :param mentions_current: list of current class mentions
-    :type mentions_current: list
-    :param mentions_previous: list of class mentions last known about
-    :type mentions_previous: list
-    """
-    print(  # I have put the string on it's own line b/c PyCharm's formatter and PEP inspector want different things
-            '{id}{_}{author}{_}{title}{_}{action}{_}{mentions_current}{_}{mentions_previous}'
-                .format(
-                    id = submission_.id,
-                    author = submission_.author,
-                    title = submission_.title,
-                    action = action,
-                    mentions_current = mentions_current,
-                    mentions_previous = mentions_previous,
-                    _ = '\t'))
-
-
 def _save_access_information(r_):
     """
     Use this second.
@@ -82,18 +44,3 @@ def _save_access_information(r_):
 
 # _get_code()
 # _save_access_information()
-
-
-def load_existing_posts_with_comments():
-    """Loads from disk the dict of posts that have already been commented on
-
-    :return: dict of posts that have already been commented on
-    :rtype: dict
-    """
-    if not os.path.isfile(posts_with_comments_pickle_path):
-        return dict()
-
-    with open(posts_with_comments_pickle_path, 'rb') as file:
-        a_c = pickle.load(file)
-    file.close()
-    return a_c
