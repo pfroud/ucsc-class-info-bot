@@ -4,6 +4,7 @@ l
 
 import build_database
 import tools
+import re
 import pickle
 import os.path
 
@@ -19,10 +20,10 @@ class ExistingComment:
         self.mentions_list = mentions_
 
     def __str__(self):
-        return "\"{}\"->\"{}\"".format(self.comment_id, self.mentions_list)
+        return "existing comment: {} -> {}".format(self.comment_id, self.mentions_list)
 
 
-def print_csv_row(submission_, action, mentions_current, mentions_previous):
+def _print_csv_row(submission_, action, mentions_current, mentions_previous):
     """Prints a CSV row to stdout to be used as a log about what happened with a comment.
 
     :param submission_: Submission object that you are commenting on
@@ -35,15 +36,15 @@ def print_csv_row(submission_, action, mentions_current, mentions_previous):
     :type mentions_previous: list
     """
     print(  # I have put the string on it's own line b/c PyCharm's formatter and PEP inspector want different things
-            '{id}{_}{author}{_}{title}{_}{action}{_}{mentions_current}{_}{mentions_previous}'
-                .format(
-                    id = submission_.id,
-                    author = submission_.author,
-                    title = submission_.title,
-                    action = action,
-                    mentions_current = mentions_current,
-                    mentions_previous = mentions_previous,
-                    _ = '\t'))
+        '{id}{_}{author}{_}{title}{_}{action}{_}{mentions_current}{_}{mentions_previous}'
+            .format(
+            id = submission_.id,
+            author = submission_.author,
+            title = submission_.title,
+            action = action,
+            mentions_current = mentions_current,
+            mentions_previous = mentions_previous,
+            _ = '\t'))
 
 
 def post_comment(new_mention_object, actually_do_it = False):
@@ -65,7 +66,7 @@ def post_comment(new_mention_object, actually_do_it = False):
         mentions_previous = already_commented_obj.mentions_list
 
         if mentions_new == mentions_previous:  # already have comment, but no new classes have been mentioned
-            print_csv_row(submission_object, 'No new mentions.', mentions_new, mentions_previous)
+            _print_csv_row(submission_object, 'No new mentions.', mentions_new, mentions_previous)
             return
 
         # comment needs to be updated
@@ -74,14 +75,14 @@ def post_comment(new_mention_object, actually_do_it = False):
             existing_comment.edit(_get_comment(db, mentions_new))
             existing_posts_with_comments[submission_id].mentions_list = mentions_new
             _save_posts_with_comments(existing_posts_with_comments)
-        print_csv_row(submission_object, 'Edited comment.', mentions_new, mentions_previous)
+        _print_csv_row(submission_object, 'Edited comment.', mentions_new, mentions_previous)
 
     else:  # no comment with class info, post a new one
         if actually_do_it:
             new_comment = submission_object.add_comment(_get_comment(db, mentions_new))
             existing_posts_with_comments[submission_id] = ExistingComment(new_comment.id, mentions_new)
             _save_posts_with_comments(existing_posts_with_comments)
-        print_csv_row(submission_object, 'Comment added.', mentions_new, [])
+        _print_csv_row(submission_object, 'Comment added.', mentions_new, [])
 
 
 def _course_to_markdown(course_):
@@ -98,7 +99,9 @@ def _course_to_markdown(course_):
     # TODO add the department name?
     # dept_name = dept_names[course_.dept]
 
-    markdown_string = '**{} {}: {}**\n'.format(course_.dept.upper(), course_.number.strip('0'), course_.name)
+    num_leading_zeroes_stripped = re.sub("^0+", "", course_.number)
+
+    markdown_string = '**{} {}: {}**\n'.format(course_.dept.upper(), num_leading_zeroes_stripped, course_.name)
     markdown_string += '>{}\n\n'.format(course_.description)
 
     return markdown_string
@@ -111,7 +114,7 @@ def _mention_to_course_object(db_, mention_):
     :type db_: CourseDatabase
     :param mention_: string of course mention, like 'econ 1'
     :type mention_: str
-    :return: course database from the mention
+    :return: course object from the mention
     :rtype: Course
     """
     split = mention_.split(' ')
@@ -164,7 +167,7 @@ def _get_comment(db_, mention_list_):
 def _load_posts_with_comments():
     """Loads from disk the dict of posts that have already been commented on
 
-    :return: dict of ExistingComment objects of posts that have already been commented on
+    :return: dict of <string,ExistingComment> of posts that have already been commented on
     :rtype: dict
     """
     if not os.path.isfile("pickle/posts_with_comments.pickle"):
@@ -190,7 +193,7 @@ def _save_posts_with_comments(posts_with_comments):
 def _load_found_mentions():
     """Loads from disk the list of found mentions from the last run of find_mentions().
 
-    :return: list of strings of mentions
+    :return: list of PostWithMentions objects
     :rtype: list
     """
     with open("pickle/found_mentions.pickle", 'rb') as file:
@@ -198,11 +201,25 @@ def _load_found_mentions():
     file.close()
     return mentions
 
-
-db = build_database.load_database()
-reddit = tools.auth_reddit()
 existing_posts_with_comments = _load_posts_with_comments()  # currently returns empty dict
 new_mentions_list = _load_found_mentions()
 
+# tools.print_found_mentions(new_mentions_list)
+
+# existing_posts_with_comments.pop('447b2j')
+# tools.print_posts_with_comments(existing_posts_with_comments)
+# _save_posts_with_comments(existing_posts_with_comments)
+# exit()
+
+db = build_database.load_database()
+
+# print(_course_to_markdown(_mention_to_course_object(db, "CMPS 140")))
+# exit()
+
+reddit = tools.auth_reddit()
+
+print('id{_}author{_}title{_}action{_}current mentions{_}previous mentions'.format(_ = "\t"))
+
 new_mention = new_mentions_list.pop()
-post_comment(new_mention)
+post_comment(new_mention, actually_do_it = True)
+tools.save_found_mentions(new_mentions_list)

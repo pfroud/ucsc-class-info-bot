@@ -27,8 +27,8 @@ def _get_mentions_in_submission(submission_):
 
     :param submission_: a praw submission object
     :type submission_: praw.objects.Submission
-    :return: an array of strings of course names
-    :rtype: list
+    :return: a PostWithMentions object which has the post ID and a list of strings of mentions
+    :rtype: PostWithMentions
     """
     mentions_list = []
     mentions_list.extend(_get_mentions_in_string(submission_.title))
@@ -127,17 +127,6 @@ def _remove_list_duplicates_preserve_order(input_list):
     return new_list
 
 
-def _save_found_mentions(found_mentions):
-    """Saves to disk mentions found from from the last run of find_mentions().
-
-    :param found_mentions: list of strings of mentions
-    :type found_mentions: list
-    """
-    with open("pickle/found_mentions.pickle", 'wb') as file:
-        pickle.dump(found_mentions, file)
-    file.close()
-
-
 def find_mentions():
     """
 
@@ -146,6 +135,10 @@ def find_mentions():
 
     _debug = True
     reddit = tools.auth_reddit()
+
+    # use this to find mentions in only one post
+    # tools.save_found_mentions([_get_mentions_in_submission(reddit.get_submission(submission_id = "447b2j"))])
+    # return
 
     if _debug:
         print('id{_}author{_}title{_}mentions'.format(_ = '\t'))
@@ -158,7 +151,7 @@ def find_mentions():
         if found_mentions is not None:
             list_of_posts_with_mentions.append(found_mentions)
 
-    _save_found_mentions(list_of_posts_with_mentions)
+    tools.save_found_mentions(list_of_posts_with_mentions)
 
     if _debug:
         print("------------------------------")
