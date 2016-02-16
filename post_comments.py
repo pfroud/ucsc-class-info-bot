@@ -54,7 +54,8 @@ def post_comment(new_mention_object, actually_do_it = False):
     :type new_mention_object: PostWithMentions
     :param actually_do_it: whether to actually post a comment to reddit.com
     :type actually_do_it: bool
-    :return:
+    :return: whether a comment was submitted or edited (based only on mentions, not actually_do_it)
+    :rtype: bool
     """
     submission_id = new_mention_object.post_id
     submission_object = reddit.get_submission(submission_id = submission_id)
@@ -67,7 +68,7 @@ def post_comment(new_mention_object, actually_do_it = False):
 
         if mentions_new == mentions_previous:  # already have comment, but no new classes have been mentioned
             _print_csv_row(submission_object, 'No new mentions.', mentions_new, mentions_previous)
-            return
+            return False
 
         # comment needs to be updated
         if actually_do_it:
@@ -76,6 +77,7 @@ def post_comment(new_mention_object, actually_do_it = False):
             existing_posts_with_comments[submission_id].mentions_list = mentions_new
             _save_posts_with_comments(existing_posts_with_comments)
         _print_csv_row(submission_object, 'Edited comment.', mentions_new, mentions_previous)
+        return True
 
     else:  # no comment with class info, post a new one
         if actually_do_it:
@@ -83,6 +85,7 @@ def post_comment(new_mention_object, actually_do_it = False):
             existing_posts_with_comments[submission_id] = ExistingComment(new_comment.id, mentions_new)
             _save_posts_with_comments(existing_posts_with_comments)
         _print_csv_row(submission_object, 'Comment added.', mentions_new, [])
+        return True
 
 
 def _course_to_markdown(course_):
@@ -218,7 +221,11 @@ reddit = tools.auth_reddit()
 print('id{_}author{_}title{_}action{_}current mentions{_}previous mentions'.format(_ = "\t"))
 
 
-#  TODO if there was no comment post or edit, pop and process the next thing
-new_mention = new_mentions_list.pop()
-post_comment(new_mention, actually_do_it = True)
+def recur():
+    """a"""
+    new_mention = new_mentions_list.pop()
+    if not post_comment(new_mention, actually_do_it = True):
+        recur()
+
+recur()
 tools.save_found_mentions(new_mentions_list)
