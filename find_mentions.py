@@ -37,7 +37,7 @@ def _get_mentions_in_submission(submission_):
 
     flat_comments = praw.helpers.flatten_tree(submission_.comments)
     for comment in flat_comments:
-        if comment.author.name == 'ucsc-class-info-bot':
+        if comment.author is None or comment.author.name == 'ucsc-class-info-bot':
             continue
         mentions_list.extend(_get_mentions_in_string(comment.body))
 
@@ -138,6 +138,7 @@ def find_mentions():
 
     # use this to find mentions in only one post
     # tools.save_found_mentions([_get_mentions_in_submission(reddit.get_submission(submission_id = "447b2j"))])
+    # _get_mentions_in_submission(reddit.get_submission(submission_id = "4571id"))
     # return
 
     if _debug:
@@ -146,7 +147,7 @@ def find_mentions():
     subreddit = reddit.get_subreddit('ucsc')
     list_of_posts_with_mentions = []
 
-    for submission in subreddit.get_new(limit = 25):
+    for submission in subreddit.get_new(limit = 25, start = 10):
         found_mentions = _get_mentions_in_submission(submission)
         if found_mentions is not None:
             list_of_posts_with_mentions.append(found_mentions)

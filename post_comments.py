@@ -201,14 +201,11 @@ def _load_found_mentions():
     file.close()
     return mentions
 
-existing_posts_with_comments = _load_posts_with_comments()  # currently returns empty dict
+existing_posts_with_comments = _load_posts_with_comments()
 new_mentions_list = _load_found_mentions()
 
 # tools.print_found_mentions(new_mentions_list)
-
-# existing_posts_with_comments.pop('447b2j')
 # tools.print_posts_with_comments(existing_posts_with_comments)
-# _save_posts_with_comments(existing_posts_with_comments)
 # exit()
 
 db = build_database.load_database()
@@ -220,6 +217,8 @@ reddit = tools.auth_reddit()
 
 print('id{_}author{_}title{_}action{_}current mentions{_}previous mentions'.format(_ = "\t"))
 
+
+#  TODO if there was no comment post or edit, pop and process the next thing
 new_mention = new_mentions_list.pop()
 post_comment(new_mention, actually_do_it = True)
 tools.save_found_mentions(new_mentions_list)
