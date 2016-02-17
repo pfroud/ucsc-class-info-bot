@@ -1,18 +1,17 @@
 """
-Scrapes the self text and comments of a reddit submission for mentions of courses.
+Scrapes posts on /r/UCSC for mentions of courses.
 """
 
-import re  # regular expressions
-import praw  # python wrapper for reddit api
+import re
+import praw
 import build_database  # used for pad_course_num() and load_database()
 import tools
-import pickle
 
-regex = re.compile(" ?[0-9]+[A-Za-z]?")
+mention_regex = re.compile(" ?[0-9]+[A-Za-z]?")
 
 
 class PostWithMentions:
-    """m"""
+    """Info about a specefic post and mentions found in that post."""
 
     def __init__(self, post_id, mentions_list):
         self.post_id = post_id
@@ -84,14 +83,14 @@ def _get_mentions_in_string(source_):
                 # set string index where subject ends
                 subj_end_index = subj_start_index + len(subj)
 
-                #  slice string to send to regex matcher. maximum of 5 extra chars needed
+                #  slice string to send to mention_regex matcher. maximum of 5 extra chars needed
                 regex_substr = trimmed_str[subj_end_index: subj_end_index + 5]
 
                 # set next search to start after this one ends
                 start_of_next_search += subj_end_index
 
                 # search for course number
-                regex_result = regex.match(regex_substr)
+                regex_result = mention_regex.match(regex_substr)
                 if regex_result is not None:  # if found a class number
 
                     # string with subject and course number
@@ -113,9 +112,9 @@ def _remove_list_duplicates_preserve_order(input_list):
     """Removes duplicates from a list, while preserving order.
     To do this easily without preserving order, do list(set(input_list)).
 
-    :param input_list:
+    :param input_list: the list to remove duplicates from, while preserving order
      :type input_list: list
-    :return:
+    :return: the list with duplicates removed, with order preserved
     :rtype: list
     """
     new_list = []
@@ -128,36 +127,29 @@ def _remove_list_duplicates_preserve_order(input_list):
 
 
 def find_mentions():
-    """
+    """Finds and saves to disk course mentions in new posts on /r/UCSC."""
 
-    :return:
-    """
-
-    _debug = True
     reddit = tools.auth_reddit()
 
     # use this to find mentions in only one post
     # tools.save_found_mentions([_get_mentions_in_submission(reddit.get_submission(submission_id = "447b2j"))])
-    # _get_mentions_in_submission(reddit.get_submission(submission_id = "4571id"))
     # return
 
-    if _debug:
-        print('id{_}author{_}title{_}mentions'.format(_ = '\t'))
+    print('id{_}author{_}title{_}mentions'.format(_ = '\t'))
 
     subreddit = reddit.get_subreddit('ucsc')
     list_of_posts_with_mentions = []
 
-    for submission in subreddit.get_new(limit = 25, start = 10):
+    for submission in subreddit.get_new():
         found_mentions = _get_mentions_in_submission(submission)
         if found_mentions is not None:
             list_of_posts_with_mentions.append(found_mentions)
 
     tools.save_found_mentions(list_of_posts_with_mentions)
 
-    if _debug:
-        print("------------------------------")
-        for post_with_mention in list_of_posts_with_mentions:
-            print(str(post_with_mention))
+    print("------------------------------")
+    for post_with_mention in list_of_posts_with_mentions:
+        print(str(post_with_mention))
 
 
 if __name__ == "__main__":
