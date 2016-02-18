@@ -94,6 +94,7 @@ You can see what it looked like as it was being built at [misc/db build log.txt]
 
 ## Known bugs
 
+* Can only see classes if there's a space between department and number. Ex. can see "ams 5", can't see "ams5".
 * Won't recognize CS as CMPS or CMPE as CMPE
 * In the comment, classes are sorted by department name.
 Ideally they would be sorted by the order in which they're mentioned.
