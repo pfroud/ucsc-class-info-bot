@@ -111,8 +111,8 @@ class Course:
         self.description = description
 
     def __str__(self):
-        return self.dept + ' ' + self.number + ': ' + self.name
-        # return '\"' + self.name + "\""
+        # return self.dept + ' ' + self.number + ': ' + self.name
+        return '\"' + self.name + "\""
 
 
 def _has_course_number(num_string):
@@ -386,8 +386,8 @@ def build_database():
     print('----------------------------------')
     db = CourseDatabase()
 
-    # for current_dept in all_departments:
-    #     db.add_dept(_get_department_object(current_dept))
+    for current_dept in all_departments:
+        db.add_dept(_get_department_object(current_dept))
 
     for lit_dept in _get_lit_depts():
         db.add_dept(lit_dept)
@@ -423,4 +423,4 @@ def load_database():
     file.close()
     return db
 
-build_database()
+print(load_database())

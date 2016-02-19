@@ -1,5 +1,5 @@
-"C:\Users\Peter Froud\AppData\Local\Programs\Python\Python35-32\python.exe" "C:/Users/Peter Froud/Documents/reddit ucsc bot/database.py"
-Starting the database build on 2015-12-25 19:27:29.778974.
+"C:\Users\Peter Froud\AppData\Local\Programs\Python\Python35-32\python.exe" "C:/Users/Peter Froud/Documents/reddit ucsc bot/build_database.py"
+Starting the database build on 2016-02-19 15:39:34.361269.
 ----------------------------------
 Building department "acen"...4 courses added.
 Building department "aplx"...13 courses added.
@@ -75,6 +75,21 @@ Building department "havc"...157 courses added.
 Building department "clei"...35 courses added.
 Building department "econ"...148 courses added.
 Building department "germ"...15 courses added.
-Building department "lit"...203 courses added.
+Building department "lit"...
+                         ...18 courses added to "ltfr".
+                         ...20 courses added to "ltge".
+                         ...31 courses added to "ltwl".
+                         ...20 courses added to "ltit".
+                         ...41 courses added to "ltmo".
+                         ...60 courses added to "ltel".
+                         ...14 courses added to "ltin".
+                         ...31 courses added to "lit".
+                         ...15 courses added to "ltgr".
+                         ...38 courses added to "ltpr".
+                         ...43 courses added to "ltsp".
+                         ...17 courses added to "ltcr".
 ----------------------------------
-Wrote 2,288,289 bytes to path "C:\Users\Peter Froud\Documents\reddit ucsc bot\database_files\class_database.pickle"
+Wrote 2,331,374 bytes to path "C:/Users/Peter Froud/Documents/reddit ucsc bot\pickle\course_database.pickle".
+
+
+Process finished with exit code 0
