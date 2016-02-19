@@ -6,12 +6,9 @@ import re
 import praw
 import build_database  # used for pad_course_num() and load_database()
 import tools
+from tools import trunc_pad
 
 _mention_regex = re.compile(" [0-9]+[A-Za-z]?")  # space is now required
-
-_column_width_id = 7
-_column_width_author = 11
-_column_width_title = 30
 
 
 class PostWithMentions:
@@ -45,9 +42,9 @@ def _get_mentions_in_submission(submission_):
         mentions_list.extend(_get_mentions_in_string(comment.body))
 
     print('{id}{_}{author}{_}{title}{_}{mentions}'
-          .format(id = submission_.id,
-                  author = submission_.author.name[:_column_width_author].ljust(_column_width_author),
-                  title = submission_.title[:_column_width_title].ljust(_column_width_title),
+          .format(id = trunc_pad(submission_.id, "id"),
+                  author = trunc_pad(submission_.author.name, "author"),
+                  title = trunc_pad(submission_.title, "title"),
                   mentions = mentions_list,
                   _ = '\t'))
 
@@ -140,15 +137,15 @@ def find_mentions():
     # return
 
     print('{id}{_}{author}{_}{title}{_}mentions'
-          .format(id = "id".ljust(_column_width_id),
-                  author = "author".ljust(_column_width_author),
-                  title = "title".ljust(_column_width_title),
+          .format(id = trunc_pad("id"),
+                  author = trunc_pad("author"),
+                  title = trunc_pad("title"),
                   _ = '\t'))
 
     subreddit = reddit.get_subreddit('ucsc')
     list_of_posts_with_mentions = []
 
-    for submission in subreddit.get_new():
+    for submission in subreddit.get_new(limit = 3):
         found_mentions = _get_mentions_in_submission(submission)
         if found_mentions is not None:
             list_of_posts_with_mentions.append(found_mentions)

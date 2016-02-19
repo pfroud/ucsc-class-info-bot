@@ -2,6 +2,7 @@
 
 import build_database
 import tools
+from tools import trunc_pad
 import re
 import pickle
 import os.path
@@ -156,10 +157,10 @@ def _print_csv_row(submission_, action, mentions_current, mentions_previous):
     print(  # I have put the string on it's own line b/c PyCharm's formatter and PEP inspector want different things
         '{id}{_}{author}{_}{title}{_}{action}{_}{mentions_current}{_}{mentions_previous}'
             .format(
-            id = submission_.id,
-            author = submission_.author,
-            title = submission_.title,
-            action = action,
+            id = trunc_pad(submission_.id, "id"),
+            author = trunc_pad(submission_.author.name, "author"),
+            title = trunc_pad(submission_.title, "title"),
+            action = trunc_pad(action, "action"),
             mentions_current = mentions_current,
             mentions_previous = mentions_previous,
             _ = '\t'))
@@ -214,7 +215,14 @@ new_mentions_list = _load_found_mentions()
 db = build_database.load_database()
 reddit = tools.auth_reddit()
 
-print('id{_}author{_}title{_}action{_}current mentions{_}previous mentions'.format(_ = "\t"))
+# print('id{_}author{_}title{_}action{_}current mentions{_}previous mentions'.format(_ = "\t"))
+
+print('{id}{_}{author}{_}{title}{_}{action}{_}current mentions{_}previous mentions'
+      .format(id = trunc_pad("id"),
+              author = trunc_pad("author"),
+              title = trunc_pad("title"),
+              action = trunc_pad("action"),
+              _ = '\t'))
 
 
 def recur_post_comments():
@@ -225,9 +233,9 @@ def recur_post_comments():
     else:
         print("No more mentions.")
         return
-    if not post_comment(new_mention, actually_do_it = True):
+    if not post_comment(new_mention, actually_do_it = False):
         recur_post_comments()
 
 
 recur_post_comments()
-tools.save_found_mentions(new_mentions_list)
+# tools.save_found_mentions(new_mentions_list)

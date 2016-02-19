@@ -1,4 +1,5 @@
-"""Functions to do reddit authentication, file saving and loading, and data structure printing."""
+"""Functions to do reddit authentication, file saving and loading, and data structure printing,
+and varialbes used by multiple files."""
 
 import pickle
 import praw
@@ -9,6 +10,29 @@ import praw
 
 # _get_code()
 # _save_access_information()
+
+# widths of column for printing tables to console. used by trunc_pad()
+_column_widths = {"id": 7,
+                  "author": 11,
+                  "title": 30,
+                  "action": 17}
+
+
+def trunc_pad(string_, use_ = None):
+    """Truncates and pads with spaces string_ to be printed in a table.
+    The padding width is indicated by use_.
+
+    :param string_: string to be truncated and padded
+    :type string_: str
+    :param use_: string identifying which column the string is in.
+    :type use_: str
+    :return: the input string, truncated and padded
+    :rtype: str
+    """
+    if use_ is None:
+        use_ = string_
+    width = _column_widths[use_]
+    return string_[:width].ljust(width)
 
 
 def auth_reddit():
