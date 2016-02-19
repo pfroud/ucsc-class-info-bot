@@ -17,7 +17,7 @@ all_departments = ["acen", "aplx", "ams", "art", "artg", "astr", "bioc", "mcdb",
                    "fmst", "film", "fren", "game", "gree", "hebr", "his", "hisc", "ital", "japn", "jwst", "krsg",
                    "laad", "latn", "lals", "lgst", "ling", "math", "merr", "metx", "musc", "oaks", "ocea", "phil",
                    "phye", "phys", "poli", "port", "punj", "russ", "scic", "socd", "socy", "span", "sphs", "stev",
-                   "tim", "thea", "ucdc", "writ", "yidd", 'prtr', 'anth', 'psyc', 'havc', 'clei', 'econ', 'germ', 'lit']
+                   "tim", "thea", "ucdc", "writ", "yidd", 'prtr', 'anth', 'psyc', 'havc', 'clei', 'econ', 'germ']
 
 # all_departments.extend(['ce', 'cs'])
 
@@ -111,8 +111,8 @@ class Course:
         self.description = description
 
     def __str__(self):
-        # return self.dept + ' ' + self.number + ': ' + self.name
-        return '\"' + self.name + "\""
+        return self.dept + ' ' + self.number + ': ' + self.name
+        # return '\"' + self.name + "\""
 
 
 def _has_course_number(num_string):
@@ -231,7 +231,7 @@ def _get_course(dept_name, num_tag):
 
     description = description_tag[2:]
 
-    if dept_name in lit_department_codes.values():
+    if dept_name == 'lit':
         real_name = _get_real_lit_dept(num_tag).replace("\ufeff", "")
         # print("   real name is \"" + real_name + "\"")
 
@@ -345,6 +345,37 @@ def _get_real_lit_dept(num_tag):
     return real_dept
 
 
+def _get_lit_depts():
+    """
+
+    :return:
+    """
+    print("Building department \"lit\"...")
+
+    lit_depts = dict()
+
+    for dept_code in lit_department_codes.values():
+        lit_depts[dept_code] = Department(dept_code)
+
+    soup = _get_soup_object('lit')
+    every_strong_tag = soup.select("div.main-content strong")
+    numbers_in_strongs = []
+    for tag in every_strong_tag:
+        if _has_course_number(tag.text):
+            numbers_in_strongs.append(tag)
+
+    for num_tag in numbers_in_strongs:
+        temp_course = _get_course('lit', num_tag)
+        if temp_course is None:
+            continue
+        lit_depts[temp_course.dept].add_course(temp_course)
+
+    for dept in lit_depts.values():
+        print('{_}{} courses added to \"{}\".'.format(str(len(dept.courses)), dept.name, _="...".rjust(28)))
+
+    return lit_depts.values()
+
+
 def build_database():
     """Builds and returns a CourseDatabase object.
 
@@ -354,8 +385,12 @@ def build_database():
     print('Starting the database build on {}.'.format(datetime.now()))
     print('----------------------------------')
     db = CourseDatabase()
-    for current_dept in all_departments:
-        db.add_dept(_get_department_object(current_dept))
+
+    # for current_dept in all_departments:
+    #     db.add_dept(_get_department_object(current_dept))
+
+    for lit_dept in _get_lit_depts():
+        db.add_dept(lit_dept)
     return db
 
 
@@ -387,3 +422,5 @@ def load_database():
         db = pickle.load(file)
     file.close()
     return db
+
+build_database()
