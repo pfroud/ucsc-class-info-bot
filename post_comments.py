@@ -3,23 +3,13 @@
 import build_database
 import tools
 from tools import trunc_pad
+from tools import ExistingComment
 import re
 import pickle
 import os.path
 
 from build_database import CourseDatabase, Department, Course  # need this to de-pickle course_database.pickle
 from find_mentions import PostWithMentions  # need this to de-pickle found_mentions.pickle
-
-
-class ExistingComment:
-    """Info about an existing comment with class info."""
-
-    def __init__(self, comment_id_, mentions_):
-        self.comment_id = comment_id_
-        self.mentions_list = mentions_
-
-    def __str__(self):
-        return "existing comment: {} -> {}".format(self.comment_id, self.mentions_list)
 
 
 def post_comment(new_mention_object, actually_do_it = False):
@@ -166,21 +156,6 @@ def _print_csv_row(submission_, action, mentions_current, mentions_previous):
             _ = '\t'))
 
 
-def _load_posts_with_comments():
-    """Loads from disk the dict of posts that have already been commented on.
-
-    :return: dict of <string,ExistingComment> of posts that have already been commented on
-    :rtype: dict
-    """
-    if not os.path.isfile("pickle/posts_with_comments.pickle"):
-        return dict()
-
-    with open("pickle/posts_with_comments.pickle", 'rb') as file:
-        a_c = pickle.load(file)
-    file.close()
-    return a_c
-
-
 def _save_posts_with_comments(posts_with_comments):
     """Saves to disk the dict of posts that have already been commented on.
 
@@ -192,20 +167,8 @@ def _save_posts_with_comments(posts_with_comments):
     file.close()
 
 
-def _load_found_mentions():
-    """Loads from disk the list of found mentions from the last run of find_mentions().
-
-    :return: list of PostWithMentions objects
-    :rtype: list
-    """
-    with open("pickle/found_mentions.pickle", 'rb') as file:
-        mentions = pickle.load(file)
-    file.close()
-    return mentions
-
-
-existing_posts_with_comments = _load_posts_with_comments()
-new_mentions_list = _load_found_mentions()
+existing_posts_with_comments = tools.load_posts_with_comments()
+new_mentions_list = tools.load_found_mentions()
 
 # used to look at pickles on disk
 # tools.print_found_mentions(new_mentions_list)
@@ -229,7 +192,7 @@ def recur_post_comments():
     """Goes through the mentions found in the last run of find_mentions.py and posts a comment on each, if needed.
     I can only post a comment every 10 minutes, so it stops if a comment was made."""
     if new_mentions_list:
-        new_mention = new_mentions_list.pop()
+        new_mention = new_mentions_list.pop(0)
     else:
         print("No more mentions.")
         return

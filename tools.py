@@ -3,6 +3,7 @@ and varialbes used by multiple files."""
 
 import pickle
 import praw
+import os
 
 # use this to set up PRAW for the first time
 # reddit = praw.Reddit(user_agent = 'desktop:ucsc-class-info-bot:v0.0.1 (by /u/ucsc-class-info-bot)',
@@ -16,6 +17,17 @@ _column_widths = {"id": 7,
                   "author": 11,
                   "title": 30,
                   "action": 17}
+
+
+class ExistingComment:
+    """Info about an existing comment with class info."""
+
+    def __init__(self, comment_id_, mentions_):
+        self.comment_id = comment_id_
+        self.mentions_list = mentions_
+
+    def __str__(self):
+        return "existing comment: {} -> {}".format(self.comment_id, self.mentions_list)
 
 
 def trunc_pad(string_, use_ = None):
@@ -89,6 +101,30 @@ def print_found_mentions(found_mentions):
     for pwm_obj in found_mentions:
         print(pwm_obj)
 
+def load_posts_with_comments():
+    """Loads from disk the dict of posts that have already been commented on.
+
+    :return: dict of <string,ExistingComment> of posts that have already been commented on
+    :rtype: dict
+    """
+    if not os.path.isfile("pickle/posts_with_comments.pickle"):
+        return dict()
+
+    with open("pickle/posts_with_comments.pickle", 'rb') as file:
+        a_c = pickle.load(file)
+    file.close()
+    return a_c
+
+def load_found_mentions():
+    """Loads from disk the list of found mentions from the last run of find_mentions().
+
+    :return: list of PostWithMentions objects
+    :rtype: list
+    """
+    with open("pickle/found_mentions.pickle", 'rb') as file:
+        mentions = pickle.load(file)
+    file.close()
+    return mentions
 
 def save_found_mentions(found_mentions):
     """Saves to disk mentions found from from the last run of find_mentions().
