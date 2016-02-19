@@ -7,7 +7,11 @@ import praw
 import build_database  # used for pad_course_num() and load_database()
 import tools
 
-mention_regex = re.compile(" ?[0-9]+[A-Za-z]?")
+_mention_regex = re.compile(" [0-9]+[A-Za-z]?")  # space is now required
+
+_column_width_id = 7
+_column_width_author = 11
+_column_width_title = 30
 
 
 class PostWithMentions:
@@ -42,8 +46,8 @@ def _get_mentions_in_submission(submission_):
 
     print('{id}{_}{author}{_}{title}{_}{mentions}'
           .format(id = submission_.id,
-                  author = submission_.author,
-                  title = submission_.title,
+                  author = submission_.author.name[:_column_width_author].ljust(_column_width_author),
+                  title = submission_.title[:_column_width_title].ljust(_column_width_title),
                   mentions = mentions_list,
                   _ = '\t'))
 
@@ -83,14 +87,14 @@ def _get_mentions_in_string(source_):
                 # set string index where subject ends
                 subj_end_index = subj_start_index + len(subj)
 
-                #  slice string to send to mention_regex matcher. maximum of 5 extra chars needed
+                #  slice string to send to _mention_regex matcher. maximum of 5 extra chars needed
                 regex_substr = trimmed_str[subj_end_index: subj_end_index + 5]
 
                 # set next search to start after this one ends
                 start_of_next_search += subj_end_index
 
                 # search for course number
-                regex_result = mention_regex.match(regex_substr)
+                regex_result = _mention_regex.match(regex_substr)
                 if regex_result is not None:  # if found a class number
 
                     # string with subject and course number
@@ -135,7 +139,11 @@ def find_mentions():
     # tools.save_found_mentions([_get_mentions_in_submission(reddit.get_submission(submission_id = "447b2j"))])
     # return
 
-    print('id{_}author{_}title{_}mentions'.format(_ = '\t'))
+    print('{id}{_}{author}{_}{title}{_}mentions'
+          .format(id = "id".ljust(_column_width_id),
+                  author = "author".ljust(_column_width_author),
+                  title = "title".ljust(_column_width_title),
+                  _ = '\t'))
 
     subreddit = reddit.get_subreddit('ucsc')
     list_of_posts_with_mentions = []
