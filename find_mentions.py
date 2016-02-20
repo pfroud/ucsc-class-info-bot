@@ -54,6 +54,10 @@ def _get_mentions_in_submission(submission_):
         return PostWithMentions(submission_.id, _remove_list_duplicates_preserve_order(mentions_list))
 
 
+all_depts_with_lit = build_database.all_departments
+all_depts_with_lit.extend(build_database.lit_department_codes.values())
+
+
 def _get_mentions_in_string(source_):
     """Finds mentions of courses (department and number) in a string.
 
@@ -65,7 +69,7 @@ def _get_mentions_in_string(source_):
 
     str_in = source_.lower()
     courses_found = []
-    for subj in build_database.all_departments:  # iterate subjects
+    for subj in all_depts_with_lit:  # iterate subjects
 
         # set start of search to beginning of string
         start_of_next_search = 0
@@ -145,7 +149,7 @@ def find_mentions():
     subreddit = reddit.get_subreddit('ucsc')
     list_of_posts_with_mentions = []
 
-    for submission in subreddit.get_new(limit = 3):
+    for submission in subreddit.get_new():
         found_mentions = _get_mentions_in_submission(submission)
         if found_mentions is not None:
             list_of_posts_with_mentions.append(found_mentions)

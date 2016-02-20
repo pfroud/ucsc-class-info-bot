@@ -423,4 +423,3 @@ def load_database():
     file.close()
     return db
 
-print(load_database())

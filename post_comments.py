@@ -196,9 +196,9 @@ def recur_post_comments():
     else:
         print("No more mentions.")
         return
-    if not post_comment(new_mention, actually_do_it = False):
+    if not post_comment(new_mention, actually_do_it = True):
         recur_post_comments()
 
 
 recur_post_comments()
-# tools.save_found_mentions(new_mentions_list)
+tools.save_found_mentions(new_mentions_list)
