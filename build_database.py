@@ -19,7 +19,6 @@ all_departments = ["acen", "aplx", "ams", "art", "artg", "astr", "bioc", "mcdb",
                    "phye", "phys", "poli", "port", "punj", "russ", "scic", "socd", "socy", "span", "sphs", "stev",
                    "tim", "thea", "ucdc", "writ", "yidd", 'prtr', 'anth', 'psyc', 'havc', 'clei', 'econ', 'germ']
 
-# all_departments.extend(['ce', 'cs'])
 
 lit_department_codes = {'Literature': 'lit',
                         'Creative Writing': 'ltcr',

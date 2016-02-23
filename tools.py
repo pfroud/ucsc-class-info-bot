@@ -4,6 +4,7 @@ and varialbes used by multiple files."""
 import pickle
 import praw
 import os
+import warnings
 
 # use this to set up PRAW for the first time
 # reddit = praw.Reddit(user_agent = 'desktop:ucsc-class-info-bot:v0.0.1 (by /u/ucsc-class-info-bot)',
@@ -53,8 +54,12 @@ def auth_reddit():
     :return: praw instance
     :rtype praw.__init__.AuthenticatedReddit
     """
-    red = praw.Reddit(user_agent = 'desktop:ucsc-class-info-bot:v0.0.1 (by /u/ucsc-class-info-bot)',
-                      site_name = 'ucsc_bot')
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        red = praw.Reddit(user_agent = 'desktop:ucsc-class-info-bot:v0.0.1 (by /u/ucsc-class-info-bot)',
+                          site_name = 'ucsc_bot')
+
     with open('pickle/access_information.pickle', 'rb') as file:
         access_information = pickle.load(file)
     file.close()
@@ -101,6 +106,7 @@ def print_found_mentions(found_mentions):
     for pwm_obj in found_mentions:
         print(pwm_obj)
 
+
 def load_posts_with_comments():
     """Loads from disk the dict of posts that have already been commented on.
 
@@ -115,6 +121,7 @@ def load_posts_with_comments():
     file.close()
     return a_c
 
+
 def load_found_mentions():
     """Loads from disk the list of found mentions from the last run of find_mentions().
 
@@ -125,6 +132,7 @@ def load_found_mentions():
         mentions = pickle.load(file)
     file.close()
     return mentions
+
 
 def save_found_mentions(found_mentions):
     """Saves to disk mentions found from from the last run of find_mentions().

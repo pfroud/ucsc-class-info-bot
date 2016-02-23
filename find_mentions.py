@@ -8,7 +8,8 @@ import build_database  # used for pad_course_num() and load_database()
 import tools
 from tools import trunc_pad
 
-_mention_regex = re.compile(" [0-9]+[A-Za-z]?")  # space is now required
+_mention_regex = re.compile(" ?[0-9]+[A-Za-z]?")
+_split_regex = re.compile("([a-zA-Z]+ ?)([0-9]+[A-Za-z]?)")
 
 
 class PostWithMentions:
@@ -41,21 +42,24 @@ def _get_mentions_in_submission(submission_):
             continue
         mentions_list.extend(_get_mentions_in_string(comment.body))
 
+    mentions_list = _remove_list_duplicates_preserve_order(mentions_list)
+
     print('{id}{_}{author}{_}{title}{_}{mentions}'
           .format(id = trunc_pad(submission_.id, "id"),
                   author = trunc_pad(submission_.author.name, "author"),
                   title = trunc_pad(submission_.title, "title"),
                   mentions = mentions_list,
-                  _ = '\t'))
+                  _ = '  '))
 
     if not mentions_list:  # if list is empty
         return None
     else:
-        return PostWithMentions(submission_.id, _remove_list_duplicates_preserve_order(mentions_list))
+        return PostWithMentions(submission_.id, mentions_list)
 
 
 all_depts_with_lit = build_database.all_departments
 all_depts_with_lit.extend(build_database.lit_department_codes.values())
+all_depts_with_lit.extend(['ce', 'cs'])
 
 
 def _get_mentions_in_string(source_):
@@ -113,6 +117,25 @@ def _get_mentions_in_string(source_):
     return courses_found
 
 
+def _unify_mention_format(mention_):
+    """Gaurentees a space between deptartment and number, and expands CS and CE to CMPS and CMPE.
+
+    :param mention_: the mention to reformat
+    :return: the reformatted mention
+    """
+    m = _split_regex.match(mention_)
+    dept = m.group(1).lower().strip()
+    num = m.group(2)
+
+    if dept == 'cs':
+        dept = 'cmps'
+
+    if dept == 'ce':
+        dept = 'cmpe'
+
+    return dept + " " + num
+
+
 def _remove_list_duplicates_preserve_order(input_list):
     """Removes duplicates from a list, while preserving order.
     To do this easily without preserving order, do list(set(input_list)).
@@ -125,6 +148,7 @@ def _remove_list_duplicates_preserve_order(input_list):
     new_list = []
 
     for i in input_list:
+        i = _unify_mention_format(i)
         if i not in new_list:
             new_list.append(i)
 
@@ -144,12 +168,12 @@ def find_mentions():
           .format(id = trunc_pad("id"),
                   author = trunc_pad("author"),
                   title = trunc_pad("title"),
-                  _ = '\t'))
+                  _ = '  '))
 
     subreddit = reddit.get_subreddit('ucsc')
     list_of_posts_with_mentions = []
 
-    for submission in subreddit.get_new():
+    for submission in subreddit.get_new(limit = 50):
         found_mentions = _get_mentions_in_submission(submission)
         if found_mentions is not None:
             list_of_posts_with_mentions.append(found_mentions)

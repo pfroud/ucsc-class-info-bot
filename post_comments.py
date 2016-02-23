@@ -7,6 +7,7 @@ from tools import ExistingComment
 import re
 import pickle
 import os.path
+import time
 
 from build_database import CourseDatabase, Department, Course  # need this to de-pickle course_database.pickle
 from find_mentions import PostWithMentions  # need this to de-pickle found_mentions.pickle
@@ -92,15 +93,8 @@ def _mention_to_course_object(db_, mention_):
     :rtype: Course
     """
     split = mention_.split(' ')
-
     dept = split[0].lower()
-    # if dept == 'cs':
-    #     dept = 'cmps'
-    # if dept == 'ce':
-    #     dept = 'cmpe'
-
     num = build_database.pad_course_num(split[1].upper())  # eventually get rid of this
-    # num = split[1].upper()
 
     try:
         course_obj = db_.depts[dept].courses[num]
@@ -153,7 +147,7 @@ def _print_csv_row(submission_, action, mentions_current, mentions_previous):
             action = trunc_pad(action, "action"),
             mentions_current = mentions_current,
             mentions_previous = mentions_previous,
-            _ = '\t'))
+            _ = '  '))
 
 
 def _save_posts_with_comments(posts_with_comments):
@@ -178,14 +172,14 @@ new_mentions_list = tools.load_found_mentions()
 db = build_database.load_database()
 reddit = tools.auth_reddit()
 
-# print('id{_}author{_}title{_}action{_}current mentions{_}previous mentions'.format(_ = "\t"))
+print(time.strftime('%H:%M %p'))
 
 print('{id}{_}{author}{_}{title}{_}{action}{_}current mentions{_}previous mentions'
       .format(id = trunc_pad("id"),
               author = trunc_pad("author"),
               title = trunc_pad("title"),
               action = trunc_pad("action"),
-              _ = '\t'))
+              _ = '  '))
 
 
 def recur_post_comments():
