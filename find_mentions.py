@@ -8,8 +8,8 @@ import build_database  # used for pad_course_num() and load_database()
 import tools
 from tools import trunc_pad
 
-_mention_regex = re.compile(" ?[0-9]+[A-Za-z]?")
-_split_regex = re.compile("([a-zA-Z]+ ?)([0-9]+[A-Za-z]?)")
+_regex_mention = re.compile(" ?[0-9]+[A-Za-z]?")
+_regex_split = re.compile("([a-zA-Z]+ ?)([0-9]+[A-Za-z]?)")
 
 
 class PostWithMentions:
@@ -92,14 +92,14 @@ def _get_mentions_in_string(source_):
                 # set string index where subject ends
                 subj_end_index = subj_start_index + len(subj)
 
-                #  slice string to send to _mention_regex matcher. maximum of 5 extra chars needed
+                #  slice string to send to _regex_mention matcher. maximum of 5 extra chars needed
                 regex_substr = trimmed_str[subj_end_index: subj_end_index + 5]
 
                 # set next search to start after this one ends
                 start_of_next_search += subj_end_index
 
                 # search for course number
-                regex_result = _mention_regex.match(regex_substr)
+                regex_result = _regex_mention.match(regex_substr)
                 if regex_result is not None:  # if found a class number
 
                     # string with subject and course number
@@ -123,7 +123,7 @@ def _unify_mention_format(mention_):
     :param mention_: the mention to reformat
     :return: the reformatted mention
     """
-    m = _split_regex.match(mention_)
+    m = _regex_split.match(mention_)
     dept = m.group(1).lower().strip()
     num = m.group(2)
 
@@ -173,7 +173,7 @@ def find_mentions():
     subreddit = reddit.get_subreddit('ucsc')
     list_of_posts_with_mentions = []
 
-    for submission in subreddit.get_new(limit = 50):
+    for submission in subreddit.get_new():
         found_mentions = _get_mentions_in_submission(submission)
         if found_mentions is not None:
             list_of_posts_with_mentions.append(found_mentions)
