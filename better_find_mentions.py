@@ -13,6 +13,7 @@ Strings I'm using for testing:
 """
 
 import re
+from find_mentions import _unify_mention_format
 
 depts = "acen|ams|anth|aplx|art|artg|astr|bioc|bme|ce|chem|chin|clei|clni|clte|cmmu|cmpe|cmpm|cmps|cowl|cres|crwn|cs|" \
         "danm|eart|econ|educ|ee|eeb|envs|film|fmst|fren|game|germ|gree|havc|hebr|his|hisc|ital|japn|jwst|krsg|laad|" \
@@ -27,20 +28,34 @@ delim = "([,/ &+]|or|and|with)*"
 
 final = "(" + mention + delim + ")+"
 
+
 # final is:
 # "(((\d+([A-Za-z] ?/ ?)+[A-Za-z])|(\d+[A-Za-z]?))([,/ &+]|or|and|with)*)+"
 
 
-def handle_list_letters(str_):
-    """Gets a string like '129A/B/C'
+def handle_list_letters(dept, rest):
+    """Gets a string like '129A/B/C' and returns something like ['129A', '129B', '129C']
 
-    :param str_:
+    :param dept:
+    :param rest:
     :return:
     """
 
-    m = re.match("([a-zA-Z]+ ?)([0-9]+[A-Za-z]?)", str_)
-    dept = m.group(1).lower().strip()
-    num = m.group(2)
+    # print("running on \"{}\", \"{}\"".format(dept, rest))
+
+    m = re.match(" ?(\d+) ?((?:[A-Za-z] ?/ ?)+[A-Za-z])", rest)
+    num = m.group(1)
+    letters = m.group(2).split('/')
+
+    # print("\"{}\"".format(num))
+    # print(letters)
+
+    return_list = []
+
+    for l in letters:
+        return_list.append(dept + " " + num + l.strip())
+
+    return return_list
 
 
 def parse_string(str_):
@@ -57,18 +72,23 @@ def parse_string(str_):
     if not match_dept:
         return []
 
-    dept = str_[match_dept.start():match_dept.end()]
-    print("\"{}\"".format(dept))
+    dept = str_[match_dept.start():match_dept.end()].lower()
+    if dept == 'cs':
+        dept = 'cmps'
+    if dept == 'ce':
+        dept = 'cmpe'
+    # print("\"{}\"".format(dept))
 
     rest = str_[match_dept.end():]
-    print("\"{}\"".format(rest))
+    # print("\"{}\"".format(rest))
+
+    mentions = []
 
     match_list_letters = re.match(same_num_list_letters, rest)
     if match_list_letters:
-        handle_list_letters(rest)
+        mentions.extend(handle_list_letters(dept, rest))
+
+    print(mentions)
 
 
-
-
-
-parse_string("I am going to take CS 2, 5j, 10a/b/c")
+parse_string("I am going to take CS 10a/b/c")
