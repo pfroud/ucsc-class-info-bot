@@ -62,35 +62,39 @@ def parse_string(str_):
     if not str_:
         return []
 
+    # look for a department code
     match_dept = re.search(pattern_depts, str_, re.IGNORECASE)
-
     if not match_dept:
         return []
-
     dept = str_[match_dept.start():match_dept.end()].lower()
     if dept == 'cs':
         dept = 'cmps'
     if dept == 'ce':
         dept = 'cmpe'
-    rest = str_[match_dept.end():]
+    rest = str_[match_dept.end():]  # everything past the department code
 
-    mentions = []
+    mentions = []  # to be returned
 
-    match_list_letters = re.match(" ?(\d+([A-Za-z] ?/ ?)+[A-Za-z])", rest)
-    if match_list_letters:
+    # look for a list with same number but different letters, like "10a/b/c"
+    match = re.match(" ?(\d+([A-Za-z] ?/ ?)+[A-Za-z])", rest)
+
+    if match:  # found list of letters
         mentions.extend(handle_list_letters(dept, rest))
-        rest = rest[match_list_letters.end():]
-    else:
-        match_num_opt_letter = re.match(" ?\d+[A-Za-z]?", rest)
-        if match_num_opt_letter:
-            substr = rest[match_num_opt_letter.start(): match_num_opt_letter.end()]
-            mentions.append(dept + ' ' + substr)
-            rest = rest[match_num_opt_letter.end():]
-        else:
+        rest = rest[match.end():]  # everything past the list of letters
+        mentions.extend(parse_string(rest))  # recur
+
+    else:  # didn't find list of letters
+        match = re.match(" ?\d+[A-Za-z]?", rest)  # look for a regular course number
+
+        if match:  # found regular course number
+            mentions.append(dept + ' ' + rest[match.start(): match.end()])
+            rest = rest[match.end():]  # everything past regular course number
+            mentions.extend(parse_string(rest))  # recur
+
+        else:  # didn't find regular course number
             pass
 
     return mentions
 
 
-# print(parse_string("I am going to take CS 10a/b/c"))
-print(parse_string("I am going to take CS 10a/b/c"))
+print(parse_string("I am going to take CS 10a/b/c and CE 5l/m/n and lit 4a and chem1"))
