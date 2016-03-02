@@ -8,9 +8,6 @@ import build_database  # used for pad_course_num() and load_database()
 import tools
 from tools import trunc_pad
 
-_regex_mention = re.compile(" ?[0-9]+[A-Za-z]?")
-_regex_split = re.compile("([a-zA-Z]+ ?)([0-9]+[A-Za-z]?)")
-
 
 class PostWithMentions:
     """Info about a specefic post and mentions found in that post."""
@@ -99,7 +96,7 @@ def _get_mentions_in_string(source_):
                 start_of_next_search += subj_end_index
 
                 # search for course number
-                regex_result = _regex_mention.match(regex_substr)
+                regex_result = re.match(" ?[0-9]+[A-Za-z]?", regex_substr)
                 if regex_result is not None:  # if found a class number
 
                     # string with subject and course number
@@ -123,7 +120,7 @@ def _unify_mention_format(mention_):
     :param mention_: the mention to reformat
     :return: the reformatted mention
     """
-    m = _regex_split.match(mention_)
+    m = re.match("([a-zA-Z]+ ?)([0-9]+[A-Za-z]?)", mention_)
     dept = m.group(1).lower().strip()
     num = m.group(2)
 
