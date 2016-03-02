@@ -15,18 +15,19 @@ Strings I'm using for testing:
 import re
 from find_mentions import _unify_mention_format
 
-depts = "acen|ams|anth|aplx|art|artg|astr|bioc|bme|ce|chem|chin|clei|clni|clte|cmmu|cmpe|cmpm|cmps|cowl|cres|crwn|cs|" \
-        "danm|eart|econ|educ|ee|eeb|envs|film|fmst|fren|game|germ|gree|havc|hebr|his|hisc|ital|japn|jwst|krsg|laad|" \
-        "lals|latn|lgst|ling|lit|ltcr|ltel|ltfr|ltge|ltgr|ltin|ltit|ltmo|ltpr|ltsp|ltwl|math|mcdb|merr|metx|musc|" \
-        "oaks|ocea|phil|phye|phys|poli|port|prtr|psyc|punj|russ|scic|socd|socy|span|sphs|stev|thea|tim|ucdc|writ|yidd"
+pattern_depts = "acen|ams|anth|aplx|art|artg|astr|bioc|bme|ce|chem|chin|clei|clni|clte|cmmu|cmpe|cmpm|cmps|cowl|cres|" \
+                "crwn|cs|" \
+                "danm|eart|econ|educ|ee|eeb|envs|film|fmst|fren|game|germ|gree|havc|hebr|his|hisc|ital|japn|jwst|krsg|laad|" \
+                "lals|latn|lgst|ling|lit|ltcr|ltel|ltfr|ltge|ltgr|ltin|ltit|ltmo|ltpr|ltsp|ltwl|math|mcdb|merr|metx|musc|" \
+                "oaks|ocea|phil|phye|phys|poli|port|prtr|psyc|punj|russ|scic|socd|socy|span|sphs|stev|thea|tim|ucdc|writ|yidd"
 
-same_num_list_letters = " ?(\d+([A-Za-z] ?/ ?)+[A-Za-z])"
-num_with_optional_letter = "(\d+[A-Za-z]?)"
-mention = "(" + same_num_list_letters + "|" + num_with_optional_letter + ")"
+pattern_same_num_list_letters = "(\d+([A-Za-z] ?/ ?)+[A-Za-z])"
+pattern_num_with_optional_letter = "(\d+[A-Za-z]?)"
+pattern_mention = "(" + pattern_same_num_list_letters + "|" + pattern_num_with_optional_letter + ")"
 
-delim = "([,/ &+]|or|and|with)*"
+pattern_delim = "([,/ &+]|or|and|with)*"
 
-final = "(" + mention + delim + ")+"
+pattern_final = "(" + pattern_mention + pattern_delim + ")+"
 
 
 # final is:
@@ -40,15 +41,9 @@ def handle_list_letters(dept, rest):
     :param rest:
     :return:
     """
-
-    # print("running on \"{}\", \"{}\"".format(dept, rest))
-
     m = re.match(" ?(\d+) ?((?:[A-Za-z] ?/ ?)+[A-Za-z])", rest)
     num = m.group(1)
     letters = m.group(2).split('/')
-
-    # print("\"{}\"".format(num))
-    # print(letters)
 
     return_list = []
 
@@ -67,7 +62,7 @@ def parse_string(str_):
     if not str_:
         return []
 
-    match_dept = re.search(depts, str_, re.IGNORECASE)
+    match_dept = re.search(pattern_depts, str_, re.IGNORECASE)
 
     if not match_dept:
         return []
@@ -77,18 +72,25 @@ def parse_string(str_):
         dept = 'cmps'
     if dept == 'ce':
         dept = 'cmpe'
-    # print("\"{}\"".format(dept))
-
     rest = str_[match_dept.end():]
-    # print("\"{}\"".format(rest))
 
     mentions = []
 
-    match_list_letters = re.match(same_num_list_letters, rest)
+    match_list_letters = re.match(" ?(\d+([A-Za-z] ?/ ?)+[A-Za-z])", rest)
     if match_list_letters:
         mentions.extend(handle_list_letters(dept, rest))
+        rest = rest[match_list_letters.end():]
+    else:
+        match_num_opt_letter = re.match(" ?\d+[A-Za-z]?", rest)
+        if match_num_opt_letter:
+            substr = rest[match_num_opt_letter.start(): match_num_opt_letter.end()]
+            mentions.append(dept + ' ' + substr)
+            rest = rest[match_num_opt_letter.end():]
+        else:
+            pass
 
-    print(mentions)
+    return mentions
 
 
-parse_string("I am going to take CS 10a/b/c")
+# print(parse_string("I am going to take CS 10a/b/c"))
+print(parse_string("I am going to take CS 10a/b/c"))
