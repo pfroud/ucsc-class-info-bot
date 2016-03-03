@@ -123,12 +123,12 @@ I can only post a comment every ten minutes, so the program runs until a comment
 
 ## Known bugs
 
-* Comment is edited even if a new mention doesn't match a course in the db
-* In the log for post_comments, mentions that don't match to a course in the db are printed
+* Comment is edited even if a new mention doesn't match a course in the db (next up)
+* In the log for post_comments, mentions that don't match to a course in the db are printed (next up)
 * In the comment, classes are sorted by department name (I think) instead of by order mentioned
 
 ## Future work
 * Automate so I don't have to run `post_comments.py` manually every ten minutes and/or reduce the rate limit
-* Make the bot see mentions of same department with list of numbers, e.g. "Math 21, 23b, 24 and 100".
-* Make the bot see mentions of same number with list of letters, e.g. "CE 129A/B/C"
+* Make the bot see mentions of same department with list of numbers, e.g. "Math 21, 23b, 24 and 100". (written!)
+* Make the bot see mentions of same number with list of letters, e.g. "CE 129A/B/C". (written!)
 * Make the bot see mentions of some department names instead of department codes, e.g. "chemistry 103" instead of "chem 103"

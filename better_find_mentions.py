@@ -54,7 +54,7 @@ def parse_letter_list(dept, list_letter_mention):
 
 
 def parse_multi_mention(multi_mention):
-    """
+    """Parses multi-mentions into normal mentions.
 
     :param multi_mention: a multi-mention, e.g. "Math 21, 23b, 24 and 100"
     :type multi_mention: str
