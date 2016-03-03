@@ -16,21 +16,21 @@ import re
 from find_mentions import _unify_mention_format
 
 pattern_depts = "acen|ams|anth|aplx|art|artg|astr|bioc|bme|ce|chem|chin|clei|clni|clte|cmmu|cmpe|cmpm|cmps|cowl|cres|" \
-                "crwn|cs|" \
-                "danm|eart|econ|educ|ee|eeb|envs|film|fmst|fren|game|germ|gree|havc|hebr|his|hisc|ital|japn|jwst|krsg|laad|" \
-                "lals|latn|lgst|ling|lit|ltcr|ltel|ltfr|ltge|ltgr|ltin|ltit|ltmo|ltpr|ltsp|ltwl|math|mcdb|merr|metx|musc|" \
-                "oaks|ocea|phil|phye|phys|poli|port|prtr|psyc|punj|russ|scic|socd|socy|span|sphs|stev|thea|tim|ucdc|writ|yidd"
+                "crwn|cs|danm|eart|econ|educ|ee|eeb|envs|film|fmst|fren|game|germ|gree|havc|hebr|his|hisc|ital|japn|" \
+                "jwst|krsg|laad|lals|latn|lgst|ling|lit|ltcr|ltel|ltfr|ltge|ltgr|ltin|ltit|ltmo|ltpr|ltsp|ltwl|math|" \
+                "mcdb|merr|metx|musc|oaks|ocea|phil|phye|phys|poli|port|prtr|psyc|punj|russ|scic|socd|socy|span|sphs|" \
+                "stev|thea|tim|ucdc|writ|yidd"
 
-pattern_same_num_list_letters = "(\d+([A-Za-z] ?/ ?)+[A-Za-z])"
+pattern_same_num_list_letters = "(\d+(?:[A-Za-z] ?/ ?)+[A-Za-z])"
 pattern_num_with_optional_letter = "(\d+[A-Za-z]?)"
+
 pattern_mention = "(" + pattern_same_num_list_letters + "|" + pattern_num_with_optional_letter + ")"
 
-pattern_delim = "([,/ &+]|or|and|with)*"
+pattern_delim = "(?:[,/ &+]|or|and|with)*"
 
-pattern_final = "(" + pattern_mention + pattern_delim + ")+"
+pattern_final = "(" + pattern_depts + ") ?(" + pattern_mention + pattern_delim + ")+"
 
-
-# final is:
+# old pattern_final is:
 # "(((\d+([A-Za-z] ?/ ?)+[A-Za-z])|(\d+[A-Za-z]?))([,/ &+]|or|and|with)*)+"
 
 
@@ -53,6 +53,32 @@ def handle_list_letters(dept, rest):
     return return_list
 
 
+def handle_big_thing(str_):
+    mentions = []
+
+    match_dept = re.match(pattern_depts, str_, re.IGNORECASE)
+    dept = str_[match_dept.start():match_dept.end()].lower()
+    if dept == 'cs':
+        dept = 'cmps'
+    if dept == 'ce':
+        dept = 'cmpe'
+    rest = str_[match_dept.end():]
+
+    finds = re.findall(pattern_same_num_list_letters, rest)
+    rest = re.sub(pattern_same_num_list_letters, "", rest)
+
+    for f in finds:
+        mentions.extend(handle_list_letters(dept, f))
+
+    finds = re.findall(pattern_num_with_optional_letter, rest)
+    rest = re.sub(pattern_num_with_optional_letter, "", rest)
+
+    for f in finds:
+        mentions.append(dept + ' ' + f)
+
+    return mentions
+
+
 def parse_string(str_):
     """I'm not sure what this will do.
 
@@ -62,39 +88,15 @@ def parse_string(str_):
     if not str_:
         return []
 
-    # look for a department code
-    match_dept = re.search(pattern_depts, str_, re.IGNORECASE)
-    if not match_dept:
-        return []
-    dept = str_[match_dept.start():match_dept.end()].lower()
-    if dept == 'cs':
-        dept = 'cmps'
-    if dept == 'ce':
-        dept = 'cmpe'
-    rest = str_[match_dept.end():]  # everything past the department code
+    mentions = []
 
-    mentions = []  # to be returned
-
-    # look for a list with same number but different letters, like "10a/b/c"
-    match = re.match(" ?(\d+([A-Za-z] ?/ ?)+[A-Za-z])", rest)
-
-    if match:  # found list of letters
-        mentions.extend(handle_list_letters(dept, rest))
-        rest = rest[match.end():]  # everything past the list of letters
-        mentions.extend(parse_string(rest))  # recur
-
-    else:  # didn't find list of letters
-        match = re.match(" ?\d+[A-Za-z]?", rest)  # look for a regular course number
-
-        if match:  # found regular course number
-            mentions.append(dept + ' ' + rest[match.start(): match.end()])
-            rest = rest[match.end():]  # everything past regular course number
-            mentions.extend(parse_string(rest))  # recur
-
-        else:  # didn't find regular course number
-            pass
+    match = re.search(pattern_final, str_, re.IGNORECASE)  # look for the big thing
+    if match:  # found a big thing
+        mentions.extend(handle_big_thing(str_[match.start():match.end()]))
+        mentions.extend(parse_string(str_[match.end():]))
 
     return mentions
 
 
-print(parse_string("I am going to take CS 10a/b/c and CE 5l/m/n and lit 4a and chem1"))
+print(parse_string(
+    "CS 11a, 16A/B/C, 14, and 129w/x/y/z? Someone told me I should take econ 114q/r, 1, 2 and lit 990"))
