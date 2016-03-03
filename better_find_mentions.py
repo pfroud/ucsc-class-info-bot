@@ -1,99 +1,115 @@
 """
-Working on making a thing to see mentions of same department with list of numbers.
-Strings I'm using for testing:
-
-115, 116, and 117
-115a, 116g, and 117m
-111 & 102
-46, 170 or 80
-15/16
-15a/16a
-1 and 2
-4, 1, and 2
+Vastly superior version of find_mentions which is faster can can see:
+* multi-mentions: mentions of same department with list of numbers, e.g. "Math 21, 23b, 24 and 100"
+* letter-list mentions: mentions of same number with list of letters, e.g. "CE 129A/B/C"
+* letter-list mentions in a multi mention, e.g. "CS 4a, 37a/b, 15, 163w/x/y/z"
 """
 
 import re
-from find_mentions import _unify_mention_format
 
+# from build_database.all_departments, with build_database.lit_department_codes.values() and "CS" and "CE"
 pattern_depts = "acen|ams|anth|aplx|art|artg|astr|bioc|bme|ce|chem|chin|clei|clni|clte|cmmu|cmpe|cmpm|cmps|cowl|cres|" \
                 "crwn|cs|danm|eart|econ|educ|ee|eeb|envs|film|fmst|fren|game|germ|gree|havc|hebr|his|hisc|ital|japn|" \
                 "jwst|krsg|laad|lals|latn|lgst|ling|lit|ltcr|ltel|ltfr|ltge|ltgr|ltin|ltit|ltmo|ltpr|ltsp|ltwl|math|" \
                 "mcdb|merr|metx|musc|oaks|ocea|phil|phye|phys|poli|port|prtr|psyc|punj|russ|scic|socd|socy|span|sphs|" \
                 "stev|thea|tim|ucdc|writ|yidd"
 
-pattern_same_num_list_letters = "(\d+(?:[A-Za-z] ?/ ?)+[A-Za-z])"
-pattern_num_with_optional_letter = "(\d+[A-Za-z]?)"
+# matches a letter-list mention: a mention of same number with list of letters, e.g. "CE 129A/B/C"
+pattern_mention_letter_list = "(\d+(?:[A-Za-z] ?/ ?)+[A-Za-z])"
 
-pattern_mention = "(" + pattern_same_num_list_letters + "|" + pattern_num_with_optional_letter + ")"
+# matches a normal mention: a mention with a course number and one optional letter, e.g. "12" or "12a"
+pattern_mention_normal = "(\d+[A-Za-z]?)"
 
-pattern_delim = "(?:[,/ &+]|or|and|with)*"
+# matches either a letter-list mention or a normal mention
+pattern_mention_any = "(" + pattern_mention_letter_list + "|" + pattern_mention_normal + ")"
 
-pattern_final = "(" + pattern_depts + ") ?(" + pattern_mention + pattern_delim + ")+"
+# matches a delimiter in a multi-mention, e.g. "Math 21, 23b, 24 and 100"
+pattern_delimiter = "(?:[,/ &+]|or|and|with)*"
 
-# old pattern_final is:
-# "(((\d+([A-Za-z] ?/ ?)+[A-Za-z])|(\d+[A-Za-z]?))([,/ &+]|or|and|with)*)+"
+# matches a whole mention string - a department code then multiple course numbers and possibly multiple course letters.
+# e.g. matches "CS 10, 15a, or 35a/b/c"
+pattern_final = "(" + pattern_depts + ") ?(" + pattern_mention_any + pattern_delimiter + ")*" + pattern_mention_any
 
 
-def handle_list_letters(dept, rest):
-    """Gets a string like '129A/B/C' and returns something like ['129A', '129B', '129C']
+def parse_letter_list(dept, list_letter_mention):
+    """Given a string of one course number a list of letters, returns a list with one letter per number.
+    e.g. '129A/B/C' becomes ['129A', '129B', '129C']
 
-    :param dept:
-    :param rest:
-    :return:
+    :param dept: the department the mention is in
+    :type dept: str
+    :param list_letter_mention: a string with one course number and a list of letters, e.g. '129A/B/C'
+    :type list_letter_mention: str
+    :return: a list of normal mentions, e.g. ['129A', '129B', '129C']
+    :rtype: list
     """
-    m = re.match(" ?(\d+) ?((?:[A-Za-z] ?/ ?)+[A-Za-z])", rest)
+    m = re.match(" ?(\d+) ?((?:[A-Za-z] ?/ ?)+[A-Za-z])", list_letter_mention)  # != pattern_mention_letter_list
     num = m.group(1)
     letters = m.group(2).split('/')
 
     return_list = []
-
     for l in letters:
         return_list.append(dept + " " + num + l.strip())
 
     return return_list
 
 
-def handle_big_thing(str_):
+def parse_multi_mention(multi_mention):
+    """
+
+    :param multi_mention: a multi-mention, e.g. "Math 21, 23b, 24 and 100"
+    :type multi_mention: str
+    :return: normal mentions from the multi-mention
+    :rtype: list
+    """
     mentions = []
 
-    match_dept = re.match(pattern_depts, str_, re.IGNORECASE)
-    dept = str_[match_dept.start():match_dept.end()].lower()
+    # extract department code
+    match_dept = re.match(pattern_depts, multi_mention, re.IGNORECASE)
+    dept = multi_mention[match_dept.start():match_dept.end()].lower()
     if dept == 'cs':
         dept = 'cmps'
     if dept == 'ce':
         dept = 'cmpe'
-    rest = str_[match_dept.end():]
 
-    finds = re.findall(pattern_same_num_list_letters, rest)
-    rest = re.sub(pattern_same_num_list_letters, "", rest)
+    # the rest of the string, past department code
+    rest = multi_mention[match_dept.end():]
 
-    for f in finds:
-        mentions.extend(handle_list_letters(dept, f))
+    # look for letter-list mentions, like "129a/b/c"
+    mentions_letter_list = re.findall(pattern_mention_letter_list, rest)
+    for m in mentions_letter_list:
+        mentions.extend(parse_letter_list(dept, m))
 
-    finds = re.findall(pattern_num_with_optional_letter, rest)
-    rest = re.sub(pattern_num_with_optional_letter, "", rest)
+    # take out letter-list mentions, if any
+    rest = re.sub(pattern_mention_letter_list, "", rest)
 
-    for f in finds:
-        mentions.append(dept + ' ' + f)
+    # look for normal mentions, like "12" or "12a"
+    men_normal = re.findall(pattern_mention_normal, rest)
+    for m in men_normal:
+        mentions.append(dept + ' ' + m)
 
     return mentions
 
 
 def parse_string(str_):
-    """I'm not sure what this will do.
+    """Finds mentions in a string.
+    Can see...
+    * multi-mentions: mentions of same department with list of numbers, e.g. "Math 21, 23b, 24 and 100"
+    * letter-list mentions: mentions of same number with list of letters, e.g. "CE 129A/B/C"
+    * letter-list mentions in a multi mention, e.g. "CS 4a, 37a/b, 15, 163w/x/y/z"
 
-    :param str_:
-    :return:
+    :param str_: string to find mentions in
+    :type str_: string
+    :return: list of strings of mentions
+    :rtype: list
     """
     if not str_:
         return []
 
     mentions = []
 
-    match = re.search(pattern_final, str_, re.IGNORECASE)  # look for the big thing
-    if match:  # found a big thing
-        mentions.extend(handle_big_thing(str_[match.start():match.end()]))
-        mentions.extend(parse_string(str_[match.end():]))
+    multi_mentions = re.findall(pattern_final, str_, re.IGNORECASE)
+    for m in multi_mentions:
+        mentions.extend(parse_multi_mention(m))
 
     return mentions
 
