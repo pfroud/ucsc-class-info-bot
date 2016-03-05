@@ -24,6 +24,8 @@ class PostWithMentions:
 def _get_mentions_in_submission(counter, submission_):
     """Finds mentions of a course in a submission's title, selftext, and comments.
 
+    :param counter: counter to print in table row
+    :type counter: int
     :param submission_: a praw submission object
     :type submission_: praw.objects.Submission
     :return: a PostWithMentions object which has the post ID and a list of strings of mentions
@@ -56,11 +58,6 @@ def _get_mentions_in_submission(counter, submission_):
         return PostWithMentions(submission_.id, mentions_list)
 
 
-all_depts_with_lit = build_database.all_departments
-all_depts_with_lit.extend(build_database.lit_department_codes.values())
-all_depts_with_lit.extend(['ce', 'cs'])
-
-
 def _get_mentions_in_string(source_):
     """Finds mentions of courses (department and number) in a string.
 
@@ -71,51 +68,6 @@ def _get_mentions_in_string(source_):
     """
 
     return better_find_mentions.parse_string(source_)
-
-    str_in = source_.lower()
-    courses_found = []
-    for subj in all_depts_with_lit:  # iterate subjects
-
-        # set start of search to beginning of string
-        start_of_next_search = 0
-
-        # search until reached end of string
-        while start_of_next_search < len(str_in):
-
-            # trim away part of string already searched through
-            trimmed_str = str_in[start_of_next_search:]
-
-            # run string search
-            subj_start_index = trimmed_str.find(subj)
-
-            if subj_start_index >= 0:  # if found a subject in body
-
-                # set string index where subject ends
-                subj_end_index = subj_start_index + len(subj)
-
-                #  slice string to send to _regex_mention matcher. maximum of 5 extra chars needed
-                regex_substr = trimmed_str[subj_end_index: subj_end_index + 5]
-
-                # set next search to start after this one ends
-                start_of_next_search += subj_end_index
-
-                # search for course number
-                regex_result = re.match(" ?[0-9]+[A-Za-z]?", regex_substr)
-                if regex_result is not None:  # if found a class number
-
-                    # string with subject and course number
-                    subj_with_number = trimmed_str[subj_start_index: subj_end_index + regex_result.end()]
-
-                    # move the start of next search past the number we found
-                    start_of_next_search += regex_result.end()
-
-                    courses_found.append(subj_with_number)
-
-                    # print("matched string \"" + subj_with_number + "\".")
-            else:
-                break
-
-    return courses_found
 
 
 def _unify_mention_format(mention_):
@@ -162,7 +114,7 @@ def find_mentions():
     reddit = tools.auth_reddit()
 
     # use this to find mentions in only one post
-    # tools.save_found_mentions([_get_mentions_in_submission(reddit.get_submission(submission_id = "447b2j"))])
+    # tools.save_found_mentions([_get_mentions_in_submission(0, reddit.get_submission(submission_id = "475ixl"))])
     # return
 
     print('{num}{_}{id}{_}{author}{_}{title}{_}mentions'
