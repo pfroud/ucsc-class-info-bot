@@ -28,7 +28,7 @@ pattern_delimiter = "(?:[,/ &+]|or|and|with)*"
 
 # matches a whole mention string - a department code then multiple course numbers and possibly multiple course letters.
 # e.g. matches "CS 10, 15a, or 35a/b/c"
-pattern_final = "(?:" + pattern_depts + ") ?(?:" + pattern_mention_any + pattern_delimiter + ")+"
+pattern_final = "(?:^|\\b)(?:" + pattern_depts + ") ?(?:" + pattern_mention_any + pattern_delimiter + ")+"
 
 
 def parse_letter_list(dept, list_letter_mention):
@@ -64,7 +64,7 @@ def parse_multi_mention(multi_mention):
     mentions = []
 
     # extract department code
-    match_dept = re.match(pattern_depts, multi_mention, re.IGNORECASE)
+    match_dept = re.search(pattern_depts, multi_mention, re.IGNORECASE)
     dept = multi_mention[match_dept.start():match_dept.end()].lower()
     if dept == 'cs':
         dept = 'cmps'
@@ -107,7 +107,7 @@ def parse_string(str_):
 
     mentions = []
 
-    multi_mentions = re.findall(pattern_final, str_, re.IGNORECASE)
+    multi_mentions = re.findall(pattern_final, str_, re.IGNORECASE | re.MULTILINE)
     for m in multi_mentions:
         mentions.extend(parse_multi_mention(m))
 

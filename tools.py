@@ -14,9 +14,10 @@ import warnings
 # _save_access_information()
 
 # widths of column for printing tables to console. used by trunc_pad()
-_column_widths = {"id": 7,
-                  "author": 11,
-                  "title": 30,
+_column_widths = {'num': 2,
+                  "id": 7,
+                  "author": 15,
+                  "title": 35,
                   "action": 17}
 
 
@@ -33,7 +34,7 @@ class ExistingComment:
 
 def trunc_pad(string_, use_ = None):
     """Truncates and pads with spaces string_ to be printed in a table.
-    The padding width is indicated by use_.
+    The padding width is indicated by use_. If _use isn't specifeid, the string is the use.
 
     :param string_: string to be truncated and padded
     :type string_: str
@@ -45,7 +46,10 @@ def trunc_pad(string_, use_ = None):
     if use_ is None:
         use_ = string_
     width = _column_widths[use_]
-    return string_[:width].ljust(width)
+    if len(string_) > width:
+        return string_[:width - 3] + '...'
+    else:
+        return string_.ljust(width)
 
 
 def auth_reddit():

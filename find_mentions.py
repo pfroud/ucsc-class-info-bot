@@ -21,7 +21,7 @@ class PostWithMentions:
         return "mentions in post id {}: {}".format(self.post_id, self.mentions_list)
 
 
-def _get_mentions_in_submission(submission_):
+def _get_mentions_in_submission(counter, submission_):
     """Finds mentions of a course in a submission's title, selftext, and comments.
 
     :param submission_: a praw submission object
@@ -42,8 +42,9 @@ def _get_mentions_in_submission(submission_):
 
     mentions_list = _remove_list_duplicates_preserve_order(mentions_list)
 
-    print('{id}{_}{author}{_}{title}{_}{mentions}'
-          .format(id = trunc_pad(submission_.id, "id"),
+    print('{num}{_}{id}{_}{author}{_}{title}{_}{mentions}'
+          .format(num = trunc_pad(str(counter), 'num'),
+                  id = trunc_pad(submission_.id, "id"),
                   author = trunc_pad(submission_.author.name, "author"),
                   title = trunc_pad(submission_.title, "title"),
                   mentions = mentions_list,
@@ -164,17 +165,18 @@ def find_mentions():
     # tools.save_found_mentions([_get_mentions_in_submission(reddit.get_submission(submission_id = "447b2j"))])
     # return
 
-    print('{id}{_}{author}{_}{title}{_}mentions'
-          .format(id = trunc_pad("id"),
+    print('{num}{_}{id}{_}{author}{_}{title}{_}mentions'
+          .format(num = trunc_pad("#", 'num'),
+                  id = trunc_pad("id"),
                   author = trunc_pad("author"),
                   title = trunc_pad("title"),
-                  _ = '  '))
+                  _ = '  ').upper())
 
     subreddit = reddit.get_subreddit('ucsc')
     list_of_posts_with_mentions = []
 
-    for submission in subreddit.get_new():
-        found_mentions = _get_mentions_in_submission(submission)
+    for counter, submission in enumerate(subreddit.get_new(), start = 1):
+        found_mentions = _get_mentions_in_submission(counter, submission)
         if found_mentions is not None:
             list_of_posts_with_mentions.append(found_mentions)
 
