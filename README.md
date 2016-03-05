@@ -125,7 +125,7 @@ I can only post a comment every ten minutes, so the program runs until a comment
 
 * Comment is edited even if a new mention doesn't match a course in the db (next up)
 * In the log for post_comments, mentions that don't match to a course in the db are printed (next up)
-* 475ixl: saw 'physics 5c' as 'cs 5c' Add to beginning of regex " |^" (space or beginning of string)?
+* 475ixl: saw 'physics 5c' as 'cs 5c'. Also, in 48if8l, saw 'ce 101' at end of 'science 101'. Add to beginning of regex " |^" (space or beginning of string)?
 * In the comment, classes are sorted by department name (I think) instead of by order mentioned
 
 ## Future work

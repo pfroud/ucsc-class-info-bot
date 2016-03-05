@@ -112,7 +112,3 @@ def parse_string(str_):
         mentions.extend(parse_multi_mention(m))
 
     return mentions
-
-
-print(parse_string(
-    "CS 11a, 16A/B/C, 14, and 129w/x/y/z? Someone told me I should take econ 114q/r, 1, 2 and lit 990"))

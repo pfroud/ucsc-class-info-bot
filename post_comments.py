@@ -26,10 +26,12 @@ def post_comment(new_mention_object, actually_do_it = False):
     submission_id = new_mention_object.post_id
     submission_object = reddit.get_submission(submission_id = submission_id)
 
-    mentions_new = new_mention_object.mentions_list
+    mentions_new_unfiltered = new_mention_object.mentions_list
 
     # filter out mentions that don't match a class. (find less shitty way to do this)
-    mentions_new = [m for m in mentions_new if _mention_to_course_object(db, m) is not None]
+    mentions_new = [m for m in mentions_new_unfiltered if _mention_to_course_object(db, m) is not None]
+    if not mentions_new:
+        return False
 
     if submission_id in existing_posts_with_comments.keys():  # already have a comment with class info
         already_commented_obj = existing_posts_with_comments[submission_id]
@@ -193,9 +195,12 @@ def recur_post_comments():
     else:
         print("No more mentions.")
         return
-    if not post_comment(new_mention, actually_do_it = True):
-        recur_post_comments()
+    # if not post_comment(new_mention, actually_do_it = True):  # needed when i could only post every 10 minutes
+    #     recur_post_comments()
+    post_comment(new_mention, actually_do_it = True)
+    tools.save_found_mentions(new_mentions_list)
+    recur_post_comments()
 
 
 recur_post_comments()
-tools.save_found_mentions(new_mentions_list)
+
