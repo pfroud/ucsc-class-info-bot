@@ -15,23 +15,21 @@ pattern_depts = "acen|ams|anth|aplx|art|artg|astr|bioc|bme|ce|chem|chin|clei|cln
                 "stev|thea|tim|ucdc|writ|yidd"
 
 # matches a letter-list mention: a mention of same number with list of letters, e.g. "CE 129A/B/C"
-pattern_mention_letter_list = "(\d+(?:[A-Za-z] ?/ ?)+[A-Za-z])"
+pattern_mention_letter_list = "(?:\d+(?:[A-Za-z] ?/ ?)+[A-Za-z])"
 
 # matches a normal mention: a mention with a course number and one optional letter, e.g. "12" or "12a"
-pattern_mention_normal = "(\d+[A-Za-z]?)"
+pattern_mention_normal = "(?:\d+[A-Za-z]?)"
 
 # matches either a letter-list mention or a normal mention
-pattern_mention_any = "(" + pattern_mention_letter_list + "|" + pattern_mention_normal + ")"
+pattern_mention_any = "(?:" + pattern_mention_letter_list + "|" + pattern_mention_normal + ")"
 
 # matches a delimiter in a multi-mention, e.g. "Math 21, 23b, 24 and 100"
 pattern_delimiter = "(?:[,/ &+]|or|and|with)*"
 
 # matches a whole mention string - a department code then multiple course numbers and possibly multiple course letters.
 # e.g. matches "CS 10, 15a, or 35a/b/c"
-pattern_final = "(" + pattern_depts + ") ?(" + pattern_mention_any + pattern_delimiter + ")+"
+pattern_final = "(?:" + pattern_depts + ") ?(?:" + pattern_mention_any + pattern_delimiter + ")+"
 
-print(pattern_final)
-exit()
 
 def parse_letter_list(dept, list_letter_mention):
     """Given a string of one course number a list of letters, returns a list with one letter per number.
