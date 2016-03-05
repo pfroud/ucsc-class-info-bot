@@ -28,8 +28,10 @@ pattern_delimiter = "(?:[,/ &+]|or|and|with)*"
 
 # matches a whole mention string - a department code then multiple course numbers and possibly multiple course letters.
 # e.g. matches "CS 10, 15a, or 35a/b/c"
-pattern_final = "(" + pattern_depts + ") ?(" + pattern_mention_any + pattern_delimiter + ")*" + pattern_mention_any
+pattern_final = "(" + pattern_depts + ") ?(" + pattern_mention_any + pattern_delimiter + ")+"
 
+print(pattern_final)
+exit()
 
 def parse_letter_list(dept, list_letter_mention):
     """Given a string of one course number a list of letters, returns a list with one letter per number.

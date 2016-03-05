@@ -7,6 +7,7 @@ import praw
 import build_database  # used for pad_course_num() and load_database()
 import tools
 from tools import trunc_pad
+import better_find_mentions
 
 
 class PostWithMentions:
@@ -67,6 +68,8 @@ def _get_mentions_in_string(source_):
     :return: array of strings of course names
     :rtype: list
     """
+
+    return better_find_mentions.parse_string(source_)
 
     str_in = source_.lower()
     courses_found = []

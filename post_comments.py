@@ -28,6 +28,9 @@ def post_comment(new_mention_object, actually_do_it = False):
 
     mentions_new = new_mention_object.mentions_list
 
+    # filter out mentions that don't match a class. (find less shitty way to do this)
+    mentions_new = [m for m in mentions_new if _mention_to_course_object(db, m) is not None]
+
     if submission_id in existing_posts_with_comments.keys():  # already have a comment with class info
         already_commented_obj = existing_posts_with_comments[submission_id]
         mentions_previous = already_commented_obj.mentions_list
