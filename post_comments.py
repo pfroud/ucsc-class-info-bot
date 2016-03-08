@@ -166,27 +166,6 @@ def _save_posts_with_comments(posts_with_comments):
     file.close()
 
 
-existing_posts_with_comments = tools.load_posts_with_comments()
-new_mentions_list = tools.load_found_mentions()
-
-# used to look at pickles on disk
-# tools.print_found_mentions(new_mentions_list)
-# tools.print_posts_with_comments(existing_posts_with_comments)
-# exit()
-
-db = build_database.load_database()
-reddit = tools.auth_reddit()
-
-print(time.strftime('%H:%M %p'))
-
-print('{id}{_}{author}{_}{title}{_}{action}{_}current mentions{_}previous mentions'
-      .format(id = trunc_pad("id"),
-              author = trunc_pad("author"),
-              title = trunc_pad("title"),
-              action = trunc_pad("action"),
-              _ = '  '))
-
-
 def recur_post_comments():
     """Goes through the mentions found in the last run of find_mentions.py and posts a comment on each, if needed.
     I can only post a comment every 10 minutes, so it stops if a comment was made."""
@@ -202,5 +181,17 @@ def recur_post_comments():
     recur_post_comments()
 
 
-recur_post_comments()
+if __name__ == "__main__":
+    existing_posts_with_comments = tools.load_posts_with_comments()
+    new_mentions_list = tools.load_found_mentions()
+    db = build_database.load_database()
+    reddit = tools.auth_reddit()
 
+    print('{id}{_}{author}{_}{title}{_}{action}{_}current mentions{_}previous mentions'
+          .format(id = trunc_pad("id"),
+                  author = trunc_pad("author"),
+                  title = trunc_pad("title"),
+                  action = trunc_pad("action"),
+                  _ = '  '))
+
+    recur_post_comments()

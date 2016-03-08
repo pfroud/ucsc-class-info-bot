@@ -123,9 +123,11 @@ I can only post a comment every ten minutes, so the program runs until a comment
 
 ## Known bugs
 
+* BIOE (Biology:Ecology & Evolutionary) department missing from database!!
 * In the comment, classes are sorted by department name (I think) instead of by order mentioned
 
 ## Future work
 
 * I don't have a rate limit anymore - make program run with single command
+* Add command-line option to only find mentions in the newest n posts
 * Make the bot see mentions of some department names instead of department codes, e.g. "chemistry 103" instead of "chem 103"

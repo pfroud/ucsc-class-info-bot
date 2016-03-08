@@ -28,6 +28,7 @@ pattern_delimiter = "(?:[,/ &+]|or|and|with)*"
 
 # matches a whole mention string - a department code then multiple course numbers and possibly multiple course letters.
 # e.g. matches "CS 10, 15a, or 35a/b/c"
+# >>CHANGE TO (mention delim)*mention
 pattern_final = "(?:^|\\b)(?:" + pattern_depts + ") ?(?:" + pattern_mention_any + pattern_delimiter + ")+"
 
 
