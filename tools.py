@@ -98,7 +98,7 @@ def print_posts_with_comments(existing_posts_with_comments):
     :param existing_posts_with_comments: the dict mapping post IDs to ExistingComment objects.
     :type existing_posts_with_comments: dict of <string, ExistingComment>
     """
-    for post_id, e_c_obj in existing_posts_with_comments.items():
+    for post_id, e_c_obj in sorted(existing_posts_with_comments.items()):
         print("in post " + post_id + ": " + str(e_c_obj))
 
 
