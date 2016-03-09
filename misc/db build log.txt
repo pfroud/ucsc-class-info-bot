@@ -1,5 +1,5 @@
-"C:\Users\Peter Froud\AppData\Local\Programs\Python\Python35-32\python.exe" "C:/Users/Peter Froud/Documents/reddit ucsc bot/build_database.py"
-Starting the database build on 2016-02-19 15:39:34.361269.
+"C:\Users\Peter Froud\AppData\Local\Programs\Python\Python35\python.exe" "C:/Users/Peter Froud/Documents/reddit ucsc bot/build_database.py"
+Starting the database build on 2016-03-08 23:22:45.500879.
 ----------------------------------
 Building department "acen"...4 courses added.
 Building department "aplx"...13 courses added.
@@ -8,8 +8,8 @@ Building department "art"...78 courses added.
 Building department "artg"...9 courses added.
 Building department "astr"...49 courses added.
 Building department "bioc"...4 courses added.
-Building department "mcdb"...90 courses added.
-Building department "eeb"...115 courses added.
+Building department "mcdb"...changed name to biol...90 courses added.
+Building department "eeb"...changed name to bioe...115 courses added.
 Building department "bme"...69 courses added.
 Building department "chem"...74 courses added.
 Building department "chin"...19 courses added.
@@ -76,20 +76,20 @@ Building department "clei"...35 courses added.
 Building department "econ"...148 courses added.
 Building department "germ"...15 courses added.
 Building department "lit"...
-                         ...18 courses added to "ltfr".
-                         ...20 courses added to "ltge".
-                         ...31 courses added to "ltwl".
-                         ...20 courses added to "ltit".
-                         ...41 courses added to "ltmo".
-                         ...60 courses added to "ltel".
-                         ...14 courses added to "ltin".
-                         ...31 courses added to "lit".
-                         ...15 courses added to "ltgr".
                          ...38 courses added to "ltpr".
-                         ...43 courses added to "ltsp".
+                         ...15 courses added to "ltgr".
+                         ...18 courses added to "ltfr".
+                         ...14 courses added to "ltin".
+                         ...20 courses added to "ltge".
+                         ...31 courses added to "lit".
                          ...17 courses added to "ltcr".
+                         ...20 courses added to "ltit".
+                         ...60 courses added to "ltel".
+                         ...31 courses added to "ltwl".
+                         ...41 courses added to "ltmo".
+                         ...43 courses added to "ltsp".
 ----------------------------------
-Wrote 2,331,374 bytes to path "C:/Users/Peter Froud/Documents/reddit ucsc bot\pickle\course_database.pickle".
+Wrote 2,331,825 bytes to path "C:/Users/Peter Froud/Documents/reddit ucsc bot\pickle\course_database.pickle".
 
 
 Process finished with exit code 0

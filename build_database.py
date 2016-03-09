@@ -302,8 +302,19 @@ def _get_department_object(dept_name):
     # if DEBUG:
     sys.stdout.write("Building department \"" + dept_name + "\"...")
 
-    new_dept = Department(dept_name)
     soup = _get_soup_object(dept_name)
+
+    # registrar url has EEB, courses use dept code BIOE
+    if dept_name == 'eeb':
+        dept_name = 'bioe'
+        sys.stdout.write("changed name to {}...".format(dept_name))
+
+    # registrar url has MCDB, courses use dept code BIOL
+    if dept_name == 'mcdb':
+        dept_name = 'biol'
+        sys.stdout.write("changed name to {}...".format(dept_name))
+
+    new_dept = Department(dept_name)
 
     every_strong_tag = soup.select("div.main-content strong")
 
@@ -320,7 +331,7 @@ def _get_department_object(dept_name):
             new_dept.add_course(_get_course(dept_name, num_tag))
 
     if dept_name == 'germ' or dept_name == 'econ':
-        new_dept.add_course((_get_first_course_no_bold(dept_name, every_strong_tag[0])))
+        new_dept.add_course(_get_first_course_no_bold(dept_name, every_strong_tag[0]))
 
     sys.stdout.write(str(len(new_dept.courses)) + ' courses added.\n')
 
@@ -397,7 +408,7 @@ database_pickle_path = os.path.join(os.path.dirname(__file__), r'pickle\course_d
 
 
 def save_database():
-    """Saves the database to a file on disk."""
+    """Builds and saves a new database to a file on disk."""
     if os.path.isfile(database_pickle_path):
         print('save_database(): database already exists. Use load_database() instead.')
         return
@@ -422,3 +433,6 @@ def load_database():
     file.close()
     return db
 
+if __name__ == "__main__":
+    save_database()
+    # print(load_database())

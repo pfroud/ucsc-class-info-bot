@@ -9,9 +9,9 @@ import re
 
 # from build_database.all_departments, with build_database.lit_department_codes.values() and "CS" and "CE"
 pattern_depts = "acen|ams|anth|aplx|art|artg|astr|bioc|bme|ce|chem|chin|clei|clni|clte|cmmu|cmpe|cmpm|cmps|cowl|cres|" \
-                "crwn|cs|danm|eart|econ|educ|ee|eeb|envs|film|fmst|fren|game|germ|gree|havc|hebr|his|hisc|ital|japn|" \
+                "crwn|cs|danm|eart|econ|educ|ee|bioe|envs|film|fmst|fren|game|germ|gree|havc|hebr|his|hisc|ital|japn|" \
                 "jwst|krsg|laad|lals|latn|lgst|ling|lit|ltcr|ltel|ltfr|ltge|ltgr|ltin|ltit|ltmo|ltpr|ltsp|ltwl|math|" \
-                "mcdb|merr|metx|musc|oaks|ocea|phil|phye|phys|poli|port|prtr|psyc|punj|russ|scic|socd|socy|span|sphs|" \
+                "biol|merr|metx|musc|oaks|ocea|phil|phye|phys|poli|port|prtr|psyc|punj|russ|scic|socd|socy|span|sphs|" \
                 "stev|thea|tim|ucdc|writ|yidd"
 
 # matches a letter-list mention: a mention of same number with list of letters, e.g. "CE 129A/B/C"

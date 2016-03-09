@@ -119,7 +119,7 @@ def find_mentions(num_posts_):
     reddit = tools.auth_reddit()
 
     # use this to find mentions in only one post
-    # tools.save_found_mentions([_get_mentions_in_submission(0, reddit.get_submission(submission_id = "475ixl"))])
+    # tools.save_found_mentions([_get_mentions_in_submission(0, reddit.get_submission(submission_id = "49h1o9"))])
     # return
 
     print('{num}{_}{id}{_}{author}{_}{title}{_}mentions'

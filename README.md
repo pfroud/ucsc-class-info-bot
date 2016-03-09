@@ -61,9 +61,9 @@ Second, some courses are inside another department. For example, classes in Chin
 
 Third, some departments use their own custom style to list course info. For example, compare the standard layout used by the [History department](http://history.ucsc.edu/courses/catalog-view.php) to the custom layouts used by the [Art department](http://art.ucsc.edu/courses/2015-16) and the [School of Engineering](https://courses.soe.ucsc.edu/).
 
-####Third, successful, attempt - registrar website
+####Third, successful, attempt - Registrar website
 
-The third version works.  The registrar lists every course in every department with a beautifully consistent URL: `http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/department.html"`. This option is clearly the best. I didn't use it from the beginning because the link tree to find it isn't obvious: Quick Start Guide > Catalog > Fields of Study > Programs and Courses > Course Descriptions.
+The third version works.  The Registrar lists every course in every department with a beautifully consistent URL: `http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/department.html"`. This option is clearly the best. I didn't use it from the beginning because the link tree to find it isn't obvious: Quick Start Guide > Catalog > Fields of Study > Programs and Courses > Course Descriptions.
 
 There are, of course, some special cases and weirdness.
 
@@ -94,6 +94,8 @@ Furthermore, two departments miss the first `<strong>` tag. The first courses on
 That means if I'm looking for course number 1, I won't find it because I only look in `<strong>` tags. So, that's another [stupid special case](https://github.com/pfroud/ucsc-class-info-bot/blob/183e434a0a4f2894f4e52b12300185a1c1ba2e81/build_database.py#L323).
 
 
+The latest [special cases](#link_to_github_code) arise from inconsistent naming. The Registrar's page for the [Ecology and Evolutionary Biology](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/eeb.html) department is on `eeb.html`, but, but the [class search](https://pisa.ucsc.edu/class_search/) reveals that the courses use the dapertment code `BIOE`. Similarly, the  Registrar listing for  the [Molecular, Cell, and Developmental Biology](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/mcdb.html) department is on `mcdb.html` but the courses use the department code `BIOL`.
+
 ##Finding course mentions
 
 In the file `find_mentions.py`, the function [`find_mentions()`](https://github.com/pfroud/ucsc-class-info-bot/blob/91cfc3cc31ffb70f6ea51ffdac6665bbd17ed1cd/find_mentions.py#L158-L185) gets new posts from /r/UCSC then calls [`_get_mentions_in_submission()`](https://github.com/pfroud/ucsc-class-info-bot/blob/91cfc3cc31ffb70f6ea51ffdac6665bbd17ed1cd/find_mentions.py#L26-L57) on each post.
@@ -123,11 +125,10 @@ I can only post a comment every ten minutes, so the program runs until a comment
 
 ## Known bugs
 
-* BIOE (Biology:Ecology & Evolutionary) department missing from database!! (rename EEB to BIOE and rename MCDB to BIOL)
 * In the comment, classes are sorted by department name (I think) instead of by order mentioned
 
 ## Future work
 
+* Put better_find_mentions.py into find_mentions.py
 * I don't have a rate limit anymore - make program run with single command
-* Add command-line option to only find mentions in the newest n posts
 * Make the bot see mentions of some department names instead of department codes, e.g. "chemistry 103" instead of "chem 103"
