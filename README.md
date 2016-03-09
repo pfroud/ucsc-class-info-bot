@@ -94,7 +94,7 @@ Furthermore, two departments miss the first `<strong>` tag. The first courses on
 That means if I'm looking for course number 1, I won't find it because I only look in `<strong>` tags. So, that's another [stupid special case](https://github.com/pfroud/ucsc-class-info-bot/blob/183e434a0a4f2894f4e52b12300185a1c1ba2e81/build_database.py#L323).
 
 
-The latest [special cases](#link_to_github_code) arise from inconsistent naming. The Registrar's page for the [Ecology and Evolutionary Biology](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/eeb.html) department is on `eeb.html`, but, but the [class search](https://pisa.ucsc.edu/class_search/) reveals that the courses use the dapertment code `BIOE`. Similarly, the  Registrar listing for  the [Molecular, Cell, and Developmental Biology](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/mcdb.html) department is on `mcdb.html` but the courses use the department code `BIOL`.
+The latest [special cases](https://github.com/pfroud/ucsc-class-info-bot/blob/f290a4caff4aecf10cebb31c020ff1a10b8cdd14/build_database.py#L307-L315) arise from inconsistent naming. The Registrar's page for the [Ecology and Evolutionary Biology](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/eeb.html) department is on `eeb.html`, but, but the [class search](https://pisa.ucsc.edu/class_search/) reveals that the courses use the dapertment code `BIOE`. Similarly, the  Registrar listing for  the [Molecular, Cell, and Developmental Biology](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/mcdb.html) department is on `mcdb.html` but the courses use the department code `BIOL`.
 
 ##Finding course mentions
 
