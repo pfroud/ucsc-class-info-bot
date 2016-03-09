@@ -3,6 +3,7 @@ Scrapes posts on /r/UCSC for mentions of courses.
 """
 
 import re
+import sys
 import praw
 import build_database  # used for pad_course_num() and load_database()
 import tools
@@ -108,8 +109,12 @@ def _remove_list_duplicates_preserve_order(input_list):
     return new_list
 
 
-def find_mentions():
-    """Finds and saves to disk course mentions in new posts on /r/UCSC."""
+def find_mentions(num_posts_):
+    """Finds and saves to disk course mentions in new posts on /r/UCSC.
+
+    :param num_posts_:
+    :type num_posts_: int
+    """
 
     reddit = tools.auth_reddit()
 
@@ -127,7 +132,7 @@ def find_mentions():
     subreddit = reddit.get_subreddit('ucsc')
     list_of_posts_with_mentions = []
 
-    for counter, submission in enumerate(subreddit.get_new(), start = 1):
+    for counter, submission in enumerate(subreddit.get_new(limit = num_posts_), start = 1):
         found_mentions = _get_mentions_in_submission(counter, submission)
         if found_mentions is not None:
             list_of_posts_with_mentions.append(found_mentions)
@@ -140,4 +145,7 @@ def find_mentions():
 
 
 if __name__ == "__main__":
-    find_mentions()
+    num_posts = 25
+    if len(sys.argv) == 2:
+        num_posts = int(sys.argv[1])
+    find_mentions(num_posts)

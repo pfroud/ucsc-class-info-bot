@@ -123,7 +123,7 @@ I can only post a comment every ten minutes, so the program runs until a comment
 
 ## Known bugs
 
-* BIOE (Biology:Ecology & Evolutionary) department missing from database!!
+* BIOE (Biology:Ecology & Evolutionary) department missing from database!! (rename EEB to BIOE and rename MCDB to BIOL)
 * In the comment, classes are sorted by department name (I think) instead of by order mentioned
 
 ## Future work
