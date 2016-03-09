@@ -8,7 +8,7 @@ import praw
 import build_database  # used for pad_course_num() and load_database()
 import tools
 from tools import trunc_pad
-import better_find_mentions
+import mention_parse
 
 
 class PostWithMentions:
@@ -68,7 +68,7 @@ def _get_mentions_in_string(source_):
     :rtype: list
     """
 
-    return better_find_mentions.parse_string(source_)
+    return mention_parse.parse_string(source_)
 
 
 def _unify_mention_format(mention_):
