@@ -10,17 +10,17 @@ import os.path  # check if file exists, get file size
 from datetime import datetime  # added to output logs
 import sys  # print without newline
 
-DEBUG = False
+_DEBUG = False
 
-all_departments = ["acen", "aplx", "ams", "art", "artg", "astr", "bioc", "mcdb", "eeb", "bme", "chem", "chin", "clni",
+_all_departments = ["acen", "aplx", "ams", "art", "artg", "astr", "bioc", "mcdb", "eeb", "bme", "chem", "chin", "clni",
                    "clte", "cmmu", "cmpm", "cmpe", "cmps", "cowl", "cres", "crwn", "danm", "eart", "educ", "ee", "envs",
                    "fmst", "film", "fren", "game", "gree", "hebr", "his", "hisc", "ital", "japn", "jwst", "krsg",
                    "laad", "latn", "lals", "lgst", "ling", "math", "merr", "metx", "musc", "oaks", "ocea", "phil",
                    "phye", "phys", "poli", "port", "punj", "russ", "scic", "socd", "socy", "span", "sphs", "stev",
-                   "tim", "thea", "ucdc", "writ", "yidd", 'prtr', 'anth', 'psyc', 'havc', 'clei', 'econ', 'germ']
+                    "tim", "thea", "ucdc", "writ", "yidd", 'prtr', 'anth', 'psyc', 'havc', 'clei', 'econ', 'germ']
 
 
-lit_department_codes = {'Literature': 'lit',
+_lit_department_codes = {'Literature': 'lit',
                         'Creative Writing': 'ltcr',
                         'English-Language Literatures': 'ltel',
                         'French Literature': 'ltfr',
@@ -30,14 +30,14 @@ lit_department_codes = {'Literature': 'lit',
                         'Italian Literature': 'ltit',
                         'Modern Literary Studies': 'ltmo',
                         'Pre- and Early Modern Literature': 'ltpr',
-                        'Spanish/Latin American/Latino Literatures': 'ltsp',
-                        'World Literature and Cultural Studies': 'ltwl'}
+                         'Spanish/Latin American/Latino Literatures': 'ltsp',
+                         'World Literature and Cultural Studies': 'ltwl'}
 
 # used in _has_course_number() below
-regex_course_num = re.compile("[0-9]+[A-Za-z]?\.")
+_regex_course_num = re.compile("[0-9]+[A-Za-z]?\.")
 
 # used only for college eight, those bastards
-regex_course_name = re.compile("[A-Za-z :']+\.?")
+_regex_course_name = re.compile("[A-Za-z :']+\.?")
 
 
 class CourseDatabase:
@@ -122,7 +122,7 @@ def _has_course_number(num_string):
     :return: whether the string contains a course number
     :rtype: bool
     """
-    return regex_course_num.match(num_string) is not None
+    return _regex_course_num.match(num_string) is not None
 
 
 def _is_last_course_in_p(strong_tag):
@@ -203,17 +203,17 @@ def _get_course(dept_name, num_tag):
     :rtype: Course
     """
     number = num_tag.text[:-1]
-    if DEBUG:
+    if _DEBUG:
         print("doing", number)
 
     # extremely stupid special case
     if dept_name == 'havc' and number == '152. Roman Eyes: Visual Culture and Power in the Ancient Roman World. ':
-        if DEBUG:
+        if _DEBUG:
             print('>>>>>>>>>> havc 152 special case')
         return _get_course_all_in_one('havc', num_tag)
 
     if _is_last_course_in_p(num_tag) and _is_next_p_indented(num_tag) and not _in_indented_paragraph(num_tag):
-        if DEBUG:
+        if _DEBUG:
             print('   SKIPPING num_tag \"' + num_tag.text + "\"<<<<<<<<<<<<<<<<<<<<<")
         return None
 
@@ -238,7 +238,7 @@ def _get_course(dept_name, num_tag):
         if real_name == 'Russian Literature':
             return None
 
-        return Course(lit_department_codes[real_name], number, name, description)
+        return Course(_lit_department_codes[real_name], number, name, description)
     else:
         return Course(dept_name, number, name, description)
 
@@ -255,13 +255,13 @@ def _get_course_all_in_one(dept_name, num_tag):
     """
     strong_text = num_tag.text
 
-    num_end = regex_course_num.match(strong_text).end()
+    num_end = _regex_course_num.match(strong_text).end()
     course_num = strong_text[0:num_end - 1]
-    if DEBUG:
+    if _DEBUG:
         print("doing", course_num)
     the_rest = strong_text[num_end + 1:]
 
-    name_end = regex_course_name.match(the_rest).end()
+    name_end = _regex_course_name.match(the_rest).end()
     course_name = the_rest[0:name_end - 1]
 
     if dept_name == 'havc':
@@ -299,7 +299,7 @@ def _get_department_object(dept_name):
     :return: Department object of all the courses in the department
     :rtype: Department
     """
-    # if DEBUG:
+    # if _DEBUG:
     sys.stdout.write("Building department \"" + dept_name + "\"...")
 
     soup = _get_soup_object(dept_name)
@@ -364,7 +364,7 @@ def _get_lit_depts():
 
     lit_depts = dict()
 
-    for dept_code in lit_department_codes.values():
+    for dept_code in _lit_department_codes.values():
         lit_depts[dept_code] = Department(dept_code)
 
     soup = _get_soup_object('lit')
@@ -396,7 +396,7 @@ def build_database():
     print('----------------------------------')
     db = CourseDatabase()
 
-    for current_dept in all_departments:
+    for current_dept in _all_departments:
         db.add_dept(_get_department_object(current_dept))
 
     for lit_dept in _get_lit_depts():
@@ -404,22 +404,22 @@ def build_database():
     return db
 
 
-database_pickle_path = os.path.join(os.path.dirname(__file__), r'pickle\course_database.pickle')
+_database_pickle_path = os.path.join(os.path.dirname(__file__), r'pickle\course_database.pickle')
 
 
 def save_database():
     """Builds and saves a new database to a file on disk."""
-    if os.path.isfile(database_pickle_path):
+    if os.path.isfile(_database_pickle_path):
         print('save_database(): database already exists. Use load_database() instead.')
         return
 
     db = build_database()
 
-    with open(database_pickle_path, 'wb') as file:
+    with open(_database_pickle_path, 'wb') as file:
         pickle.dump(db, file)
     file.close()
     print('----------------------------------')
-    print('Wrote {:,} bytes to path \"{}\".\n'.format(os.path.getsize(database_pickle_path), database_pickle_path))
+    print('Wrote {:,} bytes to path \"{}\".\n'.format(os.path.getsize(_database_pickle_path), _database_pickle_path))
 
 
 def load_database():
@@ -428,7 +428,7 @@ def load_database():
     :return: course database read from file
     :rtype: CourseDatabase
     """
-    with open(database_pickle_path, 'rb') as file:
+    with open(_database_pickle_path, 'rb') as file:
         db = pickle.load(file)
     file.close()
     return db

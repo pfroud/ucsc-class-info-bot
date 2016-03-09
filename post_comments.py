@@ -13,7 +13,7 @@ from build_database import CourseDatabase, Department, Course  # need this to de
 from find_mentions import PostWithMentions  # need this to de-pickle found_mentions.pickle
 
 
-def post_comment(new_mention_object, actually_do_it = False):
+def _post_comment(new_mention_object, actually_do_it = False):
     """Posts a comment on the submission with info about the courses mentioned.
 
     :param new_mention_object: PostWithMentions object, which holds a post ID and a list of mentions
@@ -174,9 +174,9 @@ def recur_post_comments():
     else:
         print("No more mentions.")
         return
-    # if not post_comment(new_mention, actually_do_it = True):  # needed when i could only post every 10 minutes
+    # if not _post_comment(new_mention, actually_do_it = True):  # needed when i could only post every 10 minutes
     #     recur_post_comments()
-    post_comment(new_mention, actually_do_it = True)
+    _post_comment(new_mention, actually_do_it = True)
     tools.save_found_mentions(new_mentions_list)
     recur_post_comments()
 
