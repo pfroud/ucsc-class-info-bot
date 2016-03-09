@@ -56,7 +56,7 @@ def auth_reddit():
     """Loads access information and returns PRAW reddit api context.
 
     :return: praw instance
-    :rtype praw.__init__.AuthenticatedReddit
+    :rtype praw.Reddit
     """
 
     with warnings.catch_warnings():

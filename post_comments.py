@@ -13,13 +13,11 @@ from build_database import CourseDatabase, Department, Course  # need this to de
 from find_mentions import PostWithMentions  # need this to de-pickle found_mentions.pickle
 
 
-def _post_comment(new_mention_object, actually_do_it = False):
+def _post_comment_helper(new_mention_object, reddit):
     """Posts a comment on the submission with info about the courses mentioned.
 
     :param new_mention_object: PostWithMentions object, which holds a post ID and a list of mentions
     :type new_mention_object: PostWithMentions
-    :param actually_do_it: whether to actually post a comment to reddit.com
-    :type actually_do_it: bool
     :return: whether a comment was submitted or edited (based only on mentions, not on actually_do_it)
     :rtype: bool
     """
@@ -42,19 +40,17 @@ def _post_comment(new_mention_object, actually_do_it = False):
             return False
 
         # comment needs to be updated
-        if actually_do_it:
-            existing_comment = reddit.get_info(thing_id = 't1_' + already_commented_obj.comment_id)
-            existing_comment.edit(_get_comment(db, mentions_new))
-            existing_posts_with_comments[submission_id].mentions_list = mentions_new
-            _save_posts_with_comments(existing_posts_with_comments)
+        existing_comment = reddit.get_info(thing_id = 't1_' + already_commented_obj.comment_id)
+        existing_comment.edit(_get_comment(db, mentions_new))
+        existing_posts_with_comments[submission_id].mentions_list = mentions_new
+        _save_posts_with_comments(existing_posts_with_comments)
         _print_csv_row(submission_object, 'Edited comment.', mentions_new, mentions_previous)
         return True
 
     else:  # no comment with class info, post a new one
-        if actually_do_it:
-            new_comment = submission_object.add_comment(_get_comment(db, mentions_new))
-            existing_posts_with_comments[submission_id] = ExistingComment(new_comment.id, mentions_new)
-            _save_posts_with_comments(existing_posts_with_comments)
+        new_comment = submission_object.add_comment(_get_comment(db, mentions_new))
+        existing_posts_with_comments[submission_id] = ExistingComment(new_comment.id, mentions_new)
+        _save_posts_with_comments(existing_posts_with_comments)
         _print_csv_row(submission_object, 'Comment added.', mentions_new, [])
         return True
 
@@ -120,9 +116,6 @@ def _course_to_markdown(course_):
     :rtype: str
     """
 
-    # TODO add the department name?
-    # dept_name = dept_names[course_.dept]
-
     num_leading_zeroes_stripped = re.sub("^0+", "", course_.number)  # strip leading zeroes only
 
     markdown_string = '**{} {}: {}**\n'.format(course_.dept.upper(), num_leading_zeroes_stripped, course_.name)
@@ -166,32 +159,37 @@ def _save_posts_with_comments(posts_with_comments):
     file.close()
 
 
-def recur_post_comments():
-    """Goes through the mentions found in the last run of find_mentions.py and posts a comment on each, if needed.
-    I can only post a comment every 10 minutes, so it stops if a comment was made."""
+def post_comments(new_mentions_list, reddit, running_on_own = False):
+    """Recursivley goes through the mentions found in the last run of find_mentions.py and
+    posts a comment on each, if needed.
+
+    :param running_on_own: whether file is being ran by itself or imported by reddit_bot.py
+    :type running_on_own: bool
+    :param reddit: authorized reddit praw object
+    :type reddit: praw.Reddit
+    :param new_mentions_list: list of mentions
+    :type new_mentions_list: list
+    """
     if new_mentions_list:
         new_mention = new_mentions_list.pop(0)
     else:
         print("No more mentions.")
         return
-    # if not _post_comment(new_mention, actually_do_it = True):  # needed when i could only post every 10 minutes
-    #     recur_post_comments()
-    _post_comment(new_mention, actually_do_it = True)
-    tools.save_found_mentions(new_mentions_list)
-    recur_post_comments()
+    _post_comment_helper(new_mention, reddit)
+    if running_on_own:
+        tools.save_found_mentions(new_mentions_list)
+    post_comments(new_mentions_list, reddit, running_on_own)
 
+
+existing_posts_with_comments = tools.load_posts_with_comments()
+db = build_database.load_database()
+
+print('{id}{_}{author}{_}{title}{_}{action}{_}current mentions{_}previous mentions'
+      .format(id = trunc_pad("id"),
+              author = trunc_pad("author"),
+              title = trunc_pad("title"),
+              action = trunc_pad("action"),
+              _ = '  '))
 
 if __name__ == "__main__":
-    existing_posts_with_comments = tools.load_posts_with_comments()
-    new_mentions_list = tools.load_found_mentions()
-    db = build_database.load_database()
-    reddit = tools.auth_reddit()
-
-    print('{id}{_}{author}{_}{title}{_}{action}{_}current mentions{_}previous mentions'
-          .format(id = trunc_pad("id"),
-                  author = trunc_pad("author"),
-                  title = trunc_pad("title"),
-                  action = trunc_pad("action"),
-                  _ = '  '))
-
-    recur_post_comments()
+    post_comments(tools.load_found_mentions(), tools.auth_reddit(), running_on_own = True)

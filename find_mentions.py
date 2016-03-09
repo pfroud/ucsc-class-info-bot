@@ -3,7 +3,6 @@ Scrapes posts on /r/UCSC for mentions of courses.
 """
 
 import re
-import sys
 import praw
 import build_database  # used for pad_course_num() and load_database()
 import tools
@@ -109,14 +108,18 @@ def _remove_list_duplicates_preserve_order(input_list):
     return new_list
 
 
-def find_mentions(num_posts_):
+def find_mentions(reddit, num_posts_, running_on_own = False):
     """Finds and saves to disk course mentions in new posts on /r/UCSC.
 
+    :param running_on_own: whether file is being ran by itself or imported by reddit_bot.py
+    :type running_on_own: bool
+    :param reddit: authorized reddit praw object
+    :type reddit: praw.Reddit
     :param num_posts_:
     :type num_posts_: int
+    :return: list of post with found mentions
+    :rtype: list
     """
-
-    reddit = tools.auth_reddit()
 
     # use this to find mentions in only one post
     # tools.save_found_mentions([_get_mentions_in_submission(0, reddit.get_submission(submission_id = "49h1o9"))])
@@ -137,15 +140,19 @@ def find_mentions(num_posts_):
         if found_mentions is not None:
             list_of_posts_with_mentions.append(found_mentions)
 
-    tools.save_found_mentions(list_of_posts_with_mentions)
+    if running_on_own:
+        tools.save_found_mentions(list_of_posts_with_mentions)
 
     print("------------------------------")
     for post_with_mention in list_of_posts_with_mentions:
         print(str(post_with_mention))
 
+    return list_of_posts_with_mentions
+
 
 if __name__ == "__main__":
+    import sys
     num_posts = 25
     if len(sys.argv) == 2:
         num_posts = int(sys.argv[1])
-    find_mentions(num_posts)
+    find_mentions(tools.auth_reddit(), num_posts, running_on_own = True)

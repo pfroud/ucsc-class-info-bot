@@ -12,24 +12,24 @@ import sys  # print without newline
 
 _DEBUG = False
 
-_all_departments = ["acen", "aplx", "ams", "art", "artg", "astr", "bioc", "mcdb", "eeb", "bme", "chem", "chin", "clni",
-                   "clte", "cmmu", "cmpm", "cmpe", "cmps", "cowl", "cres", "crwn", "danm", "eart", "educ", "ee", "envs",
-                   "fmst", "film", "fren", "game", "gree", "hebr", "his", "hisc", "ital", "japn", "jwst", "krsg",
-                   "laad", "latn", "lals", "lgst", "ling", "math", "merr", "metx", "musc", "oaks", "ocea", "phil",
-                   "phye", "phys", "poli", "port", "punj", "russ", "scic", "socd", "socy", "span", "sphs", "stev",
-                    "tim", "thea", "ucdc", "writ", "yidd", 'prtr', 'anth', 'psyc', 'havc', 'clei', 'econ', 'germ']
-
+_all_departments = [
+    "acen", "aplx", "ams", "art", "artg", "astr", "bioc", "mcdb", "eeb", "bme", "chem", "chin", "clni", "clte", "cmmu",
+    "cmpm", "cmpe", "cmps", "cowl", "cres", "crwn", "danm", "eart", "educ", "ee", "envs", "fmst", "film", "fren",
+    "game", "gree", "hebr", "his", "hisc", "ital", "japn", "jwst", "krsg", "laad", "latn", "lals", "lgst", "ling",
+    "math", "merr", "metx", "musc", "oaks", "ocea", "phil", "phye", "phys", "poli", "port", "punj", "russ", "scic",
+    "socd", "socy", "span", "sphs", "stev", "tim", "thea", "ucdc", "writ", "yidd", 'prtr', 'anth', 'psyc', 'havc',
+    'clei', 'econ', 'germ']
 
 _lit_department_codes = {'Literature': 'lit',
-                        'Creative Writing': 'ltcr',
-                        'English-Language Literatures': 'ltel',
-                        'French Literature': 'ltfr',
-                        'German Literature': 'ltge',
-                        'Greek Literature': 'ltgr',
-                        'Latin Literature': 'ltin',
-                        'Italian Literature': 'ltit',
-                        'Modern Literary Studies': 'ltmo',
-                        'Pre- and Early Modern Literature': 'ltpr',
+                         'Creative Writing': 'ltcr',
+                         'English-Language Literatures': 'ltel',
+                         'French Literature': 'ltfr',
+                         'German Literature': 'ltge',
+                         'Greek Literature': 'ltgr',
+                         'Latin Literature': 'ltin',
+                         'Italian Literature': 'ltit',
+                         'Modern Literary Studies': 'ltmo',
+                         'Pre- and Early Modern Literature': 'ltpr',
                          'Spanish/Latin American/Latino Literatures': 'ltsp',
                          'World Literature and Cultural Studies': 'ltwl'}
 
@@ -356,9 +356,10 @@ def _get_real_lit_dept(num_tag):
 
 
 def _get_lit_depts():
-    """
+    """Makes departments for all the sub-departments on the lit page.
 
-    :return:
+    :return: list of Department objects
+    :rtype: list
     """
     print("Building department \"lit\"...")
 
@@ -381,9 +382,9 @@ def _get_lit_depts():
         lit_depts[temp_course.dept].add_course(temp_course)
 
     for dept in lit_depts.values():
-        print('{_}{} courses added to \"{}\".'.format(str(len(dept.courses)), dept.name, _="...".rjust(28)))
+        print('{_}{} courses added to \"{}\".'.format(str(len(dept.courses)), dept.name, _ = "...".rjust(28)))
 
-    return lit_depts.values()
+    return list(lit_depts.values())
 
 
 def build_database():
@@ -432,6 +433,7 @@ def load_database():
         db = pickle.load(file)
     file.close()
     return db
+
 
 if __name__ == "__main__":
     save_database()
