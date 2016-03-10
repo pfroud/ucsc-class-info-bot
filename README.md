@@ -129,5 +129,4 @@ I can only post a comment every ten minutes, so the program runs until a comment
 
 ## Future work
 
-* I don't have a rate limit anymore - make program run with single command
 * Make the bot see mentions of some department names instead of department codes, e.g. "chemistry 103" instead of "chem 103"

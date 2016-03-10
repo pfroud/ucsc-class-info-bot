@@ -184,12 +184,11 @@ def post_comments(new_mentions_list, reddit, running_on_own = False):
 existing_posts_with_comments = tools.load_posts_with_comments()
 db = db_core.load_database()
 
-print('{id}{_}{author}{_}{title}{_}{action}{_}current mentions{_}previous mentions'
-      .format(id = trunc_pad("id"),
-              author = trunc_pad("author"),
-              title = trunc_pad("title"),
-              action = trunc_pad("action"),
-              _ = '  '))
-
 if __name__ == "__main__":
+    print('{id}{_}{author}{_}{title}{_}{action}{_}current mentions{_}previous mentions'
+          .format(id = trunc_pad("id"),
+                  author = trunc_pad("author"),
+                  title = trunc_pad("title"),
+                  action = trunc_pad("action"),
+                  _ = '  '))
     post_comments(tools.load_found_mentions(), tools.auth_reddit(), running_on_own = True)

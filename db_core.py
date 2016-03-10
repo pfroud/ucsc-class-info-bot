@@ -9,7 +9,7 @@ import pickle  # serializer
 import os.path  # check if file exists, get file size
 from datetime import datetime  # added to output logs
 import sys  # print without newline
-import db_extra as extras
+
 
 DEBUG = False
 
@@ -278,5 +278,6 @@ def load_database():
 
 
 if __name__ == "__main__":
+    import db_extra as extras
     _save_database()
     # print(load_database())

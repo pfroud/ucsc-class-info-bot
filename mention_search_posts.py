@@ -151,7 +151,7 @@ def find_mentions(reddit, num_posts_, running_on_own = False):
 
 if __name__ == "__main__":
     import sys
-    num_posts = 25
+    num_posts = 10
     if len(sys.argv) == 2:
         num_posts = int(sys.argv[1])
     find_mentions(tools.auth_reddit(), num_posts, running_on_own = True)
