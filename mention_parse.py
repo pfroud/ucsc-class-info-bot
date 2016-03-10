@@ -29,8 +29,8 @@ _pattern_delimiter = "(?:[,/ &+]|or|and|with)*"
 
 # matches a whole mention string - a department code then multiple course numbers and possibly multiple course letters.
 # e.g. matches "CS 10, 15a, or 35a/b/c"
-# >>CHANGE TO (mention delim)*mention
-_pattern_final = "(?:^|\\b)(?:" + _pattern_depts + ") ?(?:" + _pattern_mention_any + _pattern_delimiter + ")+"
+_pattern_final = \
+    "(?:^|\\b)(?:" + _pattern_depts + ") ?(?:" + _pattern_mention_any + _pattern_delimiter + ")*" + _pattern_mention_any
 
 
 def _parse_letter_list(dept, list_letter_mention):

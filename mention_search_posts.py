@@ -4,7 +4,6 @@ Scrapes posts on /r/UCSC for mentions of courses.
 
 import re
 import praw
-import build_database  # used for pad_course_num() and load_database()
 import tools
 from tools import trunc_pad
 import mention_parse

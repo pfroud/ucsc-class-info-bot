@@ -1,6 +1,6 @@
 """Loads mentions from the last run of find_mentions.py and posts comments to reddit.com."""
 
-import build_database
+import db_core
 import tools
 from tools import trunc_pad
 from tools import ExistingComment
@@ -9,8 +9,8 @@ import pickle
 import os.path
 import time
 
-from build_database import CourseDatabase, Department, Course  # need this to de-pickle course_database.pickle
-from find_mentions import PostWithMentions  # need this to de-pickle found_mentions.pickle
+from db_core import CourseDatabase, Department, Course  # need this to de-pickle course_database.pickle
+from mention_search_posts import PostWithMentions  # need this to de-pickle found_mentions.pickle
 
 
 def _post_comment_helper(new_mention_object, reddit):
@@ -95,7 +95,7 @@ def _mention_to_course_object(db_, mention_):
     """
     split = mention_.split(' ')
     dept = split[0].lower()
-    num = build_database.pad_course_num(split[1].upper())  # eventually get rid of this
+    num = db_core.pad_course_num(split[1].upper())  # eventually get rid of this
 
     try:
         course_obj = db_.depts[dept].courses[num]
@@ -160,7 +160,7 @@ def _save_posts_with_comments(posts_with_comments):
 
 
 def post_comments(new_mentions_list, reddit, running_on_own = False):
-    """Recursivley goes through the mentions found in the last run of find_mentions.py and
+    """Recursivley goes through the mentions found in the last run of mention_search_posts.py and
     posts a comment on each, if needed.
 
     :param running_on_own: whether file is being ran by itself or imported by reddit_bot.py
@@ -182,7 +182,7 @@ def post_comments(new_mentions_list, reddit, running_on_own = False):
 
 
 existing_posts_with_comments = tools.load_posts_with_comments()
-db = build_database.load_database()
+db = db_core.load_database()
 
 print('{id}{_}{author}{_}{title}{_}{action}{_}current mentions{_}previous mentions'
       .format(id = trunc_pad("id"),

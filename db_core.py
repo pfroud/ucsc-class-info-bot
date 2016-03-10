@@ -9,8 +9,9 @@ import pickle  # serializer
 import os.path  # check if file exists, get file size
 from datetime import datetime  # added to output logs
 import sys  # print without newline
+import db_extra as extras
 
-_DEBUG = False
+DEBUG = False
 
 _all_departments = [
     "acen", "aplx", "ams", "art", "artg", "astr", "bioc", "mcdb", "eeb", "bme", "chem", "chin", "clni", "clte", "cmmu",
@@ -20,24 +21,8 @@ _all_departments = [
     "socd", "socy", "span", "sphs", "stev", "tim", "thea", "ucdc", "writ", "yidd", 'prtr', 'anth', 'psyc', 'havc',
     'clei', 'econ', 'germ']
 
-_lit_department_codes = {'Literature': 'lit',
-                         'Creative Writing': 'ltcr',
-                         'English-Language Literatures': 'ltel',
-                         'French Literature': 'ltfr',
-                         'German Literature': 'ltge',
-                         'Greek Literature': 'ltgr',
-                         'Latin Literature': 'ltin',
-                         'Italian Literature': 'ltit',
-                         'Modern Literary Studies': 'ltmo',
-                         'Pre- and Early Modern Literature': 'ltpr',
-                         'Spanish/Latin American/Latino Literatures': 'ltsp',
-                         'World Literature and Cultural Studies': 'ltwl'}
-
-# used in _has_course_number() below
-_regex_course_num = re.compile("[0-9]+[A-Za-z]?\.")
-
-# used only for college eight, those bastards
-_regex_course_name = re.compile("[A-Za-z :']+\.?")
+# used in has_course_number() below
+regex_course_num = re.compile("[0-9]+[A-Za-z]?\.")
 
 
 class CourseDatabase:
@@ -114,7 +99,7 @@ class Course:
         return '\"' + self.name + "\""
 
 
-def _has_course_number(num_string):
+def has_course_number(num_string):
     """Whether a string has a course number in it.
 
     :param num_string: string like '1.' or '1A.'
@@ -122,57 +107,10 @@ def _has_course_number(num_string):
     :return: whether the string contains a course number
     :rtype: bool
     """
-    return _regex_course_num.match(num_string) is not None
+    return regex_course_num.match(num_string) is not None
 
 
-def _is_last_course_in_p(strong_tag):
-    """Whether the <strong> tag is in the last course in the paragraph.
-
-    :param strong_tag: tag like <strong>1A.</strong>
-    :type strong_tag: Tag
-    :return: whether the tag is the last course in the paragraph
-    :rtype: bool
-    """
-    strongs_in_parent_p = strong_tag.parent.find_all('strong')
-    index = strongs_in_parent_p.index(strong_tag)
-    distance_to_end = len(strongs_in_parent_p) - index
-    return distance_to_end <= 4
-
-
-def _is_next_p_indented(num_tag):
-    """Whether the next paragraph after this tag is indented.
-
-    :param num_tag: tag like <strong>1A.</strong>
-    :type num_tag: Tag
-    :return: whether next paragraph is indented
-    :rtype: bool
-    """
-    parent = num_tag.parent
-
-    # special case for English-Language Literatures 102 (in lit page)
-    if parent.name == 'strong':
-        parent = parent.parent
-
-    next_p = parent.next_sibling.next_sibling
-
-    if next_p.name != 'p':
-        return False
-
-    return next_p.get('style') == 'margin-left: 30px;'
-
-
-def _in_indented_paragraph(num_tag):
-    """Whether the tag is in an indented paragraph.
-
-    :param num_tag: tag like <strong>1A.</strong>
-    :type num_tag: Tag
-    :return: whether tag is in indented paragraph
-    :rtype: bool
-    """
-    return num_tag.parent.get('style') == 'margin-left: 30px;'
-
-
-def _get_soup_object(dept_name):
+def get_soup_object(dept_name):
     """Requests a page from the registrar and returns a BeautifulSoup object of it.
 
     :param dept_name: string like 'cmps'
@@ -191,9 +129,9 @@ def _get_soup_object(dept_name):
     return BeautifulSoup(request_result.text, 'html.parser')
 
 
-def _get_course(dept_name, num_tag):
+def get_course(dept_name, num_tag):
     """Builds and returns a Course object from the number specified.
-    If the <strong> tag has more than just the number in it, use _get_course_all_in_one().
+    If the <strong> tag has more than just the number in it, use get_course_all_in_one().
 
     :param dept_name: name of the department like 'cmps'
     :type dept_name: str
@@ -203,17 +141,18 @@ def _get_course(dept_name, num_tag):
     :rtype: Course
     """
     number = num_tag.text[:-1]
-    if _DEBUG:
+    if DEBUG:
         print("doing", number)
 
     # extremely stupid special case
     if dept_name == 'havc' and number == '152. Roman Eyes: Visual Culture and Power in the Ancient Roman World. ':
-        if _DEBUG:
+        if DEBUG:
             print('>>>>>>>>>> havc 152 special case')
-        return _get_course_all_in_one('havc', num_tag)
+        return extras.get_course_all_in_one('havc', num_tag)
 
-    if _is_last_course_in_p(num_tag) and _is_next_p_indented(num_tag) and not _in_indented_paragraph(num_tag):
-        if _DEBUG:
+    if extras.is_last_course_in_p(num_tag) and extras.is_next_p_indented(num_tag) and not extras.in_indented_paragraph(
+            num_tag):
+        if DEBUG:
             print('   SKIPPING num_tag \"' + num_tag.text + "\"<<<<<<<<<<<<<<<<<<<<<")
         return None
 
@@ -231,64 +170,16 @@ def _get_course(dept_name, num_tag):
     description = description_tag[2:]
 
     if dept_name == 'lit':
-        real_name = _get_real_lit_dept(num_tag).replace("\ufeff", "")
+        real_name = extras.get_real_lit_dept(num_tag).replace("\ufeff", "")
         # print("   real name is \"" + real_name + "\"")
 
         # Russian Lit department has no dept code, probably does not actually exist
         if real_name == 'Russian Literature':
             return None
 
-        return Course(_lit_department_codes[real_name], number, name, description)
+        return Course(extras.lit_department_codes[real_name], number, name, description)
     else:
         return Course(dept_name, number, name, description)
-
-
-def _get_course_all_in_one(dept_name, num_tag):
-    """Makes a Course object when the whole heading is in one <strong> tag.
-
-    :param dept_name: Name of the department the course is in
-    :type dept_name: str
-    :param num_tag: <strong> tag with the number, name, AND ges.
-    :type num_tag: Tag
-    :return: Course object
-    :rtype: Course
-    """
-    strong_text = num_tag.text
-
-    num_end = _regex_course_num.match(strong_text).end()
-    course_num = strong_text[0:num_end - 1]
-    if _DEBUG:
-        print("doing", course_num)
-    the_rest = strong_text[num_end + 1:]
-
-    name_end = _regex_course_name.match(the_rest).end()
-    course_name = the_rest[0:name_end - 1]
-
-    if dept_name == 'havc':
-        course_description = num_tag.next_sibling.next_sibling[1:]
-    else:
-        course_description = num_tag.next_sibling.next_sibling.next_sibling[1:]
-
-    return Course(dept_name, course_num, course_name, course_description)
-
-
-def _get_first_course_no_bold(dept_name, first_strong_tag):
-    """Gets the first course when the number is not bolded.
-    Use only for germ and econ departments.
-
-    :param dept_name: name of the department like 'cmps'
-    :type dept_name: str
-    :param first_strong_tag: the first strong tag on the page, which is the name (not the number)
-    :type: every_strong_tag: list
-    :return: Course object of the first course listed
-    :rtype: Course
-    """
-    number_1 = first_strong_tag.previous_sibling[1:-2]
-    # print("\"" + number_1 + "\"")
-    # print(first_tag.text[:-1])
-    description = first_strong_tag.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling[2:]
-    # print("\"" + description + "\"")
-    return Course(dept_name, number_1, first_strong_tag.text[:-1], description)
 
 
 def _get_department_object(dept_name):
@@ -299,10 +190,10 @@ def _get_department_object(dept_name):
     :return: Department object of all the courses in the department
     :rtype: Department
     """
-    # if _DEBUG:
+    # if DEBUG:
     sys.stdout.write("Building department \"" + dept_name + "\"...")
 
-    soup = _get_soup_object(dept_name)
+    soup = get_soup_object(dept_name)
 
     # registrar url has EEB, courses use dept code BIOE
     if dept_name == 'eeb':
@@ -321,73 +212,24 @@ def _get_department_object(dept_name):
     numbers_in_strongs = []
 
     for tag in every_strong_tag:
-        if _has_course_number(tag.text):
+        if has_course_number(tag.text):
             numbers_in_strongs.append(tag)
 
     for num_tag in numbers_in_strongs:
         if dept_name == 'clei':
-            new_dept.add_course(_get_course_all_in_one('clei', num_tag))
+            new_dept.add_course(extras.get_course_all_in_one('clei', num_tag))
         else:
-            new_dept.add_course(_get_course(dept_name, num_tag))
+            new_dept.add_course(get_course(dept_name, num_tag))
 
     if dept_name == 'germ' or dept_name == 'econ':
-        new_dept.add_course(_get_first_course_no_bold(dept_name, every_strong_tag[0]))
+        new_dept.add_course(extras.get_first_course_no_bold(dept_name, every_strong_tag[0]))
 
     sys.stdout.write(str(len(new_dept.courses)) + ' courses added.\n')
 
     return new_dept
 
 
-def _get_real_lit_dept(num_tag):
-    """Gets the department for a course in the lit page, which has many sub-departments.
-
-    :param num_tag: Tag of the number of a course
-    :type: num_tag: Tag
-    :return: name of the department the course actually is in
-    :rtype str
-    """
-    parent = num_tag.parent
-
-    while parent.name != 'h1':
-        parent = parent.previous_sibling
-    real_dept = parent.text
-
-    return real_dept
-
-
-def _get_lit_depts():
-    """Makes departments for all the sub-departments on the lit page.
-
-    :return: list of Department objects
-    :rtype: list
-    """
-    print("Building department \"lit\"...")
-
-    lit_depts = dict()
-
-    for dept_code in _lit_department_codes.values():
-        lit_depts[dept_code] = Department(dept_code)
-
-    soup = _get_soup_object('lit')
-    every_strong_tag = soup.select("div.main-content strong")
-    numbers_in_strongs = []
-    for tag in every_strong_tag:
-        if _has_course_number(tag.text):
-            numbers_in_strongs.append(tag)
-
-    for num_tag in numbers_in_strongs:
-        temp_course = _get_course('lit', num_tag)
-        if temp_course is None:
-            continue
-        lit_depts[temp_course.dept].add_course(temp_course)
-
-    for dept in lit_depts.values():
-        print('{_}{} courses added to \"{}\".'.format(str(len(dept.courses)), dept.name, _ = "...".rjust(28)))
-
-    return list(lit_depts.values())
-
-
-def build_database():
+def _build_database():
     """Builds and returns a CourseDatabase object.
 
     :return: CourseDatabase object with all Departments
@@ -400,7 +242,7 @@ def build_database():
     for current_dept in _all_departments:
         db.add_dept(_get_department_object(current_dept))
 
-    for lit_dept in _get_lit_depts():
+    for lit_dept in extras.get_lit_depts():
         db.add_dept(lit_dept)
     return db
 
@@ -408,13 +250,13 @@ def build_database():
 _database_pickle_path = os.path.join(os.path.dirname(__file__), r'pickle\course_database.pickle')
 
 
-def save_database():
+def _save_database():
     """Builds and saves a new database to a file on disk."""
     if os.path.isfile(_database_pickle_path):
         print('save_database(): database already exists. Use load_database() instead.')
         return
 
-    db = build_database()
+    db = _build_database()
 
     with open(_database_pickle_path, 'wb') as file:
         pickle.dump(db, file)
@@ -436,5 +278,5 @@ def load_database():
 
 
 if __name__ == "__main__":
-    save_database()
+    _save_database()
     # print(load_database())

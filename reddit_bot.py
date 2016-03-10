@@ -2,7 +2,7 @@
 Runs find_mentions and post_comments.
 """
 
-from find_mentions import find_mentions
+from mention_search_posts import find_mentions
 from post_comments import post_comments
 import tools
 import sys

@@ -140,7 +140,7 @@ def load_found_mentions():
 
 def save_found_mentions(found_mentions):
     """Saves to disk mentions found from from the last run of find_mentions().
-    This is used in both post_comments.py and in find_mentions.py so I have put it in tools.py.
+    This is used in both post_comments.py and in mention_search_posts.py so I have put it in tools.py.
 
     :param found_mentions: list of PostWithMentions objects
     :type found_mentions: list

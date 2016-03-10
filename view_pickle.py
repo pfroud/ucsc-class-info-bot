@@ -4,8 +4,8 @@ Lets you view the pickles of found mentions or existing comments.
 
 import sys
 import tools
-from build_database import CourseDatabase, Department, Course  # need this to de-pickle course_database.pickle
-from find_mentions import PostWithMentions  # need this to de-pickle found_mentions.pickle
+from db_core import CourseDatabase, Department, Course  # need this to de-pickle course_database.pickle
+from mention_search_posts import PostWithMentions  # need this to de-pickle found_mentions.pickle
 from tools import ExistingComment  # need to de-pickle
 
 
