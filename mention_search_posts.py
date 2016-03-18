@@ -35,6 +35,7 @@ def _get_mentions_in_submission(counter, submission_):
 
     mentions_list.extend(_get_mentions_in_string(submission_.selftext))
 
+    submission_.replace_more_comments(limit = None, threshold = 0)
     flat_comments = praw.helpers.flatten_tree(submission_.comments)
     for comment in flat_comments:
         if comment.author is None or comment.author.name == 'ucsc-class-info-bot':
@@ -151,6 +152,7 @@ def find_mentions(reddit, num_posts_, running_on_own = False):
 
 if __name__ == "__main__":
     import sys
+
     num_posts = 10
     if len(sys.argv) == 2:
         num_posts = int(sys.argv[1])

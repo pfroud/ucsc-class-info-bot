@@ -8,7 +8,7 @@ from post_comments import post_comments
 import tools
 import sys
 
-num_posts = 3
+num_posts = 10
 if len(sys.argv) == 2:
     num_posts = int(sys.argv[1])
 
