@@ -78,7 +78,7 @@ def _unify_mention_format(mention_):
     """
     m = re.match("([a-zA-Z]+ ?)([0-9]+[A-Za-z]?)", mention_)
     dept = m.group(1).lower().strip()
-    num = m.group(2)
+    num = m.group(2).lower()
 
     if dept == 'cs':
         dept = 'cmps'
@@ -153,7 +153,7 @@ def find_mentions(reddit, num_posts_, running_on_own = False):
 if __name__ == "__main__":
     import sys
 
-    num_posts = 10
+    num_posts = 1
     if len(sys.argv) == 2:
         num_posts = int(sys.argv[1])
     find_mentions(tools.auth_reddit(), num_posts, running_on_own = True)

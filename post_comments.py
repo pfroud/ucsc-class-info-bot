@@ -43,14 +43,14 @@ def _post_comment_helper(new_mention_object, reddit):
         existing_comment = reddit.get_info(thing_id = 't1_' + already_commented_obj.comment_id)
         existing_comment.edit(_get_comment(db, mentions_new))
         existing_posts_with_comments[submission_id].mentions_list = mentions_new
-        _save_posts_with_comments(existing_posts_with_comments)
+        tools.save_posts_with_comments(existing_posts_with_comments)
         _print_csv_row(submission_object, 'Edited comment.', mentions_new, mentions_previous)
         return True
 
     else:  # no comment with class info, post a new one
         new_comment = submission_object.add_comment(_get_comment(db, mentions_new))
         existing_posts_with_comments[submission_id] = ExistingComment(new_comment.id, mentions_new)
-        _save_posts_with_comments(existing_posts_with_comments)
+        tools.save_posts_with_comments(existing_posts_with_comments)
         _print_csv_row(submission_object, 'Comment added.', mentions_new, [])
         return True
 
@@ -148,15 +148,6 @@ def _print_csv_row(submission_, action, mentions_current, mentions_previous):
             _ = '  '))
 
 
-def _save_posts_with_comments(posts_with_comments):
-    """Saves to disk the dict of posts that have already been commented on.
-
-    :param posts_with_comments:  dict of <string,ExistingComment> of posts that already have comments on them
-    :type posts_with_comments: dict
-    """
-    with open("pickle/posts_with_comments.pickle", 'wb') as file:
-        pickle.dump(posts_with_comments, file)
-    file.close()
 
 
 def post_comments(new_mentions_list, reddit, running_on_own = False):
