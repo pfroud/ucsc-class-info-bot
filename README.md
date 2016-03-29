@@ -63,7 +63,7 @@ Third, some departments use their own custom style to list course info. For exam
 
 ####Third, successful, attempt - Registrar website
 
-The third version works.  The Registrar lists every course in every department with a beautifully consistent URL: `http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/department.html"`. This option is clearly the best. I didn't use it from the beginning because the link tree to find it isn't obvious: Quick Start Guide > Catalog > Fields of Study > Programs and Courses > Course Descriptions.
+The third version works.  The Registrar lists every course in every department with a beautifully consistent URL: `http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/<dept_code>.html`, where `<dept_code>` is the department code. Humans can go to [`index.html`](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/index.html) and choose a department on the left. This option is clearly the best. I didn't use it from the beginning because the link tree to find it isn't obvious: Quick Start Guide > Catalog > Fields of Study > Programs and Courses > Course Descriptions.
 
 There are, of course, some special cases and weirdness.
 
