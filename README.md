@@ -28,16 +28,17 @@ To the surprise of absolutely nobody, it was not *'so easy'*, although I am stil
 
 From here on I use 'course' instead of 'class' because `class` is a reserved Python keyword.
 
-A course *mention* is a case-insensitive string of a department code followed immediately by a course number. For example, "CMPS 12B" and "econ 105" are mentions. All recognized department codes are in [this list](https://github.com/pfroud/ucsc-class-info-bot/blob/183e434a0a4f2894f4e52b12300185a1c1ba2e81/build_database.py#L15-L20). A course number is one or more digit(s) followed by an optional letter, specified by the regular expression `/[0-9]+[A-Za-z]?/`. 
+A course *mention* is ~~a case-insensitive string of a department code followed immediately by a course number. For example, "CMPS 12B" and "econ 105" are mentions. All recognized department codes are in [this list](https://github.com/pfroud/ucsc-class-info-bot/blob/183e434a0a4f2894f4e52b12300185a1c1ba2e81/build_database.py#L15-L20). A course number is one or more digit(s) followed by an optional letter, specified by the regular expression `/[0-9]+[A-Za-z]?/`.~~ now more complicated.
 
-A course *object* is an instance of the [`Course`](https://github.com/pfroud/ucsc-class-info-bot/blob/183e434a0a4f2894f4e52b12300185a1c1ba2e81/build_database.py#L103-L115) class from `build_databse.py`. Such an instance knows its department, number, name, and description. For example, the course object with department "CMPS" and number "12B" has the title "Introduction to Data Structures" and the description starts with "Teaches students to implement common data structures and the algorithms..."
+
+A course *object* is an instance of the [`Course`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_core.py#L87-L99) class from `db_core.py`. Such an instance knows its department, number, name, and description. For example, the course object with department "CMPS" and number "12B" has the title "Introduction to Data Structures" and the description starts with "Teaches students to implement common data structures and the algorithms..."
 
 
 ##The course database 
-The course database lets us input a course *mention* and get a Course *object*. In other words, the database looks up a course's name and description using its department and number. The file `build_database.py` is where the action happens.
+The course database lets us input a course *mention* and get a Course *object*. In other words, the database looks up a course's name and description using its department and number. The file `db_core.py`  and `db_extra.py` do everything.
 
 ###Database structure
-The database stores an instance of `CourseDatabase`, which has a `dict<string, Department>`. A `Department` instance has a `dict<string, Course>`, and a `Course` instance has dept, number, name, description.
+The database stores a [Pickled](https://docs.python.org/3/library/pickle.html)  instance of `CourseDatabase`, which has a `dict<string, Department>`. A `Department` instance has a `dict<string, Course>`, and a `Course` instance has dept, number, name, description.
 
 You can see what it looked like as it was being built at [misc/db build log.txt](misc/db build log.txt). You can see what it looks like when you print it at [misc/db print.txt](misc/db print.txt).
 
@@ -65,11 +66,11 @@ Third, some departments use their own custom style to list course info. For exam
 
 The third version works.  The Registrar lists every course in every department with a beautifully consistent URL: `http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/<dept_code>.html`, where `<dept_code>` is the department code. Humans can go to [`index.html`](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/index.html) and choose a department on the left. This option is clearly the best. I didn't use it from the beginning because the link tree to find it isn't obvious: Quick Start Guide > Catalog > Fields of Study > Programs and Courses > Course Descriptions.
 
-There are, of course, some special cases and weirdness.
+The file `db_core.py` handles most departments. There are, of course, some special cases and weirdness, which are handled by `db_extra.py`.
 
-First, some courses with the same number bit different letters are indented. For example, [Psychology](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/psyc.html) 118A-D are all indented under the header for 118. The functions [`is_next_p_indented()`](https://github.com/pfroud/ucsc-class-info-bot/blob/91cfc3cc31ffb70f6ea51ffdac6665bbd17ed1cd/build_database.py#L142-L161) and [`in_indented_paragraph()`](https://github.com/pfroud/ucsc-class-info-bot/blob/91cfc3cc31ffb70f6ea51ffdac6665bbd17ed1cd/build_database.py#L164-L172) check for this case.
+First, some courses with the same number bit different letters are indented. For example, [Psychology](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/psyc.html) 118A-D are all indented under the header for 118. The functions [`is_next_p_indented()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_extra.py#L37-L56) and [`in_indented_paragraph()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_extra.py#L59-L67) check for this case.
 
-Second, the [Literature](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/lit.html) department contains courses that use different department codes. For example, Creative Writing (LTCR) and and Latin Literature (LTIN) classes are both under `lit.html`. Consequently the lit page is scraped by its own function, [`get_lit_depts()`](https://github.com/pfroud/ucsc-class-info-bot/blob/91cfc3cc31ffb70f6ea51ffdac6665bbd17ed1cd/build_database.py#L347-L375), with help from the function [`get_real_lit_dept()`](https://github.com/pfroud/ucsc-class-info-bot/blob/91cfc3cc31ffb70f6ea51ffdac6665bbd17ed1cd/build_database.py#L330-L344). The page uses subdepartment *names* but we care about subdepartment *codes*, so the dict [`lit_department_codes`](https://github.com/pfroud/ucsc-class-info-bot/blob/91cfc3cc31ffb70f6ea51ffdac6665bbd17ed1cd/build_database.py#L23-L34) maps names to codes. For example, "﻿Modern Literary Studies" maps to "LTMO" and "﻿Greek Literature" maps to "LTGR".
+Second, the [Literature](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/lit.html) department contains courses that use different department codes. For example, Creative Writing (LTCR) and and Latin Literature (LTIN) classes are both under `lit.html`. Consequently the lit page is scraped by its own function, [`get_lit_depts()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_extra.py#L135-L164), with help from the function [`get_real_lit_dept()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_extra.py#L118-L132). The page uses subdepartment *names* but we care about subdepartment *codes*, so the dict [`lit_department_codes`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_extra.py#L6-L17) maps names to codes. For example, "﻿Modern Literary Studies" maps to "LTMO" and "﻿Greek Literature" maps to "LTGR".
 
 Third, some departments deviate from the standard HTML layout. For almost every department, I scrape by looking through `<strong>` tags for the target course number. In well-behaved departments, the header for a course is in three tags. Here's an example from [Biomolecular Engineering (BME)](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/bme.html):
 
@@ -84,27 +85,36 @@ However, *one single department doesn't do this*. [College Eight (CLEI)](http://
 ```
 <strong>81C. Designing a Sustainable Future. S</strong>
 ```
-So, there's one [stupid special case](https://github.com/pfroud/ucsc-class-info-bot/blob/183e434a0a4f2894f4e52b12300185a1c1ba2e81/build_database.py#L318).
+So, there's one [stupid special case](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_core.py#L219).
 
 Furthermore, two departments miss the first `<strong>` tag. The first courses on the [German](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/germ.html) and [Economics](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/econ.html) pages look like this:
 ```
 1. <strong>First-Year German.</strong>
 <strong>F</strong>
 ```
-That means if I'm looking for course number 1, I won't find it because I only look in `<strong>` tags. So, that's another [stupid special case](https://github.com/pfroud/ucsc-class-info-bot/blob/183e434a0a4f2894f4e52b12300185a1c1ba2e81/build_database.py#L323).
+That means if I'm looking for course number 1, I won't find it because I only look in `<strong>` tags. So, that's another [stupid special case](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_core.py#L224).
 
 
-The latest [special cases](https://github.com/pfroud/ucsc-class-info-bot/blob/f290a4caff4aecf10cebb31c020ff1a10b8cdd14/build_database.py#L307-L315) arise from inconsistent naming. The Registrar's page for the [Ecology and Evolutionary Biology](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/eeb.html) department is on `eeb.html`, but, but the [class search](https://pisa.ucsc.edu/class_search/) reveals that the courses use the dapertment code `BIOE`. Similarly, the  Registrar listing for  the [Molecular, Cell, and Developmental Biology](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/mcdb.html) department is on `mcdb.html` but the courses use the department code `BIOL`.
+The latest [special cases](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_core.py#L198-L206) arise from inconsistent department naming. The Registrar's page for the [Ecology and Evolutionary Biology](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/eeb.html) department is on `eeb.html`, but, but the [class search](https://pisa.ucsc.edu/class_search/) reveals that the courses use the dapertment code `BIOE`. Similarly, the  Registrar listing for  the [Molecular, Cell, and Developmental Biology](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/mcdb.html) department is on `mcdb.html` but the courses use the department code `BIOL`.
 
 ##Finding course mentions
 
-In the file `find_mentions.py`, the function [`find_mentions()`](https://github.com/pfroud/ucsc-class-info-bot/blob/91cfc3cc31ffb70f6ea51ffdac6665bbd17ed1cd/find_mentions.py#L158-L185) gets new posts from /r/UCSC then calls [`_get_mentions_in_submission()`](https://github.com/pfroud/ucsc-class-info-bot/blob/91cfc3cc31ffb70f6ea51ffdac6665bbd17ed1cd/find_mentions.py#L26-L57) on each post.
+### Mention types
 
-To find mentions in a submission, call [`_get_mentions_in_string()`](https://github.com/pfroud/ucsc-class-info-bot/blob/91cfc3cc31ffb70f6ea51ffdac6665bbd17ed1cd/find_mentions.py#L65-L117) on its title, self text, and comments.
+All of these are case-insensitive.
 
-To find mentions in a string, iterate through a list of all available department codes. If a department code is found, use the regular expression [`_mention_regex`](https://github.com/pfroud/ucsc-class-info-bot/blob/91cfc3cc31ffb70f6ea51ffdac6665bbd17ed1cd/find_mentions.py#L11) will determine if it is followed by a course number.
+* **Normal mention:** department code, optional space, and course number. For example, "CMPS 12B" and "econ105". Specified by regex [`_pattern_mention_normal`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/mention_parse.py#L22).
+* **Letter-list mention:** one department, one string of digits, then a list of letters. For example, "CE 129A/B/C". Specified by regex [`_pattern_mention_letter_list`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/mention_parse.py#L19). The function [`_parse_letter_list()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/mention_parse.py#L36-L55) splits a letter-list mention into normal mentions.
+* **Multi-mention:** one department and a list of course numbers. For example, "Math 21, 23b, 24 and 100". Not specified by a single regex, but delimiters are specd by [`_pattern_delimiter`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/mention_parse.py#L28). Yes, you can have a letter-list mention in a multi mention, like "CS 8a, 15, or 163w/x/y/z". The function [`_parse_multi_mention()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/mention_parse.py#L58-L92) splits a multi-mention into normal mentions.
 
-I pulled the list of department codes from the source of the [class search](https://pisa.ucsc.edu/class_search/) page (`<select id="subject">`), but it includes defuct and renamed departments. For example, Arabic (ARAB) is gone and Environmental Toxicology (ETOX) is now Microbiology and Environmental Toxicology (METX).
+Simpler regular expressions are combined to form [`_pattern_final`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/mention_parse.py#L32-L33), which is used to search strings.
+
+### something else
+
+In the file `mention_search_posts.py`, the function [`find_mentions()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/mention_search_posts.py#L111-L150) gets new posts from /r/UCSC then parses everything using `mention_parse.py`.
+
+I pulled the list of department codes from the source of the [class search](https://pisa.ucsc.edu/class_search/) page (`<select id="subject">`), but it includes defuct and renamed departments. For example, Arabic (ARAB) is gone and Environmental Toxicology (ETOX) is now Microbiology and Environmental Toxicology (METX). Specified by [`_pattern_depts`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/mention_parse.py#L11-L16).
+
 
 The [`PostsWithMentions`](https://github.com/pfroud/ucsc-class-info-bot/blob/91cfc3cc31ffb70f6ea51ffdac6665bbd17ed1cd/find_mentions.py#L15-L23) class is a container which holds the ID of a submission and a list of course mentions found in that submission. I could use a `dict<string, list<string>>` but wanted to abstract as much as possible, although since Python is dynamically typed it doesn't help.
 
