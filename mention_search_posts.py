@@ -63,7 +63,7 @@ def _get_mentions_in_string(source_):
 
     :param source_: string to look for courses in.
     :type source_: str
-    :return: array of strings of course names
+    :return: list of strings of course names
     :rtype: list
     """
 
@@ -74,7 +74,9 @@ def _unify_mention_format(mention_):
     """Gaurentees a space between deptartment and number, and expands CS and CE to CMPS and CMPE.
 
     :param mention_: the mention to reformat
+    :type mention_: str
     :return: the reformatted mention
+    :rtype: str
     """
     m = re.match("([a-zA-Z]+ ?)([0-9]+[A-Za-z]?)", mention_)
     dept = m.group(1).lower().strip()
@@ -94,7 +96,7 @@ def _remove_list_duplicates_preserve_order(input_list):
     To do this easily without preserving order, do list(set(input_list)).
 
     :param input_list: the list to remove duplicates from, while preserving order
-     :type input_list: list
+    :type input_list: list
     :return: the list with duplicates removed, with order preserved
     :rtype: list
     """
@@ -117,7 +119,7 @@ def find_mentions(reddit, num_posts_, running_on_own = False):
     :type reddit: praw.Reddit
     :param num_posts_:
     :type num_posts_: int
-    :return: list of post with found mentions
+    :return: list of PostWithMentions instances
     :rtype: list
     """
 
