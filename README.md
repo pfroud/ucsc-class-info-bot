@@ -52,7 +52,7 @@ I tried a few ways to make the database work. All the HTML parsing is done by [B
 
 My original idea for scraping course info was through the [class search](https://pisa.ucsc.edu/class_search/) page. The script works but is a pain in the ass because I need to send a POST request *and* parse the returned HTML page. It would not work for building the database because the class search page only lists courses offered that quarter.
 
-The implementation is preserved in [misc/get_course_info_old.py](misc/get_course_info_old.py) for your viewing pleasure.
+The implementation is preserved in [misc/get_course_info.py](misc/get_course_info.py) for your viewing pleasure.
 
 ####Second attempt - department websites
 

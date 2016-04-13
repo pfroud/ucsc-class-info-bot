@@ -1,8 +1,10 @@
 """
-OLD - USE BUILD_DATABASE.PY
+OLD - USE DB_CORE.PY
 Given a string of a department and course number, pulls information about the course from
 https://pisa.ucsc.edu/cs9/prd/sr9_2013/index.php.
 """
+
+raise DeprecationWarning("You probably don't want to actually run this. Use db_core.py to retrive course information.")
 
 import requests  # html requests
 from bs4 import BeautifulSoup  # html parser
