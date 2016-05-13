@@ -71,7 +71,7 @@ def _get_mentions_in_string(source_):
 
 
 def _unify_mention_format(mention_):
-    """Gaurentees a space between deptartment and number, and expands CS and CE to CMPS and CMPE.
+    """Gaurentees a space between deptartment and number, removes leading zeroes, and expands CS and CE to CMPS and CMPE.
 
     :param mention_: the mention to reformat
     :type mention_: str
@@ -80,7 +80,7 @@ def _unify_mention_format(mention_):
     """
     m = re.match("([a-zA-Z]+ ?)([0-9]+[A-Za-z]?)", mention_)
     dept = m.group(1).lower().strip()
-    num = m.group(2).lower().strip("0")
+    num = m.group(2).lower().lstrip("0")
 
     if dept == 'cs':
         dept = 'cmps'
