@@ -80,7 +80,7 @@ def _unify_mention_format(mention_):
     """
     m = re.match("([a-zA-Z]+ ?)([0-9]+[A-Za-z]?)", mention_)
     dept = m.group(1).lower().strip()
-    num = m.group(2).lower()
+    num = m.group(2).lower().strip("0")
 
     if dept == 'cs':
         dept = 'cmps'
@@ -124,7 +124,7 @@ def find_mentions(reddit, num_posts_, running_on_own = False):
     """
 
     # use this to find mentions in only one post
-    # tools.save_found_mentions([_get_mentions_in_submission(0, reddit.get_submission(submission_id = "49h1o9"))])
+    # tools.save_found_mentions([_get_mentions_in_submission(0, reddit.get_submission(submission_id = "4j4i0y"))])
     # return
 
     print('{num}{_}{id}{_}{author}{_}{title}{_}mentions'
