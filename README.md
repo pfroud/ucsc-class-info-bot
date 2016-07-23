@@ -40,7 +40,7 @@ A *course number* is a string, not an integer, because a course number might hav
 The course database uses a course's department and number to look up that course's name and description. In other words, we input a course *mention* and get a Course *object*. The files [`db_core.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/db_core.py)  and [`db_extra.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/db_extra.py) create the database.
 
 ###Database structure
-The database stores a [Pickled](https://docs.python.org/3/library/pickle.html)  instance of `CourseDatabase`, which has a dict mapping a department code string to a `Department` instance. A `Department` instance has a dict mapping a course number to a `Course` instance. A `Course` instance has department, number, name, description.
+The database stores a [Pickled](https://docs.python.org/3/library/pickle.html)  instance of `CourseDatabase`, which has a dict mapping a department code string to a `Department` instance. A `Department` instance has a dict mapping a course number to a `Course` instance. A `Course` instance has department, number, name, description. The relationship between these structures is illustrated below.
 
 ![Database structure diagram](img/database_structure_diagram.png)
 
