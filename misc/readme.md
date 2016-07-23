@@ -1,4 +1,4 @@
-## /misc
+## misc/
 
 `db build log.txt`: console output when building the database, showing how many courses are added from each department.
 

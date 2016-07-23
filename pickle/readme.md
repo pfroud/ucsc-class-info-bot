@@ -1,4 +1,4 @@
-## /pickle
+## pickle/
 
 `course_database.pickle`: serialized course database.
 
