@@ -28,19 +28,21 @@ To the surprise of absolutely nobody, it was not *'so easy'*, although I am stil
 
 From here on I use 'course' instead of 'class' because `class` is a reserved Python keyword.
 
-A course *mention* occurs when a redditor names one or more courses in a post or comment. See section [mention types](#mention-types).
+A *course mention* occurs when a redditor names one or more courses in a post or comment. See section [mention types](#mention-types).
 
-A course *object* is an instance of the [`Course`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_core.py#L87-L99) class from [`db_core.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/db_core.py). Such an instance knows its department, number, name, and description. The course number is actually a string because courses can have a letter after the numeric part.
+A *course object* is an instance of the [`Course`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_core.py#L87-L99) class from [`db_core.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/db_core.py). A course object contains a course's department, number, name, and description.
 
-A *department code* is a string of between two and four (inclusive) letters that is an abbreviation of a department's name.
+A *department code* is a string of between two and four (inclusive) letters that is an abbreviation of a department's name. For example, `CMPS` is the department code for Computer Science.
 
-A *course number* is a string, not an integer, because course numbers can have an optional letter at the end.
+A *course number* is a string, not an integer, because a course number might have a letter at the end. For example, `112`  and  `12A` are both course numbers. 
 
 ##The course database 
-The course database uses a course's department and number to look up its name and description.  In other words, we input a course *mention* and get a Course *object*. The files [`db_core.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/db_core.py)  and [`db_extra.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/db_extra.py) do everything.
+The course database uses a course's department and number to look up that course's name and description. In other words, we input a course *mention* and get a Course *object*. The files [`db_core.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/db_core.py)  and [`db_extra.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/db_extra.py) create the database.
 
 ###Database structure
-The database stores a [Pickled](https://docs.python.org/3/library/pickle.html)  instance of `CourseDatabase`, which has a dict mapping a department code string to a `Department` instance. A `Department` instance has a dict mapping a department code to a `Course` instance. A `Course` instance has department, number, name, description.
+The database stores a [Pickled](https://docs.python.org/3/library/pickle.html)  instance of `CourseDatabase`, which has a dict mapping a department code string to a `Department` instance. A `Department` instance has a dict mapping a course number to a `Course` instance. A `Course` instance has department, number, name, description.
+
+![Database structure diagram](img/diagram.png)
 
 You can see the log from building the database at [misc/db build log.txt](misc/db build log.txt). You can see the database's contents at [misc/db print.txt](misc/db print.txt).
 
@@ -52,13 +54,13 @@ I had to try a few ways to make the database work. HTML parsing in each attempt 
 
 My original idea for scraping course info was through the [class search](https://pisa.ucsc.edu/class_search/) page. The script works but is a pain in the ass because I need to send a POST request *and* parse the returned HTML page. It is not suitable for building the database because the class search page only lists courses offered in the current quarter.
 
-The implementation is preserved in [misc/get_course_info_old.py](misc/get_course_info_old.py) for your viewing pleasure.
+The implementation is preserved in [misc/get_course_infO.py](misc/get_course_info.py) for your viewing pleasure.
 
 ####Second attempt - department websites
 
 My second idea was to scrape course info from the website of each academic department. There were multiple problems.
 
-First, different departments put their course catalogs on inconsistent URLs. Comparison of these URLs is left as an exercise to the reader(!): [Chemistry](http://chemistry.ucsc.edu/academics/courses/course-catalog.php), [History](http://history.ucsc.edu/courses/catalog-view.php), [Mathematics](http://www.math.ucsc.edu/courses/course-catalog.php), [Linguistics](http://linguistics.ucsc.edu/courses/course-catalog-view.php), [Anthropology](http://anthro.ucsc.edu/courses/course_catalog.php).
+First, different departments put their course catalogs on inconsistent URLs. Each of these departments use a slightly different URL pattern: [Chemistry](http://chemistry.ucsc.edu/academics/courses/course-catalog.php), [History](http://history.ucsc.edu/courses/catalog-view.php), [Mathematics](http://www.math.ucsc.edu/courses/course-catalog.php), [Linguistics](http://linguistics.ucsc.edu/courses/course-catalog-view.php), [Anthropology](http://anthro.ucsc.edu/courses/course_catalog.php).
 
 Second, some courses appear in a department that doesn't match their department code. For example, classes in Chinese (CHIN), French (FREN), and German (GERM) are all listed on the [Language department's](http://language.ucsc.edu/courses/course-catalog.php) page.
 
@@ -104,7 +106,7 @@ For almost every department, key information about a course is contained in thre
 <strong>Computational Biology Tools.</strong>
 <strong>F,W</strong>
 ```
-So, to build the database, I being by finding `<strong>` tags containing numbers.  (The "F,W" indicates which general education requirements are satisfied by that course.)
+To build the database, I being by looking for `<strong>` tags containing a course number followed by a period.  (The "F,W" indicates which general education requirements are satisfied by that course.)
 
  However, *one single department does this differently*. [College Eight (CLEI)](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/clei.html) puts the entire header in one `<strong>` tag:
 ```
@@ -117,7 +119,7 @@ Furthermore, two departments miss the first `<strong>` tag. The first courses on
 1. <strong>First-Year German.</strong>
 <strong>F</strong>
 ```
-Because I only look for numbers inside of `<strong>` tags, I won't find course 1. So, that's another [stupid special case](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_core.py#L224-L225).
+I only look for course numbers inside of `<strong>` tags, so course 1 gets left out. There's another [stupid special case](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_core.py#L224-L225).
 
 #### Inconsistent department naming
 
