@@ -1,6 +1,9 @@
 """
 Lets you view the pickles of found mentions or existing comments.
+Use argument 'm' to view found mentions, argument 'p' to view posts with comments.
 """
+
+# You might need to move this to the project's root folder for it to work.
 
 import sys
 import tools

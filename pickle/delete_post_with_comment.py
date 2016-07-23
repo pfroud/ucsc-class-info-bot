@@ -1,5 +1,7 @@
 """Deletes a comment ONLY FROM the pickle of posts with comments. DOES NOT delete comment from reddit.com."""
 
+# You might need to move this to the project's root folder for it to work.
+
 import sys
 import tools
 
