@@ -9,6 +9,7 @@ import pickle  # serializer
 import os.path  # check if file exists, get file size
 from datetime import datetime  # added to output logs
 import sys  # print without newline
+import db_extra as extras
 
 
 DEBUG = False
@@ -121,10 +122,7 @@ def get_soup_object(dept_name):
     url = "http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/" + dept_name + ".html"
 
     request_result = requests.get(url)
-
-    status_code = request_result.status_code
-    if status_code != 200:
-        raise Exception(url + ' returned ' + str(status_code) + '\n')
+    request_result.raise_for_status()
 
     return BeautifulSoup(request_result.text, 'html.parser')
 
@@ -159,15 +157,19 @@ def get_course(dept_name, num_tag):
     name_tag = num_tag.next_sibling.next_sibling
     name = name_tag.text.strip(' .')
 
-    description_tag = name_tag.next_sibling.next_sibling
+    description_tag = name_tag.find_next_sibling('br')
 
-    while description_tag.name == 'strong' or description_tag.name == 'br' or description_tag.name == 'h2':
-        description_tag = description_tag.next_sibling.next_sibling
+    # while description_tag.name == 'strong' or description_tag.name == 'br' or description_tag.name == 'h2':
+    #     description_tag = description_tag.next_sibling.next_sibling
+    #
+    # if description_tag.name == 'p':
+    #     description_tag = description_tag.next_sibling
 
-    if description_tag.name == 'p':
+    while description_tag.__class__.__name__ != 'NavigableString':
         description_tag = description_tag.next_sibling
 
     description = description_tag[2:]
+    # description = description_tag.find_next_sibling('br').next_sibling[2:]
 
     if dept_name == 'lit':
         real_name = extras.get_real_lit_dept(num_tag).replace("\ufeff", "")
@@ -216,13 +218,13 @@ def _get_department_object(dept_name):
             numbers_in_strongs.append(tag)
 
     for num_tag in numbers_in_strongs:
-        if dept_name == 'clei':
-            new_dept.add_course(extras.get_course_all_in_one('clei', num_tag))
-        else:
+        # if dept_name == 'clei':  # they fixed it!!!!!!!!!
+        #     new_dept.add_course(extras.get_course_all_in_one('clei', num_tag))
+        # else:
             new_dept.add_course(get_course(dept_name, num_tag))
 
-    if dept_name == 'germ' or dept_name == 'econ':
-        new_dept.add_course(extras.get_first_course_no_bold(dept_name, every_strong_tag[0]))
+    # if dept_name == 'germ' or dept_name == 'econ':  # they fixed this too!!!!!
+    #     new_dept.add_course(extras.get_first_course_no_bold(dept_name, every_strong_tag[0]))
 
     sys.stdout.write(str(len(new_dept.courses)) + ' courses added.\n')
 
@@ -239,8 +241,9 @@ def _build_database():
     print('----------------------------------')
     db = CourseDatabase()
 
-    for current_dept in _all_departments:
-        db.add_dept(_get_department_object(current_dept))
+    # for current_dept in _all_departments:
+    # for current_dept in ['bme']:
+    #     db.add_dept(_get_department_object(current_dept))
 
     for lit_dept in extras.get_lit_depts():
         db.add_dept(lit_dept)
@@ -257,7 +260,7 @@ def _save_database():
         return
 
     db = _build_database()
-
+    return
     with open(_database_pickle_path, 'wb') as file:
         pickle.dump(db, file)
     file.close()
@@ -278,6 +281,6 @@ def load_database():
 
 
 if __name__ == "__main__":
-    import db_extra as extras
+
     _save_database()
     # print(load_database())

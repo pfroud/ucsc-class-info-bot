@@ -69,6 +69,7 @@ def in_indented_paragraph(num_tag):
 
 def get_course_all_in_one(dept_name, num_tag):
     """Makes a Course object when the whole heading is in one <strong> tag.
+    DON'T NEED THIS ANY MORE EITHER!!!!!!!!
 
     :param dept_name: Name of the department the course is in
     :type dept_name: str
@@ -99,6 +100,7 @@ def get_course_all_in_one(dept_name, num_tag):
 def get_first_course_no_bold(dept_name, first_strong_tag):
     """Gets the first course when the number is not bolded.
     Use only for germ and econ departments.
+    DON'T NEED THIS ANY MORE!!!
 
     :param dept_name: name of the department like 'cmps'
     :type dept_name: str
