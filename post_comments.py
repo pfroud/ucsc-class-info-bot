@@ -136,11 +136,18 @@ def _print_csv_row(submission_, action, mentions_current, mentions_previous):
     :param mentions_previous: list of class mentions last known about
     :type mentions_previous: list
     """
+
+    author = submission_.author
+    if author is None:
+        author_name = "[deleted]"
+    else:
+        author_name = author.name
+
     print(  # I have put the string on it's own line b/c PyCharm's formatter and PEP inspector want different things
         '{id}{_}{author}{_}{title}{_}{action}{_}{mentions_current}{_}{mentions_previous}'
             .format(
             id = trunc_pad(submission_.id, "id"),
-            author = trunc_pad(submission_.author.name, "author"),
+            author = trunc_pad(author_name, "author"),
             title = trunc_pad(submission_.title, "title"),
             action = trunc_pad(action, "action"),
             mentions_current = mentions_current,

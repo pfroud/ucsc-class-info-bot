@@ -44,10 +44,16 @@ def _get_mentions_in_submission(counter, submission_):
 
     mentions_list = _remove_list_duplicates_preserve_order(mentions_list)
 
+    author = submission_.author
+    if author is None:
+        author_name = "[deleted]"
+    else:
+        author_name = author.name
+
     print('{num}{_}{id}{_}{author}{_}{title}{_}{mentions}'
           .format(num = trunc_pad(str(counter), 'num'),
                   id = trunc_pad(submission_.id, "id"),
-                  author = trunc_pad(submission_.author.name, "author"),
+                  author = trunc_pad(author_name, "author"),
                   title = trunc_pad(submission_.title, "title"),
                   mentions = mentions_list,
                   _ = '  '))
