@@ -98,7 +98,7 @@ def _mention_to_course_object(db_, mention_):
     """
     split = mention_.split(' ')
     dept = split[0].lower()
-    num = db_core.pad_course_num(split[1].upper())  # eventually get rid of this
+    num = db_core.pad_course_num(split[1].upper())
 
     try:
         course_obj = db_.depts[dept].courses[num]
@@ -158,7 +158,7 @@ def _print_csv_row(submission_, action, mentions_current, mentions_previous):
             _ = '  '))
 
 
-def post_comments(new_mentions_list, reddit, running_on_own = False):
+def post_comments(new_mentions_list, reddit):
     """Recursivley goes through the mentions found in the last run of mention_search_posts.py and
     posts a comment on each, if needed.
 
@@ -175,9 +175,9 @@ def post_comments(new_mentions_list, reddit, running_on_own = False):
         print("No more mentions.")
         return
     _post_comment_helper(new_mention, reddit)
-    if running_on_own:
+    if __name__ == "__main__":
         tools.save_found_mentions(new_mentions_list)
-    post_comments(new_mentions_list, reddit, running_on_own)
+    post_comments(new_mentions_list, reddit)
 
 
 existing_posts_with_comments = tools.load_posts_with_comments()
@@ -190,4 +190,4 @@ if __name__ == "__main__":
                   title = trunc_pad("title"),
                   action = trunc_pad("action"),
                   _ = '  '))
-    post_comments(tools.load_found_mentions(), tools.auth_reddit(), running_on_own = True)
+    post_comments(tools.load_found_mentions(), tools.auth_reddit())

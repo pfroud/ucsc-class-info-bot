@@ -6,19 +6,35 @@ import praw
 import os
 import warnings
 
-# use this to set up PRAW for the first time
-# reddit = praw.Reddit(user_agent = 'desktop:ucsc-class-info-bot:v0.0.1 (by /u/ucsc-class-info-bot)',
+
+# use this to set up PRAW for the first time:
+# reddit = praw.Reddit(user_agent = 'desktop:ucsc-class-info-bot:v1.0 (by /u/ucsc-class-info-bot)',
 #                      site_name = 'ucsc_bot')
 
 # _get_code()
 # _save_access_information()
 
-# widths of column for printing tables to console. used by trunc_pad()
-_column_widths = {'num': 2,
-                  "id": 7,
-                  "author": 15,
-                  "title": 35,
-                  "action": 17}
+def _get_code(r_):
+    """
+    Use this for first-time PRAW setup. Use this then _save_access_information().
+    Log into /u/ucsc-class-info-bot then navigate to the url printed.
+    From http://praw.readthedocs.io/en/v3.6.0/pages/oauth.html
+    """
+    url = r_.get_authorize_url('state', 'identity submit edit read', True)
+    print(url)
+
+
+def _save_access_information(r_):
+    """
+    Use this for first-time PRAW setup.
+    Paste the code from the redirect into the function below.
+    From http://praw.readthedocs.io/en/v3.6.0/pages/oauth.html
+    :param r_: praw instance
+    :type r_:
+    """
+    with open('pickle/access_information.pickle', 'wb') as file:
+        pickle.dump(r_.get_access_information('code'), file)
+    file.close()
 
 
 class ExistingComment:
@@ -32,20 +48,30 @@ class ExistingComment:
         return "existing comment: {} -> {}".format(self.comment_id, self.mentions_list)
 
 
-def trunc_pad(string_, use_ = None):
+# widths of column for printing tables to console.
+_column_widths = {'num': 2,
+                  "id": 7,
+                  "author": 15,
+                  "title": 35,
+                  "action": 17}
+
+
+def trunc_pad(string_, column_name = None):
     """Truncates and pads with spaces string_ to be printed in a table.
-    The padding width is indicated by use_. If _use isn't specifeid, the string is the use.
+    The padding widths are given in the dict _column_widths.
+    If column_name isn't specifeid, the string is used as the column name.
 
     :param string_: string to be truncated and padded
     :type string_: str
-    :param use_: string identifying which column the string is in.
-    :type use_: str
+    :param column_name: string identifying which column the string is in.
+    :type column_name: str
     :return: the input string, truncated and padded
     :rtype: str
     """
-    if use_ is None:
-        use_ = string_
-    width = _column_widths[use_]
+    if column_name is None:
+        column_name = string_
+
+    width = _column_widths[column_name]
     if len(string_) > width:
         return string_[:width - 3] + '...'
     else:
@@ -60,7 +86,7 @@ def auth_reddit():
     """
 
     with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
+        warnings.simplefilter("ignore")  # suppress PRAW warning about user agent containing 'bot'
         red = praw.Reddit(user_agent = 'desktop:ucsc-class-info-bot:v0.0.1 (by /u/ucsc-class-info-bot)',
                           site_name = 'ucsc_bot')
 
@@ -69,27 +95,6 @@ def auth_reddit():
     file.close()
     red.set_access_credentials(**access_information)
     return red
-
-
-def _get_code(r_):
-    """
-    Use this for first-time PRAW setup. Use this first.
-    Log into /u/ucsc-class-info-bot then navigate to the url printed.
-    """
-    url = r_.get_authorize_url('state', 'identity submit edit read', True)
-    print(url)
-
-
-def _save_access_information(r_):
-    """
-    Use this for first-time PRAW setup. Use this second.
-    Paste the code from the redirect into the function below.
-    :param r_: praw instance
-    :type r_:
-    """
-    with open('pickle/access_information.pickle', 'wb') as file:
-        pickle.dump(r_.get_access_information('code'), file)
-    file.close()
 
 
 def load_posts_with_comments():
