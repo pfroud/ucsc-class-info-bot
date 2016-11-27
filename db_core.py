@@ -10,7 +10,6 @@ import os.path  # check if file exists, get file size
 from datetime import datetime  # added to output logs
 import sys  # print without newline
 
-
 DEBUG = False
 
 _all_departments = [
@@ -29,7 +28,7 @@ class CourseDatabase:
     """Holds a bunch of Departments, each of which hold a bunch of Courses."""
 
     def __init__(self):
-        self.depts = dict()  # set up an empty dictionary
+        self.depts = {}
         self.num_courses = 0
 
     def add_dept(self, new_dept):
@@ -51,7 +50,7 @@ class Department:
     """Holds a bunch of Courses."""
 
     def __init__(self, name):
-        self.courses = dict()
+        self.courses = {}
         self.name = name
 
     def add_course(self, new_course):
@@ -90,13 +89,12 @@ class Course:
     def __init__(self, dept, number, name, description):
         self.dept = dept
         self.number = pad_course_num(number)
-        # self.number = number
         self.name = name
         self.description = description
 
     def __str__(self):
-        # return self.dept + ' ' + self.number + ': ' + self.name
-        return '\"' + self.name + "\""
+        # return "{} {}: {}".format(self.dept, self.number, self.name)
+        return "\"{}\"".format(self.name)
 
 
 def has_course_number(num_string):
@@ -121,11 +119,7 @@ def get_soup_object(dept_name):
     url = "http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/" + dept_name + ".html"
 
     request_result = requests.get(url)
-
-    status_code = request_result.status_code
-    if status_code != 200:
-        raise Exception(url + ' returned ' + str(status_code) + '\n')
-
+    request_result.raise_for_status()
     return BeautifulSoup(request_result.text, 'html.parser')
 
 
@@ -140,46 +134,48 @@ def get_course(dept_name, num_tag):
     :return: Course object of the specified course, or None if the course has sub-numbers
     :rtype: Course
     """
-    number = num_tag.text[:-1]
+    course_num = num_tag.text[:-1]
     if DEBUG:
-        print("doing", number)
+        print("doing", course_num)
 
     # extremely stupid special case
-    if dept_name == 'havc' and number == '152. Roman Eyes: Visual Culture and Power in the Ancient Roman World. ':
+    if dept_name == 'havc' and course_num == '152. Roman Eyes: Visual Culture and Power in the Ancient Roman World. ':
         if DEBUG:
             print('>>>>>>>>>> havc 152 special case')
         return extras.get_course_all_in_one('havc', num_tag)
 
-    if extras.is_last_course_in_p(num_tag) and extras.is_next_p_indented(num_tag) and not extras.in_indented_paragraph(
-            num_tag):
+    if extras.is_last_course_in_p(num_tag) and extras.is_next_p_indented(num_tag) and not \
+            extras.in_indented_paragraph(num_tag):
         if DEBUG:
             print('   SKIPPING num_tag \"' + num_tag.text + "\"<<<<<<<<<<<<<<<<<<<<<")
         return None
 
+    # TODO change .next_sibling.next_sibling to next_siblings[1]
     name_tag = num_tag.next_sibling.next_sibling
-    name = name_tag.text.strip(' .')
+    course_name = name_tag.text.strip(' .')
 
-    description_tag = name_tag.next_sibling.next_sibling
+    descr_tag = name_tag.next_sibling.next_sibling
 
-    while description_tag.name == 'strong' or description_tag.name == 'br' or description_tag.name == 'h2':
-        description_tag = description_tag.next_sibling.next_sibling
+    while descr_tag.name == 'strong' or descr_tag.name == 'br' or descr_tag.name == 'h2':
+        descr_tag = descr_tag.next_sibling.next_sibling
 
-    if description_tag.name == 'p':
-        description_tag = description_tag.next_sibling
+    if descr_tag.name == 'p':
+        descr_tag = descr_tag.next_sibling
 
-    description = description_tag[2:]
+    descr_str = descr_tag[2:]
 
     if dept_name == 'lit':
-        real_name = extras.get_real_lit_dept(num_tag).replace("\ufeff", "")
-        # print("   real name is \"" + real_name + "\"")
+        real_dept_name = extras.get_real_lit_dept(num_tag).replace("\ufeff", "")  # remove byte order mark
+        if DEBUG:
+            print("   real name is \"" + real_dept_name + "\"")
 
         # Russian Lit department has no dept code, probably does not actually exist
-        if real_name == 'Russian Literature':
+        if real_dept_name == 'Russian Literature':
             return None
 
-        return Course(extras.lit_department_codes[real_name], number, name, description)
+        return Course(extras.lit_department_codes[real_dept_name], course_num, course_name, descr_str)
     else:
-        return Course(dept_name, number, name, description)
+        return Course(dept_name, course_num, course_name, descr_str)
 
 
 def _get_department_object(dept_name):
@@ -208,14 +204,13 @@ def _get_department_object(dept_name):
     new_dept = Department(dept_name)
 
     every_strong_tag = soup.select("div.main-content strong")
-
-    numbers_in_strongs = []
+    strong_tags_with_course_nums = []
 
     for tag in every_strong_tag:
         if has_course_number(tag.text):
-            numbers_in_strongs.append(tag)
+            strong_tags_with_course_nums.append(tag)
 
-    for num_tag in numbers_in_strongs:
+    for num_tag in strong_tags_with_course_nums:
         if dept_name == 'clei':
             new_dept.add_course(extras.get_course_all_in_one('clei', num_tag))
         else:
@@ -279,5 +274,6 @@ def load_database():
 
 if __name__ == "__main__":
     import db_extra as extras
+
     _save_database()
     # print(load_database())

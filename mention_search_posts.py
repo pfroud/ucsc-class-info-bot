@@ -32,11 +32,12 @@ def _get_mentions_in_submission(counter, submission_):
     """
     mentions_list = []
     mentions_list.extend(_get_mentions_in_string(submission_.title))
-
     mentions_list.extend(_get_mentions_in_string(submission_.selftext))
 
     submission_.replace_more_comments(limit = None, threshold = 0)
     flat_comments = praw.helpers.flatten_tree(submission_.comments)
+
+    # TODO replace look-before-you-leap with try/except
     for comment in flat_comments:
         if comment.author is None or comment.author.name == 'ucsc-class-info-bot':
             continue
@@ -58,14 +59,14 @@ def _get_mentions_in_submission(counter, submission_):
                   mentions = mentions_list,
                   _ = '  '))
 
-    if not mentions_list:  # if list is empty
+    if not mentions_list:
         return None
     else:
         return PostWithMentions(submission_.id, mentions_list)
 
 
 def _get_mentions_in_string(source_):
-    """Finds mentions of courses (department and number) in a string.
+    """Finds mentions of courses (department and number) in a string. (Just calls a function in mentions_parse.py.)
 
     :param source_: string to look for courses in.
     :type source_: str
@@ -84,9 +85,9 @@ def _unify_mention_format(mention_):
     :return: the reformatted mention
     :rtype: str
     """
-    m = re.match("([a-zA-Z]+ ?)([0-9]+[A-Za-z]?)", mention_)
-    dept = m.group(1).lower().strip()
-    num = m.group(2).lower().lstrip("0")
+    matches = re.match("([a-zA-Z]+ ?)([0-9]+[A-Za-z]?)", mention_)
+    dept = matches.group(1).lower().strip()
+    num = matches.group(2).lower().lstrip("0")
 
     if dept == 'cs':
         dept = 'cmps'
@@ -99,6 +100,9 @@ def _unify_mention_format(mention_):
 
 def _remove_list_duplicates_preserve_order(input_list):
     """Removes duplicates from a list, while preserving order.
+    There's no built-in way to do this and a lot of weird ways to do it on Stack Overflow.
+    I just used this one http://stackoverflow.com/a/6764969
+
     To do this easily without preserving order, do list(set(input_list)).
 
     :param input_list: the list to remove duplicates from, while preserving order
@@ -106,21 +110,19 @@ def _remove_list_duplicates_preserve_order(input_list):
     :return: the list with duplicates removed, with order preserved
     :rtype: list
     """
-    new_list = []
+    uniques = []
 
-    for i in input_list:
-        i = _unify_mention_format(i)
-        if i not in new_list:
-            new_list.append(i)
+    for element in input_list:
+        element = _unify_mention_format(element)
+        if element not in uniques:
+            uniques.append(element)
 
-    return new_list
+    return uniques
 
 
-def find_mentions(reddit, num_posts_, running_on_own = False):
+def find_mentions(reddit, num_posts_):
     """Finds and saves to disk course mentions in new posts on /r/UCSC.
 
-    :param running_on_own: whether file is being ran by itself or imported by reddit_bot.py
-    :type running_on_own: bool
     :param reddit: authorized reddit praw object
     :type reddit: praw.Reddit
     :param num_posts_:
@@ -129,7 +131,7 @@ def find_mentions(reddit, num_posts_, running_on_own = False):
     :rtype: list
     """
 
-    # use this to find mentions in only one post
+    # use this to find mentions in only one post:
     # tools.save_found_mentions([_get_mentions_in_submission(0, reddit.get_submission(submission_id = "4j4i0y"))])
     # return
 
@@ -145,10 +147,11 @@ def find_mentions(reddit, num_posts_, running_on_own = False):
 
     for counter, submission in enumerate(subreddit.get_new(limit = num_posts_), start = 1):
         found_mentions = _get_mentions_in_submission(counter, submission)
+        # TODO replace look-before-you-leap with try/except
         if found_mentions is not None:
             list_of_posts_with_mentions.append(found_mentions)
 
-    if running_on_own:
+    if __name__ == "__main__":
         tools.save_found_mentions(list_of_posts_with_mentions)
 
     print("------------------------------")
@@ -164,4 +167,4 @@ if __name__ == "__main__":
     num_posts = 1
     if len(sys.argv) == 2:
         num_posts = int(sys.argv[1])
-    find_mentions(tools.auth_reddit(), num_posts, running_on_own = True)
+    find_mentions(tools.auth_reddit(), num_posts)

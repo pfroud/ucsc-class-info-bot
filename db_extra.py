@@ -79,15 +79,16 @@ def get_course_all_in_one(dept_name, num_tag):
     """
     strong_text = num_tag.text
 
-    num_end = regex_course_num.match(strong_text).end()
-    course_num = strong_text[0:num_end - 1]
+    ending_index = regex_course_num.match(strong_text).end()
+    course_num = strong_text[0:ending_index - 1]
     if DEBUG:
         print("doing", course_num)
-    the_rest = strong_text[num_end + 1:]
+    the_rest = strong_text[ending_index + 1:]
 
     name_end = _regex_course_name.match(the_rest).end()
     course_name = the_rest[0:name_end - 1]
 
+    # TODO change to .next_siblings[1] or [2]
     if dept_name == 'havc':
         course_description = num_tag.next_sibling.next_sibling[1:]
     else:
@@ -159,6 +160,6 @@ def get_lit_depts():
         lit_depts[temp_course.dept].add_course(temp_course)
 
     for dept in lit_depts.values():
-        print('{_}{} courses added to \"{}\".'.format(str(len(dept.courses)), dept.name, _ = "...".rjust(28)))
+        print('{}{} courses added to \"{}\".'.format("...".rjust(28), str(len(dept.courses)), dept.name))
 
     return list(lit_depts.values())

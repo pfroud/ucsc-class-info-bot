@@ -44,7 +44,8 @@ def _parse_letter_list(dept, list_letter_mention):
     :return: a list of normal mentions, e.g. ['129A', '129B', '129C']
     :rtype: list
     """
-    m = re.match(" ?(\d+) ?((?:[A-Za-z] ?/ ?)+[A-Za-z])", list_letter_mention)  # != _pattern_mention_letter_list
+    # note this regex is not the same as _pattern_mention_letter_list
+    m = re.match(" ?(\d+) ?((?:[A-Za-z] ?/ ?)+[A-Za-z])", list_letter_mention)
     num = m.group(1)
     letters = m.group(2).split('/')
 

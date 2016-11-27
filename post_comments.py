@@ -22,21 +22,23 @@ def _post_comment_helper(new_mention_object, reddit):
     :rtype: bool
     """
     submission_id = new_mention_object.post_id
-    submission_object = reddit.get_submission(submission_id = submission_id)
+    submission_obj = reddit.get_submission(submission_id = submission_id)
 
     mentions_new_unfiltered = new_mention_object.mentions_list
 
-    # filter out mentions that don't match a class. (find less shitty way to do this)
+    # filter out mentions that don't match a class. (todo - find less shitty way to do this, probably try/except)
     mentions_new = [m for m in mentions_new_unfiltered if _mention_to_course_object(db, m) is not None]
     if not mentions_new:
         return False
 
-    if submission_id in existing_posts_with_comments.keys():  # already have a comment with class info
+    if submission_id in existing_posts_with_comments.keys():
+        # if already have a comment with class info
         already_commented_obj = existing_posts_with_comments[submission_id]
         mentions_previous = already_commented_obj.mentions_list
 
-        if mentions_new == mentions_previous:  # already have comment, but no new classes have been mentioned
-            _print_csv_row(submission_object, 'No new mentions.', mentions_new, mentions_previous)
+        if mentions_new == mentions_previous:
+            # if already have comment, but no new classes have been mentioned
+            _print_csv_row(submission_obj, 'No new mentions.', mentions_new, mentions_previous)
             return False
 
         # comment needs to be updated
@@ -44,14 +46,15 @@ def _post_comment_helper(new_mention_object, reddit):
         existing_comment.edit(_get_comment(db, mentions_new))
         existing_posts_with_comments[submission_id].mentions_list = mentions_new
         tools.save_posts_with_comments(existing_posts_with_comments)
-        _print_csv_row(submission_object, 'Edited comment.', mentions_new, mentions_previous)
+        _print_csv_row(submission_obj, 'Edited comment.', mentions_new, mentions_previous)
         return True
 
-    else:  # no comment with class info, post a new one
-        new_comment = submission_object.add_comment(_get_comment(db, mentions_new))
+    else:
+        # no comment with class info, post a new one
+        new_comment = submission_obj.add_comment(_get_comment(db, mentions_new))
         existing_posts_with_comments[submission_id] = ExistingComment(new_comment.id, mentions_new)
         tools.save_posts_with_comments(existing_posts_with_comments)
-        _print_csv_row(submission_object, 'Comment added.', mentions_new, [])
+        _print_csv_row(submission_obj, 'Comment added.', mentions_new, [])
         return True
 
 
@@ -116,7 +119,7 @@ def _course_to_markdown(course_):
     :rtype: str
     """
 
-    num_leading_zeroes_stripped = re.sub("^0+", "", course_.number)  # strip leading zeroes only
+    num_leading_zeroes_stripped = re.sub("^0+", "", course_.number)  # strip leading 0s only
 
     markdown_string = '**{} {}: {}**\n'.format(course_.dept.upper(), num_leading_zeroes_stripped, course_.name)
     markdown_string += '>{}\n\n'.format(course_.description)
@@ -143,7 +146,7 @@ def _print_csv_row(submission_, action, mentions_current, mentions_previous):
     else:
         author_name = author.name
 
-    print(  # I have put the string on it's own line b/c PyCharm's formatter and PEP inspector want different things
+    print(  # I have put the string on it's own line b/c PyCharm's formatter and PEP inspector disagree
         '{id}{_}{author}{_}{title}{_}{action}{_}{mentions_current}{_}{mentions_previous}'
             .format(
             id = trunc_pad(submission_.id, "id"),
@@ -153,8 +156,6 @@ def _print_csv_row(submission_, action, mentions_current, mentions_previous):
             mentions_current = mentions_current,
             mentions_previous = mentions_previous,
             _ = '  '))
-
-
 
 
 def post_comments(new_mentions_list, reddit, running_on_own = False):
