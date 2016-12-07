@@ -1,6 +1,6 @@
 # /r/UCSC class info bot
 
-Finds posts on the [/r/UCSC](https://www.reddit.com/r/ucsc) mentioning classes and comments with information about those classes.
+Searches for class mentions on the [/r/UCSC](https://www.reddit.com/r/ucsc) subreddit, then looks up and posts class information. 
 
 Lives on [/u/ucsc-class-info-bot](https://www.reddit.com/user/ucsc-class-info-bot).
 
