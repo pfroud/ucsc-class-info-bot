@@ -88,7 +88,7 @@ First, some courses are indented in their own paragraph. For example, [Psycholog
 
 The functions [`is_next_p_indented()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_extra.py#L37-L56) and [`in_indented_paragraph()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_extra.py#L59-L67) check for this case and additional logic compensates.
 
-####  Literature department
+####  ~~Literature department~~
 
 &rarr; The Registrar changed this. It seems all sub-departments have been combined into the Literature department. You can see what the Literature page used to look like [here](http://web.archive.org/web/20160521192216/http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/lit.html).
 
@@ -99,7 +99,7 @@ The functions [`is_next_p_indented()`](https://github.com/pfroud/ucsc-class-info
 ~~Consequently the lit page is scraped by its own function, [`get_lit_depts()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_extra.py#L135-L164), with help from the function [`get_real_lit_dept()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_extra.py#L118-L132).~~
 
 
-#### Inconsistent HTML layout
+#### ~~Inconsistent HTML layout~~
 
 &rarr; The Registrar fixed this.
 
