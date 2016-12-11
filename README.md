@@ -80,7 +80,7 @@ Even on the Registrar's well-organized pages, some things are broken. Read more 
 
 The file [`db_core.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/db_core.py) handles almost every department when scraping the Registrar's site, but [`db_extra.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/db_extra.py) is needed to handle the following four special cases.
 
-Some 
+Some of these special cases have been fixed on the Registrar's website.
 
 #### Indentation
 
@@ -143,7 +143,7 @@ Similarly, the  Registrar listing for  the [Molecular, Cell, and Developmental B
 
 ##Finding course mentions
 
-A course mention occurs when a redditor names one or more courses in a post or comment.
+A course mention occurs when a redditor names one or more courses in a Reddit post or comment.
 
 I pulled the list of department codes from the source of the [class search](https://pisa.ucsc.edu/class_search/) page (`<select id="subject">`), but it includes defuct and renamed departments. For example, the Arabic department (ARAB) is gone and Environmental Toxicology (ETOX) is now [Microbiology and Environmental Toxicology (METX)](http://www.metx.ucsc.edu/). All possible departments appear in the regex [`_pattern_depts`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/mention_parse.py#L10-L16).
 
@@ -183,5 +183,6 @@ If a post doesn't already have a a comment by /u/ucsc-class-info-bot, add one. I
 
 ## Known bugs & future work
 
+* After the Registrar fixed some HTML special cases, by scraping script is broken.
 * In the comment, classes are sorted by department name (I think) instead of by order mentioned.
 * I might make the bot see mentions of some department names instead of department codes, e.g. "chemistry 103" instead of "chem 103".
