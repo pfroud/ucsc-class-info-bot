@@ -54,7 +54,7 @@ I had to try a few ways to make the database work. HTML parsing in each attempt 
 
 My original idea for scraping course info was through the [class search](https://pisa.ucsc.edu/class_search/) page. The script works but is a pain in the ass because I need to send a POST request *and* parse the returned HTML page. It is not suitable for building the database because the class search page only lists courses offered in the current quarter.
 
-The implementation is preserved in [misc/get_course_infO.py](misc/get_course_info.py) for your viewing pleasure.
+The implementation is preserved in [misc/get_course_info.py](misc/get_course_info.py) for your viewing pleasure.
 
 ####Second attempt - department websites
 
@@ -70,15 +70,17 @@ All of these aspects would've made scraping extremely difficult.
 
 ####Third, successful, attempt - Registrar website
 
-The third version works.  The Registrar lists every course in every department with a beautifully consistent URL: `http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/<DEPARTMENT_CODE>.html`. Humans can go to [`index.html`](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/index.html) and choose a department on the left.
+The third version works.  The Registrar lists every course in every department with a beautifully consistent URL: `http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/<DEPARTMENT_CODE>.html`. Humans can go to [`index.html`](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/index.html) and choose a department on the left (scroll down).
 
-This option is clearly the best. I didn't use it from the beginning because it was hard to find: from the [Registrar homepage](http://registrar.ucsc.edu/), follow Start Guide > Catalog > Fields of Study > Programs and Courses > Course Descriptions.
+This option is clearly the best. I didn't use it from the beginning because it was hard to find: from the [Registrar homepage](http://registrar.ucsc.edu/), follow Quick Start Guide > Catalog > Programs and Courses > Course Descriptions.
 
 Even on the Registrar's well-organized pages, some things are broken. Read more in the next section.
 
 ### Special cases for building the database
 
 The file [`db_core.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/db_core.py) handles almost every department when scraping the Registrar's site, but [`db_extra.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/db_extra.py) is needed to handle the following four special cases.
+
+Some 
 
 #### Indentation
 
@@ -88,38 +90,46 @@ The functions [`is_next_p_indented()`](https://github.com/pfroud/ucsc-class-info
 
 ####  Literature department
 
-Second, the [Literature](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/lit.html) department contains courses from multiple department codes. For example, Creative Writing (LTCR) and and Latin Literature (LTIN) classes are both under [`lit.html`](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/lit.html).
+**The Registrar changed this.** It seems all sub-departments have been combined into the Literature department. You can see what the Literature page used to look like [here](http://web.archive.org/web/20160521192216/http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/lit.html).
 
-The page uses subdepartment *names* but we care about subdepartment *codes*, so the dict [`lit_department_codes`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_extra.py#L6-L17) maps names to codes. For example, "﻿Modern Literary Studies" maps to "LTMO" and "﻿Greek Literature" maps to "LTGR".
+~~Second, the [Literature](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/lit.html) department contains courses from multiple department codes. For example, Creative Writing (LTCR) and and Latin Literature (LTIN) classes are both under [`lit.html`](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/lit.html).~~
 
-Consequently the lit page is scraped by its own function, [`get_lit_depts()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_extra.py#L135-L164), with help from the function [`get_real_lit_dept()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_extra.py#L118-L132).
+~~The page uses subdepartment *names* but we care about subdepartment *codes*, so the dict [`lit_department_codes`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_extra.py#L6-L17) maps names to codes. For example, "Modern Literary Studies" maps to "LTMO" and "Greek Literature" maps to "LTGR".~~
+
+~~Consequently the lit page is scraped by its own function, [`get_lit_depts()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_extra.py#L135-L164), with help from the function [`get_real_lit_dept()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_extra.py#L118-L132).~~
 
 
 #### Inconsistent HTML layout
 
-Third, some departments deviate from the standard HTML layout.
+**The Registrar fixed this.**
 
-For almost every department, key information about a course is contained in three `<strong>` tags. Here's an example from [Biomolecular Engineering (BME)](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/bme.html):
+~~Third, some departments deviate from the standard HTML layout.~~
+
+~~For almost every department, key information about a course is contained in three `<strong>` tags. Here's an example from [Biomolecular Engineering (BME)](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/bme.html):~~
 
 ```
 <strong>110.</strong>
 <strong>Computational Biology Tools.</strong>
 <strong>F,W</strong>
 ```
-To build the database, I being by looking for `<strong>` tags containing a course number followed by a period.  (The "F,W" indicates which general education requirements are satisfied by that course.)
+~~To build the database, I being by looking for `<strong>` tags containing a course number followed by a period.  (The "F,W" indicates which general education requirements are satisfied by that course.)~~
 
- However, *one single department does this differently*. [College Eight (CLEI)](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/clei.html) puts the entire header in one `<strong>` tag:
+ ~~~However, *one single department does this differently*. [College Eight (CLEI)](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/clei.html) puts the entire header in one `<strong>` tag:~~~
 ```
 <strong>81C. Designing a Sustainable Future. S</strong>
 ```
-So, there's one [stupid special case](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_core.py#L219-L220).
+**You can see what the College Eight page used to look like [here](http://web.archive.org/web/20160429201042/http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/clei.html).**
 
-Furthermore, two departments miss the first `<strong>` tag. The first courses on the [German](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/germ.html) and [Economics](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/econ.html) pages look like this:
+~~So, there's one [stupid special case](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_core.py#L219-L220).~~
+
+~~Furthermore, two departments miss the first `<strong>` tag. The first courses on the [German](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/germ.html) and [Economics](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/econ.html) pages look like this:~~
 ```
 1. <strong>First-Year German.</strong>
 <strong>F</strong>
 ```
-I only look for course numbers inside of `<strong>` tags, so course 1 gets left out. There's another [stupid special case](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_core.py#L224-L225).
+~~I only look for course numbers inside of `<strong>` tags, so course 1 gets left out. There's another [stupid special case](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_core.py#L224-L225).~~
+
+You can see what the German page used to look like [here](http://web.archive.org/web/20160429201246/http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/germ.html). You can see what the Economics page used to look like [here](http://web.archive.org/web/20160429201150/http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/econ.html). 
 
 #### Inconsistent department naming
 
