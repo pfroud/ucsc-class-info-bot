@@ -90,7 +90,7 @@ The functions [`is_next_p_indented()`](https://github.com/pfroud/ucsc-class-info
 
 ####  Literature department
 
-**The Registrar changed this.** It seems all sub-departments have been combined into the Literature department. You can see what the Literature page used to look like [here](http://web.archive.org/web/20160521192216/http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/lit.html).
+&rarr; The Registrar changed this. It seems all sub-departments have been combined into the Literature department. You can see what the Literature page used to look like [here](http://web.archive.org/web/20160521192216/http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/lit.html).
 
 ~~Second, the [Literature](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/lit.html) department contains courses from multiple department codes. For example, Creative Writing (LTCR) and and Latin Literature (LTIN) classes are both under [`lit.html`](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/lit.html).~~
 
@@ -101,7 +101,7 @@ The functions [`is_next_p_indented()`](https://github.com/pfroud/ucsc-class-info
 
 #### Inconsistent HTML layout
 
-**The Registrar fixed this.**
+&rarr; The Registrar fixed this.
 
 ~~Third, some departments deviate from the standard HTML layout.~~
 
@@ -118,7 +118,7 @@ The functions [`is_next_p_indented()`](https://github.com/pfroud/ucsc-class-info
 ```
 <strong>81C. Designing a Sustainable Future. S</strong>
 ```
-**You can see what the College Eight page used to look like [here](http://web.archive.org/web/20160429201042/http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/clei.html).**
+&rarr; You can see what the College Eight page used to look like [here](http://web.archive.org/web/20160429201042/http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/clei.html).**
 
 ~~So, there's one [stupid special case](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_core.py#L219-L220).~~
 
@@ -129,7 +129,7 @@ The functions [`is_next_p_indented()`](https://github.com/pfroud/ucsc-class-info
 ```
 ~~I only look for course numbers inside of `<strong>` tags, so course 1 gets left out. There's another [stupid special case](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_core.py#L224-L225).~~
 
-You can see what the German page used to look like [here](http://web.archive.org/web/20160429201246/http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/germ.html). You can see what the Economics page used to look like [here](http://web.archive.org/web/20160429201150/http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/econ.html). 
+&rarr; You can see what the German page used to look like [here](http://web.archive.org/web/20160429201246/http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/germ.html). You can see what the Economics page used to look like [here](http://web.archive.org/web/20160429201150/http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/econ.html). 
 
 #### Inconsistent department naming
 
