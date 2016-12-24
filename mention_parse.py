@@ -33,7 +33,7 @@ _pattern_final = \
     "(?:^|\\b)(?:" + _pattern_depts + ") ?(?:" + _pattern_mention_any + _pattern_delimiter + ")*" + _pattern_mention_any
 
 
-def _parse_letter_list(dept, list_letter_mention):
+def _parse_letter_list(dept: str, list_letter_mention: str) -> list:
     """Given a string of one course number a list of letters, returns a list with one letter per number.
     e.g. '129A/B/C' becomes ['129A', '129B', '129C']
 
@@ -56,7 +56,7 @@ def _parse_letter_list(dept, list_letter_mention):
     return return_list
 
 
-def _parse_multi_mention(multi_mention):
+def _parse_multi_mention(multi_mention: str) -> list:
     """Parses multi-mentions into normal mentions.
 
     :param multi_mention: a multi-mention, e.g. "Math 21, 23b, 24 and 100"
@@ -93,7 +93,7 @@ def _parse_multi_mention(multi_mention):
     return mentions
 
 
-def parse_string(str_):
+def parse_string(str_: str) -> list:
     """Finds mentions in a string.
     Can see...
     * multi-mentions: mentions of same department with list of numbers, e.g. "Math 21, 23b, 24 and 100"
