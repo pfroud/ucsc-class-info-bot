@@ -1,5 +1,7 @@
 """Loads mentions from the last run of find_mentions.py and posts comments to reddit.com."""
 
+from typing import Optional
+import praw
 import db_core
 import tools
 from tools import trunc_pad
@@ -13,11 +15,13 @@ from db_core import CourseDatabase, Department, Course  # need this to de-pickle
 from mention_search_posts import PostWithMentions  # need this to de-pickle found_mentions.pickle
 
 
-def _post_comment_helper(new_mention_object, reddit):
+def _post_comment_helper(new_mention_object: PostWithMentions, reddit: praw.Reddit) -> bool:
     """Posts a comment on the submission with info about the courses mentioned.
 
     :param new_mention_object: PostWithMentions object, which holds a post ID and a list of mentions
     :type new_mention_object: PostWithMentions
+    :param reddit: authorized reddit praw object
+    :type reddit: praw.Reddit
     :return: whether a comment was submitted or edited (based only on mentions, not on actually_do_it)
     :rtype: bool
     """
@@ -58,7 +62,7 @@ def _post_comment_helper(new_mention_object, reddit):
         return True
 
 
-def _get_comment(db_, mention_list_):
+def _get_comment(db_: CourseDatabase, mention_list_: list) -> Optional[str]:
     """Returns a markdown comment with info about the classes mentioned in the list.
 
     :param db_: course database with info
@@ -66,7 +70,7 @@ def _get_comment(db_, mention_list_):
     :param mention_list_: list of mentions, like ['econ 1', 'cmps 5j']
     :type mention_list_: list
     :return: string of markdown comment
-    :rtype str
+    :rtype str, None
     """
     if not mention_list_:  # if list is empty
         return None
@@ -86,7 +90,7 @@ def _get_comment(db_, mention_list_):
     return markdown_string
 
 
-def _mention_to_course_object(db_, mention_):
+def _mention_to_course_object(db_: CourseDatabase, mention_: str) -> Optional[Course]:
     """Converts mention of course to course object.
 
     :param db_: course database with course info
@@ -94,7 +98,7 @@ def _mention_to_course_object(db_, mention_):
     :param mention_: string of course mention, like 'econ 1'
     :type mention_: str
     :return: course object from the mention
-    :rtype: Course
+    :rtype: Course, None
     """
     split = mention_.split(' ')
     dept = split[0].lower()
@@ -108,7 +112,7 @@ def _mention_to_course_object(db_, mention_):
     return course_obj
 
 
-def _course_to_markdown(course_):
+def _course_to_markdown(course_: Course) -> str:
     """Returns a markdown representation of a course for use in reddit comments. Example:
     '**ECON 1: Into to Stuff**
     >We learn about econ and things.'
@@ -127,7 +131,7 @@ def _course_to_markdown(course_):
     return markdown_string
 
 
-def _print_csv_row(submission_, action, mentions_current, mentions_previous):
+def _print_csv_row(submission_, action: str, mentions_current: list, mentions_previous: list) -> None:
     """Prints a CSV row to stdout to be used as a log about what happened with a comment.
 
     :param submission_: Submission object that you are commenting on
@@ -158,16 +162,14 @@ def _print_csv_row(submission_, action, mentions_current, mentions_previous):
             _ = '  '))
 
 
-def post_comments(new_mentions_list, reddit):
+def post_comments(new_mentions_list: list, reddit: praw.Reddit) -> None:
     """Recursivley goes through the mentions found in the last run of mention_search_posts.py and
     posts a comment on each, if needed.
 
-    :param running_on_own: whether file is being ran by itself or imported by reddit_bot.py
-    :type running_on_own: bool
-    :param reddit: authorized reddit praw object
-    :type reddit: praw.Reddit
     :param new_mentions_list: list of mentions
     :type new_mentions_list: list
+    :param reddit: authorized reddit praw object
+    :type reddit: praw.Reddit
     """
     if new_mentions_list:
         new_mention = new_mentions_list.pop(0)
