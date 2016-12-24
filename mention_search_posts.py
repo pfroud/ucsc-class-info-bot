@@ -2,7 +2,7 @@
 Scrapes posts on /r/UCSC for mentions of courses.
 """
 
-from typing import Optional
+from typing import Optional, List
 import re
 import praw
 import tools
@@ -66,7 +66,7 @@ def _get_mentions_in_submission(counter: int, submission_: praw.objects.Submissi
         return PostWithMentions(submission_.id, mentions_list)
 
 
-def _get_mentions_in_string(source_: str) -> list:
+def _get_mentions_in_string(source_: str) -> List[str]:
     """Finds mentions of courses (department and number) in a string. (Just calls a function in mentions_parse.py.)
 
     :param source_: string to look for courses in.
@@ -99,7 +99,7 @@ def _unify_mention_format(mention_: str) -> str:
     return dept + " " + num
 
 
-def _remove_list_duplicates_preserve_order(input_list: list) -> list:
+def _remove_list_duplicates_preserve_order(input_list: List[str]) -> List[str]:
     """Removes duplicates from a list, while preserving order.
     There's no built-in way to do this and a lot of weird ways to do it on Stack Overflow.
     I just used this one http://stackoverflow.com/a/6764969
@@ -121,7 +121,7 @@ def _remove_list_duplicates_preserve_order(input_list: list) -> list:
     return uniques
 
 
-def find_mentions(reddit: praw.Reddit, num_posts_: int) -> list:
+def find_mentions(reddit: praw.Reddit, num_posts_: int) -> List[PostWithMentions]:
     """Finds and saves to disk course mentions in new posts on /r/UCSC.
 
     :param reddit: authorized reddit praw object

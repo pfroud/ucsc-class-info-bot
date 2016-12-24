@@ -5,6 +5,7 @@ Vastly superior version of find_mentions which is faster can can see:
 * letter-list mentions in a multi mention, e.g. "CS 4a, 37a/b, 15, 163w/x/y/z"
 """
 
+from typing import List
 import re
 
 # from build_database._all_departments, with build_database._lit_department_codes.values() and "CS" and "CE"
@@ -33,7 +34,7 @@ _pattern_final = \
     "(?:^|\\b)(?:" + _pattern_depts + ") ?(?:" + _pattern_mention_any + _pattern_delimiter + ")*" + _pattern_mention_any
 
 
-def _parse_letter_list(dept: str, list_letter_mention: str) -> list:
+def _parse_letter_list(dept: str, list_letter_mention: str) -> List[str]:
     """Given a string of one course number a list of letters, returns a list with one letter per number.
     e.g. '129A/B/C' becomes ['129A', '129B', '129C']
 
@@ -56,7 +57,7 @@ def _parse_letter_list(dept: str, list_letter_mention: str) -> list:
     return return_list
 
 
-def _parse_multi_mention(multi_mention: str) -> list:
+def _parse_multi_mention(multi_mention: str) -> List[str]:
     """Parses multi-mentions into normal mentions.
 
     :param multi_mention: a multi-mention, e.g. "Math 21, 23b, 24 and 100"
@@ -93,7 +94,7 @@ def _parse_multi_mention(multi_mention: str) -> list:
     return mentions
 
 
-def parse_string(str_: str) -> list:
+def parse_string(str_: str) -> List[str]:
     """Finds mentions in a string.
     Can see...
     * multi-mentions: mentions of same department with list of numbers, e.g. "Math 21, 23b, 24 and 100"

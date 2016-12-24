@@ -1,5 +1,6 @@
 """Stuff for the special cases for database build."""
 
+from typing import List
 import re
 from db_core import Course, Department, DEBUG, regex_course_num, get_soup_object, has_course_number, get_course
 
@@ -133,7 +134,7 @@ def get_real_lit_dept(num_tag) -> str:
     return real_dept
 
 
-def get_lit_depts() -> list:
+def get_lit_depts() -> List[Department]:
     """Makes departments for all the sub-departments on the lit page.
 
     :return: list of Department objects

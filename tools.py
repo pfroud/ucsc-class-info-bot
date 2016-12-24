@@ -1,10 +1,12 @@
 """Functions to do reddit authentication, file saving and loading, and data structure printing,
 and varialbes used by multiple files."""
 
+from typing import List, Mapping
 import pickle
 import praw
 import os
 import warnings
+from mention_search_posts import PostWithMentions
 
 
 # use this to set up PRAW for the first time:
@@ -97,7 +99,7 @@ def auth_reddit() -> praw.Reddit:
     return red
 
 
-def load_posts_with_comments() -> dict:
+def load_posts_with_comments() -> Mapping[str, ExistingComment]:
     """Loads from disk the dict of posts that have already been commented on.
 
     :return: dict of <string,ExistingComment> of posts that have already been commented on
@@ -112,7 +114,7 @@ def load_posts_with_comments() -> dict:
     return a_c
 
 
-def save_posts_with_comments(posts_with_comments: dict) -> None:
+def save_posts_with_comments(posts_with_comments: Mapping[str, ExistingComment]) -> None:
     """Saves to disk the dict of posts that have already been commented on.
 
     :param posts_with_comments:  dict of <string,ExistingComment> of posts that already have comments on them
@@ -123,7 +125,7 @@ def save_posts_with_comments(posts_with_comments: dict) -> None:
     file.close()
 
 
-def load_found_mentions() -> list:
+def load_found_mentions() -> List[PostWithMentions]:
     """Loads from disk the list of found mentions from the last run of find_mentions().
 
     :return: list of PostWithMentions objects
@@ -135,7 +137,7 @@ def load_found_mentions() -> list:
     return mentions
 
 
-def save_found_mentions(found_mentions: list) -> None:
+def save_found_mentions(found_mentions: List[PostWithMentions]) -> None:
     """Saves to disk mentions found from from the last run of find_mentions().
     This is used in both post_comments.py and in mention_search_posts.py so I have put it in tools.py.
 

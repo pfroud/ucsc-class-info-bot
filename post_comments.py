@@ -1,6 +1,6 @@
 """Loads mentions from the last run of find_mentions.py and posts comments to reddit.com."""
 
-from typing import Optional
+from typing import Optional, List
 import praw
 import db_core
 import tools
@@ -62,7 +62,7 @@ def _post_comment_helper(new_mention_object: PostWithMentions, reddit: praw.Redd
         return True
 
 
-def _get_comment(db_: CourseDatabase, mention_list_: list) -> Optional[str]:
+def _get_comment(db_: CourseDatabase, mention_list_: List[str]) -> Optional[str]:
     """Returns a markdown comment with info about the classes mentioned in the list.
 
     :param db_: course database with info
@@ -131,7 +131,7 @@ def _course_to_markdown(course_: Course) -> str:
     return markdown_string
 
 
-def _print_csv_row(submission_, action: str, mentions_current: list, mentions_previous: list) -> None:
+def _print_csv_row(submission_, action: str, mentions_current: List[str], mentions_previous: List[str]) -> None:
     """Prints a CSV row to stdout to be used as a log about what happened with a comment.
 
     :param submission_: Submission object that you are commenting on
@@ -162,7 +162,7 @@ def _print_csv_row(submission_, action: str, mentions_current: list, mentions_pr
             _ = '  '))
 
 
-def post_comments(new_mentions_list: list, reddit: praw.Reddit) -> None:
+def post_comments(new_mentions_list: List[PostWithMentions], reddit: praw.Reddit) -> None:
     """Recursivley goes through the mentions found in the last run of mention_search_posts.py and
     posts a comment on each, if needed.
 
