@@ -2,6 +2,7 @@
 Given a string of a department and course number, pulls information about the course from the registrar.
 """
 
+from typing import Optional
 import requests  # pulls registrar pages
 import re  # regular expressions
 from bs4 import BeautifulSoup  # html parser
@@ -31,7 +32,7 @@ class CourseDatabase:
         self.depts = {}
         self.num_courses = 0
 
-    def add_dept(self, new_dept):
+    def add_dept(self, new_dept: Department) -> None:
         """Add a department to the course database.
         :param new_dept: Department object to add
         :type new_dept: Department
@@ -39,7 +40,7 @@ class CourseDatabase:
         self.depts[new_dept.name] = new_dept
         self.num_courses += len(new_dept.courses)
 
-    def __str__(self):
+    def __str__(self) -> str:
         string = 'Database with {} course(s) in {} department(s).\n'.format(self.num_courses, len(self.depts))
         for dept_num, dept_obj in sorted(self.depts.items()):
             string += '\n' + dept_num + ': ' + str(dept_obj)
@@ -53,7 +54,7 @@ class Department:
         self.courses = {}
         self.name = name
 
-    def add_course(self, new_course):
+    def add_course(self, new_course: Course) -> None:
         """Adds a course to the department.
         :param new_course: Course to add.
         :type new_course: Course
@@ -61,14 +62,14 @@ class Department:
         if new_course is not None:
             self.courses[new_course.number] = new_course
 
-    def __str__(self):
+    def __str__(self) -> str:
         string = 'Department with {} course(s).\n'.format(len(self.courses))
         for course_num, course_obj in sorted(self.courses.items()):
             string += '   ' + course_num.ljust(4) + ': ' + str(course_obj) + '\n'
         return string
 
 
-def pad_course_num(number):
+def pad_course_num(number: str) -> str:
     """Adds leading zeroes to course numbers.
     '3' -> '003'; '3A' -> '003A'; '100' and '100A' unchanged.
 
@@ -86,18 +87,18 @@ def pad_course_num(number):
 class Course:
     """Holds course name and description."""
 
-    def __init__(self, dept, number, name, description):
-        self.dept = dept
+    def __init__(self, dept_name: str, number: str, name: str, description: str):
+        self.dept = dept_name
         self.number = pad_course_num(number)
         self.name = name
         self.description = description
 
-    def __str__(self):
+    def __str__(self) -> str:
         # return "{} {}: {}".format(self.dept, self.number, self.name)
         return "\"{}\"".format(self.name)
 
 
-def has_course_number(num_string):
+def has_course_number(num_string: str) -> bool:
     """Whether a string has a course number in it.
 
     :param num_string: string like '1.' or '1A.'
@@ -108,7 +109,7 @@ def has_course_number(num_string):
     return regex_course_num.match(num_string) is not None
 
 
-def get_soup_object(dept_name):
+def get_soup_object(dept_name: str) -> BeautifulSoup:
     """Requests a page from the registrar and returns a BeautifulSoup object of it.
 
     :param dept_name: string like 'cmps'
@@ -123,7 +124,7 @@ def get_soup_object(dept_name):
     return BeautifulSoup(request_result.text, 'html.parser')
 
 
-def get_course(dept_name, num_tag):
+def get_course(dept_name: str, num_tag) -> Optional[Course]:
     """Builds and returns a Course object from the number specified.
     If the <strong> tag has more than just the number in it, use get_course_all_in_one().
 
@@ -132,7 +133,7 @@ def get_course(dept_name, num_tag):
     :param num_tag: tag of a course number, like <strong>21.</strong>
     :type num_tag: Tag
     :return: Course object of the specified course, or None if the course has sub-numbers
-    :rtype: Course
+    :rtype: Course, None
     """
     course_num = num_tag.text[:-1]
     if DEBUG:
@@ -178,7 +179,7 @@ def get_course(dept_name, num_tag):
         return Course(dept_name, course_num, course_name, descr_str)
 
 
-def _get_department_object(dept_name):
+def _get_department_object(dept_name: str) -> Department:
     """Builds and returns a Department object with all courses.
 
     :param dept_name: name of the department to get classes for
@@ -224,7 +225,7 @@ def _get_department_object(dept_name):
     return new_dept
 
 
-def _build_database():
+def _build_database() -> CourseDatabase:
     """Builds and returns a CourseDatabase object.
 
     :return: CourseDatabase object with all Departments
@@ -245,7 +246,7 @@ def _build_database():
 _database_pickle_path = os.path.join(os.path.dirname(__file__), r'pickle\course_database.pickle')
 
 
-def _save_database():
+def _save_database() -> None:
     """Builds and saves a new database to a file on disk."""
     if os.path.isfile(_database_pickle_path):
         print('save_database(): database already exists. Use load_database() instead.')
@@ -260,7 +261,7 @@ def _save_database():
     print('Wrote {:,} bytes to path \"{}\".\n'.format(os.path.getsize(_database_pickle_path), _database_pickle_path))
 
 
-def load_database():
+def load_database() -> CourseDatabase:
     """Reads a course database from file on disk.
 
     :return: course database read from file
