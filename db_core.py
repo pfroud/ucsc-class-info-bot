@@ -148,7 +148,7 @@ def get_course(dept_name: str, num_tag) -> Optional[Course]:
     if extras.is_last_course_in_p(num_tag) and extras.is_next_p_indented(num_tag) and not \
             extras.in_indented_paragraph(num_tag):
         if DEBUG:
-            print('   SKIPPING num_tag "' + num_tag.text + "" << << << << << << << << << << < ")
+            print(f'   SKIPPING num_tag "{num_tag.text}"')
         return None
 
     # TODO change .next_sibling.next_sibling to next_siblings[1]
@@ -231,7 +231,7 @@ def _build_database() -> CourseDatabase:
     :return: CourseDatabase object with all Departments
     :rtype: CourseDatabase
     """
-    print(f'Starting the database build on {datetime.now()}.'
+    print(f'Starting the database build on {datetime.now()}.')
     print('----------------------------------')
     db = CourseDatabase()
 
