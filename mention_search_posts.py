@@ -2,6 +2,7 @@
 Scrapes posts on /r/UCSC for mentions of courses.
 """
 
+from typing import Optional
 import re
 import praw
 import tools
@@ -20,7 +21,7 @@ class PostWithMentions:
         return "mentions in post id {}: {}".format(self.post_id, self.mentions_list)
 
 
-def _get_mentions_in_submission(counter, submission_):
+def _get_mentions_in_submission(counter: int, submission_: praw.objects.Submission) -> Optional[PostWithMentions]:
     """Finds mentions of a course in a submission's title, selftext, and comments.
 
     :param counter: counter to print in table row
@@ -28,7 +29,7 @@ def _get_mentions_in_submission(counter, submission_):
     :param submission_: a praw submission object
     :type submission_: praw.objects.Submission
     :return: a PostWithMentions object which has the post ID and a list of strings of mentions
-    :rtype: PostWithMentions
+    :rtype: PostWithMentions, None
     """
     mentions_list = []
     mentions_list.extend(_get_mentions_in_string(submission_.title))
@@ -65,7 +66,7 @@ def _get_mentions_in_submission(counter, submission_):
         return PostWithMentions(submission_.id, mentions_list)
 
 
-def _get_mentions_in_string(source_):
+def _get_mentions_in_string(source_: str) -> list:
     """Finds mentions of courses (department and number) in a string. (Just calls a function in mentions_parse.py.)
 
     :param source_: string to look for courses in.
@@ -77,7 +78,7 @@ def _get_mentions_in_string(source_):
     return mention_parse.parse_string(source_)
 
 
-def _unify_mention_format(mention_):
+def _unify_mention_format(mention_: str) -> str:
     """Gaurentees a space between deptartment and number, removes leading zeroes, and expands CS and CE to CMPS and CMPE.
 
     :param mention_: the mention to reformat
@@ -98,7 +99,7 @@ def _unify_mention_format(mention_):
     return dept + " " + num
 
 
-def _remove_list_duplicates_preserve_order(input_list):
+def _remove_list_duplicates_preserve_order(input_list: list) -> list:
     """Removes duplicates from a list, while preserving order.
     There's no built-in way to do this and a lot of weird ways to do it on Stack Overflow.
     I just used this one http://stackoverflow.com/a/6764969
@@ -120,12 +121,12 @@ def _remove_list_duplicates_preserve_order(input_list):
     return uniques
 
 
-def find_mentions(reddit, num_posts_):
+def find_mentions(reddit: praw.Reddit, num_posts_: int) -> list:
     """Finds and saves to disk course mentions in new posts on /r/UCSC.
 
     :param reddit: authorized reddit praw object
     :type reddit: praw.Reddit
-    :param num_posts_:
+    :param num_posts_: the number of posts to look in.
     :type num_posts_: int
     :return: list of PostWithMentions instances
     :rtype: list
