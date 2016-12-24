@@ -110,10 +110,8 @@ def get_first_course_no_bold(dept_name: str, first_strong_tag) -> Course:
     :rtype: Course
     """
     number_1 = first_strong_tag.previous_sibling[1:-2]
-    # print("\"" + number_1 + "\"")
     # print(first_tag.text[:-1])
     description = first_strong_tag.next_sibling.next_sibling.next_sibling.next_sibling.next_sibling[2:]
-    # print("\"" + description + "\"")
     return Course(dept_name, number_1, first_strong_tag.text[:-1], description)
 
 
@@ -140,7 +138,7 @@ def get_lit_depts() -> List[Department]:
     :return: list of Department objects
     :rtype: list
     """
-    print("Building department \"lit\"...")
+    print('Building department "lit"...')
 
     lit_depts = dict()
 
@@ -161,6 +159,6 @@ def get_lit_depts() -> List[Department]:
         lit_depts[temp_course.dept].add_course(temp_course)
 
     for dept in lit_depts.values():
-        print('{}{} courses added to \"{}\".'.format("...".rjust(28), str(len(dept.courses)), dept.name))
+        print('{}{} courses added to "{}".'.format("...".rjust(28), str(len(dept.courses)), dept.name))
 
     return list(lit_depts.values())

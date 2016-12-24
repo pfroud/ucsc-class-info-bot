@@ -14,7 +14,7 @@ posts_with_comments = tools.load_posts_with_comments()
 
 pwc_obj = posts_with_comments.get(post_id, None)
 if pwc_obj is None:
-    print("Key \"{}\" not found.".format(post_id))
+    print('Key "{}" not found.'.format(post_id))
     exit(1)
 
 print(pwc_obj)
