@@ -20,7 +20,7 @@ lit_department_codes = {'Literature': 'lit',
 _regex_course_name = re.compile("[A-Za-z :']+\.?")
 
 
-def is_last_course_in_p(strong_tag):
+def is_last_course_in_p(strong_tag) -> bool:
     """Whether the <strong> tag is in the last course in the paragraph.
 
     :param strong_tag: tag like <strong>1A.</strong>
@@ -34,7 +34,7 @@ def is_last_course_in_p(strong_tag):
     return distance_to_end <= 4
 
 
-def is_next_p_indented(num_tag):
+def is_next_p_indented(num_tag) -> bool:
     """Whether the next paragraph after this tag is indented.
 
     :param num_tag: tag like <strong>1A.</strong>
@@ -56,7 +56,7 @@ def is_next_p_indented(num_tag):
     return next_p.get('style') == 'margin-left: 30px;'
 
 
-def in_indented_paragraph(num_tag):
+def in_indented_paragraph(num_tag) -> bool:
     """Whether the tag is in an indented paragraph.
 
     :param num_tag: tag like <strong>1A.</strong>
@@ -67,7 +67,7 @@ def in_indented_paragraph(num_tag):
     return num_tag.parent.get('style') == 'margin-left: 30px;'
 
 
-def get_course_all_in_one(dept_name, num_tag):
+def get_course_all_in_one(dept_name: str, num_tag) -> Course:
     """Makes a Course object when the whole heading is in one <strong> tag.
 
     :param dept_name: Name of the department the course is in
@@ -97,14 +97,14 @@ def get_course_all_in_one(dept_name, num_tag):
     return Course(dept_name, course_num, course_name, course_description)
 
 
-def get_first_course_no_bold(dept_name, first_strong_tag):
+def get_first_course_no_bold(dept_name: str, first_strong_tag) -> Course:
     """Gets the first course when the number is not bolded.
     Use only for germ and econ departments.
 
     :param dept_name: name of the department like 'cmps'
     :type dept_name: str
     :param first_strong_tag: the first strong tag on the page, which is the name (not the number)
-    :type: every_strong_tag: list
+    :type: every_strong_tag: Tag
     :return: Course object of the first course listed
     :rtype: Course
     """
@@ -116,7 +116,7 @@ def get_first_course_no_bold(dept_name, first_strong_tag):
     return Course(dept_name, number_1, first_strong_tag.text[:-1], description)
 
 
-def get_real_lit_dept(num_tag):
+def get_real_lit_dept(num_tag) -> str:
     """Gets the department for a course in the lit page, which has many sub-departments.
 
     :param num_tag: Tag of the number of a course
@@ -133,7 +133,7 @@ def get_real_lit_dept(num_tag):
     return real_dept
 
 
-def get_lit_depts():
+def get_lit_depts() -> list:
     """Makes departments for all the sub-departments on the lit page.
 
     :return: list of Department objects
