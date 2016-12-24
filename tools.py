@@ -24,13 +24,13 @@ def _get_code(r_):
     print(url)
 
 
-def _save_access_information(r_):
+def _save_access_information(r_) -> None:
     """
     Use this for first-time PRAW setup.
     Paste the code from the redirect into the function below.
     From http://praw.readthedocs.io/en/v3.6.0/pages/oauth.html
     :param r_: praw instance
-    :type r_:
+    :type r_: praw.Reddit
     """
     with open('pickle/access_information.pickle', 'wb') as file:
         pickle.dump(r_.get_access_information('code'), file)
@@ -40,7 +40,7 @@ def _save_access_information(r_):
 class ExistingComment:
     """Info about an existing comment with class info."""
 
-    def __init__(self, comment_id_, mentions_):
+    def __init__(self, comment_id_: str, mentions_: list):
         self.comment_id = comment_id_
         self.mentions_list = mentions_
 
@@ -56,7 +56,7 @@ _column_widths = {'num': 2,
                   "action": 17}
 
 
-def trunc_pad(string_, column_name = None):
+def trunc_pad(string_: str, column_name: str = None) -> str:
     """Truncates and pads with spaces string_ to be printed in a table.
     The padding widths are given in the dict _column_widths.
     If column_name isn't specifeid, the string is used as the column name.
@@ -78,7 +78,7 @@ def trunc_pad(string_, column_name = None):
         return string_.ljust(width)
 
 
-def auth_reddit():
+def auth_reddit() -> praw.Reddit:
     """Loads access information and returns PRAW reddit api context.
 
     :return: praw instance
@@ -97,7 +97,7 @@ def auth_reddit():
     return red
 
 
-def load_posts_with_comments():
+def load_posts_with_comments() -> dict:
     """Loads from disk the dict of posts that have already been commented on.
 
     :return: dict of <string,ExistingComment> of posts that have already been commented on
@@ -112,7 +112,7 @@ def load_posts_with_comments():
     return a_c
 
 
-def save_posts_with_comments(posts_with_comments):
+def save_posts_with_comments(posts_with_comments: dict) -> None:
     """Saves to disk the dict of posts that have already been commented on.
 
     :param posts_with_comments:  dict of <string,ExistingComment> of posts that already have comments on them
@@ -123,7 +123,7 @@ def save_posts_with_comments(posts_with_comments):
     file.close()
 
 
-def load_found_mentions():
+def load_found_mentions() -> list:
     """Loads from disk the list of found mentions from the last run of find_mentions().
 
     :return: list of PostWithMentions objects
@@ -135,7 +135,7 @@ def load_found_mentions():
     return mentions
 
 
-def save_found_mentions(found_mentions):
+def save_found_mentions(found_mentions: list) -> None:
     """Saves to disk mentions found from from the last run of find_mentions().
     This is used in both post_comments.py and in mention_search_posts.py so I have put it in tools.py.
 
