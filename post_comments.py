@@ -1,23 +1,25 @@
 """Loads mentions from the last run of find_mentions.py and posts comments to reddit.com."""
 
-from typing import Optional, List
+from typing import Optional, List, Dict
 import praw
 import db_core
 import tools
 from tools import trunc_pad
 from tools import ExistingComment
 import re
-import pickle
-import os.path
-import time
 
 from db_core import CourseDatabase, Department, Course  # need this to de-pickle course_database.pickle
 from mention_search_posts import PostWithMentions  # need this to de-pickle found_mentions.pickle
 
+Existing_pwc = Dict[str, ExistingComment]  # type of existing_posts_with_comments
 
-def _post_comment_helper(new_mention_object: PostWithMentions, reddit: praw.Reddit) -> bool:
+
+def _post_comment_helper(db, existing_posts_with_comments: Existing_pwc, new_mention_object: PostWithMentions,
+                         reddit: praw.Reddit) -> bool:
     """Posts a comment on the submission with info about the courses mentioned.
 
+    :param db: course database with info
+    :type db: CourseDatabase
     :param new_mention_object: PostWithMentions object, which holds a post ID and a list of mentions
     :type new_mention_object: PostWithMentions
     :param reddit: authorized reddit praw object
@@ -62,11 +64,11 @@ def _post_comment_helper(new_mention_object: PostWithMentions, reddit: praw.Redd
         return True
 
 
-def _get_comment(db_: CourseDatabase, mention_list_: List[str]) -> Optional[str]:
+def _get_comment(db: CourseDatabase, mention_list_: List[str]) -> Optional[str]:
     """Returns a markdown comment with info about the classes mentioned in the list.
 
-    :param db_: course database with info
-    :type db_: CourseDatabase
+    :param db: course database with info
+    :type db: CourseDatabase
     :param mention_list_: list of mentions, like ['econ 1', 'cmps 5j']
     :type mention_list_: list
     :return: string of markdown comment
@@ -78,7 +80,7 @@ def _get_comment(db_: CourseDatabase, mention_list_: List[str]) -> Optional[str]
     markdown_string = 'Classes mentioned in this thread:\n\n&nbsp;\n\n'
 
     for mention in mention_list_:
-        course_obj = _mention_to_course_object(db_, mention)
+        course_obj = _mention_to_course_object(db, mention)
         if course_obj is None:
             continue
         markdown_string += _course_to_markdown(course_obj) + '&nbsp;\n\n'
@@ -90,11 +92,11 @@ def _get_comment(db_: CourseDatabase, mention_list_: List[str]) -> Optional[str]
     return markdown_string
 
 
-def _mention_to_course_object(db_: CourseDatabase, mention_: str) -> Optional[Course]:
+def _mention_to_course_object(db: CourseDatabase, mention_: str) -> Optional[Course]:
     """Converts mention of course to course object.
 
-    :param db_: course database with course info
-    :type db_: CourseDatabase
+    :param db: course database with course info
+    :type db: CourseDatabase
     :param mention_: string of course mention, like 'econ 1'
     :type mention_: str
     :return: course object from the mention
@@ -105,37 +107,37 @@ def _mention_to_course_object(db_: CourseDatabase, mention_: str) -> Optional[Co
     num = db_core.pad_course_num(split[1].upper())
 
     try:
-        course_obj = db_.depts[dept].courses[num]
+        course_obj = db.depts[dept].courses[num]
     except KeyError:
         return None
 
     return course_obj
 
 
-def _course_to_markdown(course_: Course) -> str:
+def _course_to_markdown(course: Course) -> str:
     """Returns a markdown representation of a course for use in reddit comments. Example:
     '**ECON 1: Into to Stuff**
     >We learn about econ and things.'
 
-    :param course_: Course to get markdown of
-    :type course_: Course
+    :param course: Course to get markdown of
+    :type course: Course
     :return: string of markdown of the course
     :rtype: str
     """
 
-    num_leading_zeroes_stripped = re.sub("^0+", "", course_.number)  # strip leading 0s only
+    num_leading_zeroes_stripped = re.sub("^0+", "", course.number)  # strip leading 0s only
 
-    markdown_string = '**{} {}: {}**\n'.format(course_.dept.upper(), num_leading_zeroes_stripped, course_.name)
-    markdown_string += '>{}\n\n'.format(course_.description)
+    markdown_string = '**{} {}: {}**\n'.format(course.dept.upper(), num_leading_zeroes_stripped, course.name)
+    markdown_string += '>{}\n\n'.format(course.description)
 
     return markdown_string
 
 
-def _print_csv_row(submission_, action: str, mentions_current: List[str], mentions_previous: List[str]) -> None:
+def _print_csv_row(submission, action: str, mentions_current: List[str], mentions_previous: List[str]) -> None:
     """Prints a CSV row to stdout to be used as a log about what happened with a comment.
 
-    :param submission_: Submission object that you are commenting on
-    :type submission_:  praw.objects.Submission
+    :param submission: Submission object that you are commenting on
+    :type submission:  praw.objects.Submission
     :param action: string describing the action taken
     :type action: str
     :param mentions_current: list of current class mentions
@@ -144,7 +146,7 @@ def _print_csv_row(submission_, action: str, mentions_current: List[str], mentio
     :type mentions_previous: list
     """
 
-    author = submission_.author
+    author = submission.author
     if author is None:
         author_name = "[deleted]"
     else:
@@ -153,19 +155,24 @@ def _print_csv_row(submission_, action: str, mentions_current: List[str], mentio
     print(  # I have put the string on it's own line b/c PyCharm's formatter and PEP inspector disagree
         '{id}{_}{author}{_}{title}{_}{action}{_}{mentions_current}{_}{mentions_previous}'
             .format(
-            id = trunc_pad(submission_.id, "id"),
+            id = trunc_pad(submission.id, "id"),
             author = trunc_pad(author_name, "author"),
-            title = trunc_pad(submission_.title, "title"),
+            title = trunc_pad(submission.title, "title"),
             action = trunc_pad(action, "action"),
             mentions_current = mentions_current,
             mentions_previous = mentions_previous,
             _ = '  '))
 
 
-def post_comments(new_mentions_list: List[PostWithMentions], reddit: praw.Reddit) -> None:
+def post_comments(db: CourseDatabase, existing_posts_with_comments: Existing_pwc,
+                  new_mentions_list: List[PostWithMentions], reddit: praw.Reddit) -> None:
     """Recursivley goes through the mentions found in the last run of mention_search_posts.py and
     posts a comment on each, if needed.
 
+    :param existing_posts_with_comments: posts that we have already commented on
+    :type existing_posts_with_comments: dict
+    :param db: course database with info
+    :type db: CourseDatabase
     :param new_mentions_list: list of mentions
     :type new_mentions_list: list
     :param reddit: authorized reddit praw object
@@ -176,20 +183,25 @@ def post_comments(new_mentions_list: List[PostWithMentions], reddit: praw.Reddit
     else:
         print("No more mentions.")
         return
-    _post_comment_helper(new_mention, reddit)
+    _post_comment_helper(db, existing_posts_with_comments, new_mention, reddit)
     if __name__ == "__main__":
         tools.save_found_mentions(new_mentions_list)
-    post_comments(new_mentions_list, reddit)
+    post_comments(db, existing_posts_with_comments, new_mentions_list, reddit)
 
 
-existing_posts_with_comments = tools.load_posts_with_comments()
-db = db_core.load_database()
+def main():
+    """something"""
+    existing_posts_with_comments = tools.load_posts_with_comments()
+    db = db_core.load_database()
 
-if __name__ == "__main__":
-    print('{id}{_}{author}{_}{title}{_}{action}{_}current mentions{_}previous mentions'
-          .format(id = trunc_pad("id"),
-                  author = trunc_pad("author"),
-                  title = trunc_pad("title"),
-                  action = trunc_pad("action"),
-                  _ = '  '))
-    post_comments(tools.load_found_mentions(), tools.auth_reddit())
+    if __name__ == "__main__":
+        print('{id}{_}{author}{_}{title}{_}{action}{_}current mentions{_}previous mentions'
+              .format(id = trunc_pad("id"),
+                      author = trunc_pad("author"),
+                      title = trunc_pad("title"),
+                      action = trunc_pad("action"),
+                      _ = '  '))
+        post_comments(db, existing_posts_with_comments, tools.load_found_mentions(), tools.auth_reddit())
+
+
+main()

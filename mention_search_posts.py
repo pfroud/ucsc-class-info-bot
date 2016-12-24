@@ -66,27 +66,27 @@ def _get_mentions_in_submission(counter: int, submission_: praw.objects.Submissi
         return PostWithMentions(submission_.id, mentions_list)
 
 
-def _get_mentions_in_string(source_: str) -> List[str]:
+def _get_mentions_in_string(source: str) -> List[str]:
     """Finds mentions of courses (department and number) in a string. (Just calls a function in mentions_parse.py.)
 
-    :param source_: string to look for courses in.
-    :type source_: str
+    :param source: string to look for courses in.
+    :type source: str
     :return: list of strings of course names
     :rtype: list
     """
 
-    return mention_parse.parse_string(source_)
+    return mention_parse.parse_string(source)
 
 
-def _unify_mention_format(mention_: str) -> str:
+def _unify_mention_format(mention: str) -> str:
     """Gaurentees a space between deptartment and number, removes leading zeroes, and expands CS and CE to CMPS and CMPE.
 
-    :param mention_: the mention to reformat
-    :type mention_: str
+    :param mention: the mention to reformat
+    :type mention: str
     :return: the reformatted mention
     :rtype: str
     """
-    matches = re.match("([a-zA-Z]+ ?)([0-9]+[A-Za-z]?)", mention_)
+    matches = re.match("([a-zA-Z]+ ?)([0-9]+[A-Za-z]?)", mention)
     dept = matches.group(1).lower().strip()
     num = matches.group(2).lower().lstrip("0")
 
@@ -121,13 +121,13 @@ def _remove_list_duplicates_preserve_order(input_list: List[str]) -> List[str]:
     return uniques
 
 
-def find_mentions(reddit: praw.Reddit, num_posts_: int) -> List[PostWithMentions]:
+def find_mentions(reddit: praw.Reddit, num_posts: int) -> List[PostWithMentions]:
     """Finds and saves to disk course mentions in new posts on /r/UCSC.
 
     :param reddit: authorized reddit praw object
     :type reddit: praw.Reddit
-    :param num_posts_: the number of posts to look in.
-    :type num_posts_: int
+    :param num_posts: the number of posts to look in.
+    :type num_posts: int
     :return: list of PostWithMentions instances
     :rtype: list
     """
@@ -146,7 +146,7 @@ def find_mentions(reddit: praw.Reddit, num_posts_: int) -> List[PostWithMentions
     subreddit = reddit.get_subreddit('ucsc')
     list_of_posts_with_mentions = []
 
-    for counter, submission in enumerate(subreddit.get_new(limit = num_posts_), start = 1):
+    for counter, submission in enumerate(subreddit.get_new(limit = num_posts), start = 1):
         found_mentions = _get_mentions_in_submission(counter, submission)
         # TODO replace look-before-you-leap with try/except
         if found_mentions is not None:
@@ -162,10 +162,14 @@ def find_mentions(reddit: praw.Reddit, num_posts_: int) -> List[PostWithMentions
     return list_of_posts_with_mentions
 
 
-if __name__ == "__main__":
-    import sys
+def main():
+    """Searches posts for mentions."""
+    if __name__ == "__main__":
+        import sys
 
-    num_posts = 1
-    if len(sys.argv) == 2:
-        num_posts = int(sys.argv[1])
-    find_mentions(tools.auth_reddit(), num_posts)
+        num_posts = 1
+        if len(sys.argv) == 2:
+            num_posts = int(sys.argv[1])
+        find_mentions(tools.auth_reddit(), num_posts)
+
+main()
