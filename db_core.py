@@ -148,7 +148,7 @@ def get_course(dept_name: str, num_tag) -> Optional[Course]:
     if extras.is_last_course_in_p(num_tag) and extras.is_next_p_indented(num_tag) and not \
             extras.in_indented_paragraph(num_tag):
         if DEBUG:
-            print('   SKIPPING num_tag \"' + num_tag.text + "\"<<<<<<<<<<<<<<<<<<<<<")
+            print('   SKIPPING num_tag "' + num_tag.text + "" << << << << << << << << << << < ")
         return None
 
     # TODO change .next_sibling.next_sibling to next_siblings[1]
@@ -168,7 +168,7 @@ def get_course(dept_name: str, num_tag) -> Optional[Course]:
     if dept_name == 'lit':
         real_dept_name = extras.get_real_lit_dept(num_tag).replace("\ufeff", "")  # remove byte order mark
         if DEBUG:
-            print("   real name is \"" + real_dept_name + "\"")
+            print(f'   real name is "{real_dept_name}"')
 
         # Russian Lit department has no dept code, probably does not actually exist
         if real_dept_name == 'Russian Literature':
@@ -188,7 +188,7 @@ def _get_department_object(dept_name: str) -> Department:
     :rtype: Department
     """
     # if DEBUG:
-    sys.stdout.write("Building department \"" + dept_name + "\"...")
+    sys.stdout.write(f'Building department "{dept_name}"')
 
     soup = get_soup_object(dept_name)
 
