@@ -127,8 +127,8 @@ def _course_to_markdown(course: Course) -> str:
 
     num_leading_zeroes_stripped = re.sub("^0+", "", course.number)  # strip leading 0s only
 
-    markdown_string = '**{} {}: {}**\n'.format(course.dept.upper(), num_leading_zeroes_stripped, course.name)
-    markdown_string += '>{}\n\n'.format(course.description)
+    markdown_string = f'**{course.dept.upper()} {num_leading_zeroes_stripped}: {course.name}**\n'
+    markdown_string += f'>{course.description}\n\n'
 
     return markdown_string
 
@@ -152,16 +152,12 @@ def _print_csv_row(submission, action: str, mentions_current: List[str], mention
     else:
         author_name = author.name
 
-    print(  # I have put the string on it's own line b/c PyCharm's formatter and PEP inspector disagree
-        '{id}{_}{author}{_}{title}{_}{action}{_}{mentions_current}{_}{mentions_previous}'
-            .format(
-            id = trunc_pad(submission.id, "id"),
-            author = trunc_pad(author_name, "author"),
-            title = trunc_pad(submission.title, "title"),
-            action = trunc_pad(action, "action"),
-            mentions_current = mentions_current,
-            mentions_previous = mentions_previous,
-            _ = '  '))
+    print(" ".join([trunc_pad(submission.id, "id"),
+                    trunc_pad(author_name, "author"),
+                    trunc_pad(submission.title, "title"),
+                    trunc_pad(action, "action"),
+                    mentions_current,
+                    mentions_previous]))
 
 
 def post_comments(db: CourseDatabase, existing_posts_with_comments: Existing_pwc,
@@ -195,12 +191,11 @@ def main():
     db = db_core.load_database()
 
     if __name__ == "__main__":
-        print('{id}{_}{author}{_}{title}{_}{action}{_}current mentions{_}previous mentions'
-              .format(id = trunc_pad("id"),
-                      author = trunc_pad("author"),
-                      title = trunc_pad("title"),
-                      action = trunc_pad("action"),
-                      _ = '  '))
+        print(" ".join([trunc_pad("id"),
+                        trunc_pad("author"),
+                        trunc_pad("title"),
+                        trunc_pad("action")]))
+
         post_comments(db, existing_posts_with_comments, tools.load_found_mentions(), tools.auth_reddit())
 
 

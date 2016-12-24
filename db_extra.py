@@ -159,6 +159,6 @@ def get_lit_depts() -> List[Department]:
         lit_depts[temp_course.dept].add_course(temp_course)
 
     for dept in lit_depts.values():
-        print('{}{} courses added to "{}".'.format("...".rjust(28), str(len(dept.courses)), dept.name))
+        print(f'{"...".rjust(28)}{str(len(dept.courses))} courses added to "{dept.name}".')
 
     return list(lit_depts.values())

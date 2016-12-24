@@ -41,7 +41,7 @@ class CourseDatabase:
         self.num_courses += len(new_dept.courses)
 
     def __str__(self) -> str:
-        string = 'Database with {} course(s) in {} department(s).\n'.format(self.num_courses, len(self.depts))
+        string = f'Database with {self.num_courses} course(s) in {len(self.depts)} department(s).\n'
         for dept_num, dept_obj in sorted(self.depts.items()):
             string += '\n' + dept_num + ': ' + str(dept_obj)
         return string
@@ -63,7 +63,7 @@ class Department:
             self.courses[new_course.number] = new_course
 
     def __str__(self) -> str:
-        string = 'Department with {} course(s).\n'.format(len(self.courses))
+        string = f'Department with {len(self.courses)} course(s).\n'
         for course_num, course_obj in sorted(self.courses.items()):
             string += '   ' + course_num.ljust(4) + ': ' + str(course_obj) + '\n'
         return string
@@ -95,7 +95,7 @@ class Course:
 
     def __str__(self) -> str:
         # return "{} {}: {}".format(self.dept, self.number, self.name)
-        return "\"{}\"".format(self.name)
+        return f'"{self.name}"'
 
 
 def has_course_number(num_string: str) -> bool:
@@ -195,12 +195,12 @@ def _get_department_object(dept_name: str) -> Department:
     # registrar url has EEB, courses use dept code BIOE
     if dept_name == 'eeb':
         dept_name = 'bioe'
-        sys.stdout.write("changed name to {}...".format(dept_name))
+        sys.stdout.write(f"changed name to {dept_name}...")
 
     # registrar url has MCDB, courses use dept code BIOL
     if dept_name == 'mcdb':
         dept_name = 'biol'
-        sys.stdout.write("changed name to {}...".format(dept_name))
+        sys.stdout.write(f"changed name to {dept_name}...")
 
     new_dept = Department(dept_name)
 
@@ -231,7 +231,7 @@ def _build_database() -> CourseDatabase:
     :return: CourseDatabase object with all Departments
     :rtype: CourseDatabase
     """
-    print('Starting the database build on {}.'.format(datetime.now()))
+    print(f'Starting the database build on {datetime.now()}.'
     print('----------------------------------')
     db = CourseDatabase()
 
@@ -258,7 +258,7 @@ def _save_database() -> None:
         pickle.dump(db, file)
     file.close()
     print('----------------------------------')
-    print('Wrote {:,} bytes to path \"{}\".\n'.format(os.path.getsize(_database_pickle_path), _database_pickle_path))
+    print(f'Wrote {os.path.getsize(_database_pickle_path):,} bytes to path "{_database_pickle_path}".\n')
 
 
 def load_database() -> CourseDatabase:

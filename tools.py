@@ -47,7 +47,7 @@ class ExistingComment:
         self.mentions_list = mentions_
 
     def __str__(self):
-        return "existing comment: {} -> {}".format(self.comment_id, self.mentions_list)
+        return f"existing comment: {self.comment_id} -> {self.mentions_list}"
 
 
 # widths of column for printing tables to console.

@@ -31,7 +31,7 @@ def get_course_object_bad(course_dept_number_string):
     :return: a Course object
     """
 
-    print('running on "{}'.format(course_dept_number_string))
+    print(f'running on "{course_dept_number_string}')
 
     split_array = course_dept_number_string.split(' ')
     course_department = split_array[0].upper()  # server needs department to be all caps

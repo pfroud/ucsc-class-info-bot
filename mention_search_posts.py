@@ -18,7 +18,7 @@ class PostWithMentions:
         self.mentions_list = mentions_list
 
     def __str__(self):
-        return "mentions in post id {}: {}".format(self.post_id, self.mentions_list)
+        return f"mentions in post id {self.post_id}: {self.mentions_list}"
 
 
 def _get_mentions_in_submission(counter: int, submission_: praw.objects.Submission) -> Optional[PostWithMentions]:
@@ -52,13 +52,11 @@ def _get_mentions_in_submission(counter: int, submission_: praw.objects.Submissi
     else:
         author_name = author.name
 
-    print('{num}{_}{id}{_}{author}{_}{title}{_}{mentions}'
-          .format(num = trunc_pad(str(counter), 'num'),
-                  id = trunc_pad(submission_.id, "id"),
-                  author = trunc_pad(author_name, "author"),
-                  title = trunc_pad(submission_.title, "title"),
-                  mentions = mentions_list,
-                  _ = '  '))
+    print(" ".join([trunc_pad(str(counter), 'num'),
+                    trunc_pad(submission_.id, "id"),
+                    trunc_pad(author_name, "author"),
+                    trunc_pad(submission_.title, "title"),
+                    mentions_list]))
 
     if not mentions_list:
         return None
@@ -136,12 +134,10 @@ def find_mentions(reddit: praw.Reddit, num_posts: int) -> List[PostWithMentions]
     # tools.save_found_mentions([_get_mentions_in_submission(0, reddit.get_submission(submission_id = "4j4i0y"))])
     # return
 
-    print('{num}{_}{id}{_}{author}{_}{title}{_}mentions'
-          .format(num = trunc_pad("#", 'num'),
-                  id = trunc_pad("id"),
-                  author = trunc_pad("author"),
-                  title = trunc_pad("title"),
-                  _ = '  ').upper())
+    print(" ".join([trunc_pad("#", 'num'),
+                    trunc_pad("id"),
+                    trunc_pad("author"),
+                    trunc_pad("title")]).upper())
 
     subreddit = reddit.get_subreddit('ucsc')
     list_of_posts_with_mentions = []
@@ -171,5 +167,6 @@ def main():
         if len(sys.argv) == 2:
             num_posts = int(sys.argv[1])
         find_mentions(tools.auth_reddit(), num_posts)
+
 
 main()
