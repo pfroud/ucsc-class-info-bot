@@ -107,7 +107,7 @@ The functions [`is_next_p_indented()`](https://github.com/pfroud/ucsc-class-info
 
 ~~For almost every department, key information about a course is contained in three `<strong>` tags. Here's an example from [Biomolecular Engineering (BME)](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/bme.html):~~
 
-```
+```html
 <strong>110.</strong>
 <strong>Computational Biology Tools.</strong>
 <strong>F,W</strong>
@@ -115,7 +115,7 @@ The functions [`is_next_p_indented()`](https://github.com/pfroud/ucsc-class-info
 ~~To build the database, I being by looking for `<strong>` tags containing a course number followed by a period.  (The "F,W" indicates which general education requirements are satisfied by that course.)~~
 
  ~~~However, *one single department does this differently*. [College Eight (CLEI)](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/clei.html) puts the entire header in one `<strong>` tag:~~~
-```
+```html
 <strong>81C. Designing a Sustainable Future. S</strong>
 ```
 &rarr; You can see what the College Eight page used to look like [here](http://web.archive.org/web/20160429201042/http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/clei.html).**
@@ -123,7 +123,7 @@ The functions [`is_next_p_indented()`](https://github.com/pfroud/ucsc-class-info
 ~~So, there's one [stupid special case](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_core.py#L219-L220).~~
 
 ~~Furthermore, two departments miss the first `<strong>` tag. The first courses on the [German](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/germ.html) and [Economics](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/econ.html) pages look like this:~~
-```
+```html
 1. <strong>First-Year German.</strong>
 <strong>F</strong>
 ```
