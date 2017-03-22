@@ -8,15 +8,15 @@ Lives on [/u/ucsc-class-info-bot](https://www.reddit.com/user/ucsc-class-info-bo
 In September 2015, I threw this in a file called `ucsc reddit bot idea.txt` and forgot about it:
 
 > idea - bot that gives class info when someone mentions it in a comment  
-
+>
 > ------------------------------------------------------------------------
-
+>
 > So you look for a string that matches a department code followed by /[0-9]+[A-Za-z]?/ or something
-
+>
 > You can get the codes from the \<option\>s on the Subject dropdown [here](https://pisa.ucsc.edu/cs9/prd/sr9_2013/index.php), which is the iframe inside the Student Center on my.ucsc.edu
-
+>
 > And you magically look up the class name and description, either through a class search, or on each department's website.
-
+>
 > It's so easy!
 
 Two months later, I ran into the file again and decided to bring it to life.
