@@ -7,24 +7,24 @@ Lives on [/u/ucsc-class-info-bot](https://www.reddit.com/user/ucsc-class-info-bo
 ## Inception
 In September 2015, I threw this in a file called `ucsc reddit bot idea.txt` and forgot about it:
 
->idea - bot that gives class info when someone mentions it in a comment  
+> idea - bot that gives class info when someone mentions it in a comment  
 
->------------------------------------------------------------------------
+> ------------------------------------------------------------------------
 
->So you look for a string that matches a department code followed by /[0-9]+[A-Za-z]?/ or something
+> So you look for a string that matches a department code followed by /[0-9]+[A-Za-z]?/ or something
 
->You can get the codes from the \<option\>s on the Subject dropdown [here](https://pisa.ucsc.edu/cs9/prd/sr9_2013/index.php), which is the iframe inside the Student Center on my.ucsc.edu
+> You can get the codes from the \<option\>s on the Subject dropdown [here](https://pisa.ucsc.edu/cs9/prd/sr9_2013/index.php), which is the iframe inside the Student Center on my.ucsc.edu
 
->And you magically look up the class name and description, either through a class search, or on each department's website.
+> And you magically look up the class name and description, either through a class search, or on each department's website.
 
->It's so easy!
+> It's so easy!
 
 Two months later, I ran into the file again and decided to bring it to life.
 
 To the surprise of absolutely nobody, it was not *'so easy'*, although I am still using that regex to find mentions.
 
 
-##Terminology
+## Terminology
 
 From here on I use 'course' instead of 'class' because `class` is a reserved Python keyword.
 
@@ -36,27 +36,27 @@ A *department code* is a string of between two and four (inclusive) letters that
 
 A *course number* is a string, not an integer, because a course number might have a letter at the end. For example, `112`  and  `12A` are both course numbers. 
 
-##The course database 
+## The course database 
 The course database uses a course's department and number to look up that course's name and description. In other words, we input a course *mention* and get a Course *object*. The files [`db_core.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/db_core.py)  and [`db_extra.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/db_extra.py) create the database.
 
-###Database structure
+### Database structure
 The database stores a [Pickled](https://docs.python.org/3/library/pickle.html)  instance of `CourseDatabase`, which has a dict mapping a department code string to a `Department` instance. A `Department` instance has a dict mapping a course number to a `Course` instance. A `Course` instance has department, number, name, description. The relationship between these structures is illustrated below.
 
 ![Database structure diagram](img/database_structure_diagram.png?raw=true)
 
 You can see the log from building the database at [misc/db build log.txt](misc/db build log.txt). You can see the database's contents at [misc/db print.txt](misc/db print.txt).
 
-###Implementation attempts
+### Implementation attempts
 
 I had to try a few ways to make the database work. HTML parsing in each attempt is done by [Beautiful Soup](http://www.crummy.com/software/BeautifulSoup/).
 
-####First attempt - class search page
+#### First attempt - class search page
 
 My original idea for scraping course info was through the [class search](https://pisa.ucsc.edu/class_search/) page. The script works but is a pain in the ass because I need to send a POST request *and* parse the returned HTML page. It is not suitable for building the database because the class search page only lists courses offered in the current quarter.
 
 The implementation is preserved in [misc/get_course_info.py](misc/get_course_info.py) for your viewing pleasure.
 
-####Second attempt - department websites
+#### Second attempt - department websites
 
 My second idea was to scrape course info from the website of each academic department. There were multiple problems.
 
@@ -68,7 +68,7 @@ Third, some departments use a custom layout to list course info. For example, co
 
 All of these aspects would've made scraping extremely difficult.
 
-####Third, successful, attempt - Registrar website
+#### Third, successful, attempt - Registrar website
 
 The third version works.  The Registrar lists every course in every department with a beautifully consistent URL: `http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/<DEPARTMENT_CODE>.html`. Humans can go to [`index.html`](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/index.html) and choose a department on the left (scroll down).
 
@@ -118,7 +118,7 @@ The functions [`is_next_p_indented()`](https://github.com/pfroud/ucsc-class-info
 ```html
 <strong>81C. Designing a Sustainable Future. S</strong>
 ```
-&rarr; You can see what the College Eight page used to look like [here](http://web.archive.org/web/20160429201042/http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/clei.html).**
+&rarr; You can see what the College Eight page used to look like [here](http://web.archive.org/web/20160429201042/http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/clei.html).
 
 ~~So, there's one [stupid special case](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_core.py#L219-L220).~~
 
@@ -141,7 +141,7 @@ Similarly, the  Registrar listing for  the [Molecular, Cell, and Developmental B
 
 [Two more conditionals](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_core.py#L198-L206) address this issue.
 
-##Finding course mentions
+## Finding course mentions
 
 A course mention occurs when a redditor names one or more courses in a Reddit post or comment.
 
@@ -174,7 +174,7 @@ In the file [`mention_search_posts.py`](https://github.com/pfroud/ucsc-class-inf
 If `find_mentions()` is called from [`reddit_bot.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/reddit_bot.py), it returns a [`PostWithMentions`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/mention_search_posts.py#L12-L20) instance to be immediately processed; if `mention_search_posts.py` is ran on its own from the console, it is Pickled (serialized) and saved to disk. The `PostWithMentions`class is a container which holds the ID of a submission and a list of course mentions found in that submission.
 
 
-##Posting comments
+## Posting comments
 
 If [`post_comments.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/post_comments.py) is ran on its own from the console, it loads mentions found from the last run of `mention_search_posts.py`. If the function `post_comments()` is called from `reddit_bot.py`, data about found mentions is passed directly as a parameter to the function. [Those function names are outdated]
 
