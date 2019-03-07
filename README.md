@@ -2,27 +2,15 @@
 
 Searches for class mentions on the [/r/UCSC](https://www.reddit.com/r/ucsc) subreddit, then looks up and posts class information. 
 
-Lives on [/u/ucsc-class-info-bot](https://www.reddit.com/user/ucsc-class-info-bot).
+This bot lives on the reddit account [/u/ucsc-class-info-bot](https://www.reddit.com/user/ucsc-class-info-bot).
 
-## Inception
-In September 2015, I threw this in a file called `ucsc reddit bot idea.txt` and forgot about it:
+## Origin
 
-> idea - bot that gives class info when someone mentions it in a comment  
->
-> ------------------------------------------------------------------------
->
-> So you look for a string that matches a department code followed by /[0-9]+[A-Za-z]?/ or something
->
-> You can get the codes from the \<option\>s on the Subject dropdown [here](https://pisa.ucsc.edu/cs9/prd/sr9_2013/index.php), which is the iframe inside the Student Center on my.ucsc.edu
->
-> And you magically look up the class name and description, either through a class search, or on each department's website.
->
-> It's so easy!
+In online discussions about UCSC classes, people often post a four-letter department code followed by a two- or three-digit class number.
 
-Two months later, I ran into the file again and decided to bring it to life.
+Experienced students in a department will know what a class is just from the number. But new students would need to look up a class number to participate in the discussion. Additionally, students outside the department probably have no idea what class they're talking about.
 
-To the surprise of absolutely nobody, it was not *'so easy'*, although I am still using that regex to find mentions.
-
+I always liked reading the descriptions of classes people refer to, so I wrote this bot to automatically post them.
 
 ## Terminology
 
@@ -52,7 +40,7 @@ I had to try a few ways to make the database work. HTML parsing in each attempt 
 
 #### First attempt - class search page
 
-My original idea for scraping course info was through the [class search](https://pisa.ucsc.edu/class_search/) page. The script works but is a pain in the ass because I need to send a POST request *and* parse the returned HTML page. It is not suitable for building the database because the class search page only lists courses offered in the current quarter.
+My original idea for scraping course info was through the [class search](https://pisa.ucsc.edu/class_search/) page. This works but is a pain in the ass because I need to send a POST request *and* parse the returned HTML page. Also, it was not suitable for building the database because the class search page only lists courses offered in the current quarter.
 
 The implementation is preserved in [misc/get_course_info.py](misc/get_course_info.py) for your viewing pleasure.
 
@@ -60,7 +48,7 @@ The implementation is preserved in [misc/get_course_info.py](misc/get_course_inf
 
 My second idea was to scrape course info from the website of each academic department. There were multiple problems.
 
-First, different departments put their course catalogs on inconsistent URLs. Each of these departments use a slightly different URL pattern: [Chemistry](http://chemistry.ucsc.edu/academics/courses/course-catalog.php), [History](http://history.ucsc.edu/courses/catalog-view.php), [Mathematics](http://www.math.ucsc.edu/courses/course-catalog.php), [Linguistics](http://linguistics.ucsc.edu/courses/course-catalog-view.php), [Anthropology](http://anthro.ucsc.edu/courses/course_catalog.php).
+First, different departments put their course catalogs on different URLs. Each of these departments use a slightly different (but tantalizingly similar) URL pattern: [Chemistry](http://chemistry.ucsc.edu/academics/courses/course-catalog.php), [History](http://history.ucsc.edu/courses/catalog-view.php), [Mathematics](http://www.math.ucsc.edu/courses/course-catalog.php), [Linguistics](http://linguistics.ucsc.edu/courses/course-catalog-view.php), [Anthropology](http://anthro.ucsc.edu/courses/course_catalog.php).
 
 Second, some courses appear in a department that doesn't match their department code. For example, classes in Chinese (CHIN), French (FREN), and German (GERM) are all listed on the [Language department's](http://language.ucsc.edu/courses/course-catalog.php) page.
 
@@ -70,17 +58,17 @@ All of these aspects would've made scraping extremely difficult.
 
 #### Third, successful, attempt - Registrar website
 
-The third version works.  The Registrar lists every course in every department with a beautifully consistent URL: `http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/<DEPARTMENT_CODE>.html`. Humans can go to [`index.html`](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/index.html) and choose a department on the left (scroll down).
+The third version works.  The UCSC Registrar lists every course in every department with a beautifully consistent URL: `http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/<DEPARTMENT_CODE>.html`. Users can go to [`index.html`](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/index.html) and choose a department on the left (scroll down).
 
-This option is clearly the best. I didn't use it from the beginning because it was hard to find: from the [Registrar homepage](http://registrar.ucsc.edu/), follow Quick Start Guide > Catalog > Programs and Courses > Course Descriptions.
+This option is clearly the best. I didn't use it from the beginning because it was hard to find: from the [Registrar homepage](http://registrar.ucsc.edu/), you need to click on Quick Start Guide > Catalog > Programs and Courses > Course Descriptions.
 
-Even on the Registrar's well-organized pages, some things are broken. Read more in the next section.
+Even through the Registrar's website is mostly well-organized, some things are broken. Read more in the next section.
 
 ### Special cases for building the database
 
 The file [`db_core.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/db_core.py) handles almost every department when scraping the Registrar's site, but [`db_extra.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/db_extra.py) is needed to handle the following four special cases.
 
-Some of these special cases have been fixed on the Registrar's website.
+Some of these special cases have since been fixed on the Registrar's website.
 
 #### Indentation
 
@@ -88,9 +76,9 @@ First, some courses are indented in their own paragraph. For example, [Psycholog
 
 The functions [`is_next_p_indented()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_extra.py#L37-L56) and [`in_indented_paragraph()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_extra.py#L59-L67) check for this case and additional logic compensates.
 
-####  ~~Literature department~~
+####  Literature department
 
-&rarr; The Registrar changed this. It seems all sub-departments have been combined into the Literature department. You can see what the Literature page used to look like [here](http://web.archive.org/web/20160521192216/http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/lit.html).
+&rarr; The Registrar website has fixed  this. It seems all sub-departments have been combined into the Literature department. You can see what the Literature page used to look like [here](http://web.archive.org/web/20160521192216/http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/lit.html).
 
 ~~Second, the [Literature](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/lit.html) department contains courses from multiple department codes. For example, Creative Writing (LTCR) and and Latin Literature (LTIN) classes are both under [`lit.html`](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/lit.html).~~
 
@@ -99,9 +87,9 @@ The functions [`is_next_p_indented()`](https://github.com/pfroud/ucsc-class-info
 ~~Consequently the lit page is scraped by its own function, [`get_lit_depts()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_extra.py#L135-L164), with help from the function [`get_real_lit_dept()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/db_extra.py#L118-L132).~~
 
 
-#### ~~Inconsistent HTML layout~~
+#### Inconsistent HTML layout
 
-&rarr; The Registrar fixed this.
+&rarr; The Registrar website has fixed this.
 
 ~~Third, some departments deviate from the standard HTML layout.~~
 
@@ -114,7 +102,7 @@ The functions [`is_next_p_indented()`](https://github.com/pfroud/ucsc-class-info
 ```
 ~~To build the database, I being by looking for `<strong>` tags containing a course number followed by a period.  (The "F,W" indicates which general education requirements are satisfied by that course.)~~
 
- ~~~However, *one single department does this differently*. [College Eight (CLEI)](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/clei.html) puts the entire header in one `<strong>` tag:~~~
+ ~~However, *one single department does this differently*. [College Eight (CLEI)](http://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/clei.html) puts the entire header in one `<strong>` tag:~~
 ```html
 <strong>81C. Designing a Sustainable Future. S</strong>
 ```
@@ -145,44 +133,43 @@ Similarly, the  Registrar listing for  the [Molecular, Cell, and Developmental B
 
 A course mention occurs when a redditor names one or more courses in a Reddit post or comment.
 
-I pulled the list of department codes from the source of the [class search](https://pisa.ucsc.edu/class_search/) page (`<select id="subject">`), but it includes defuct and renamed departments. For example, the Arabic department (ARAB) is gone and Environmental Toxicology (ETOX) is now [Microbiology and Environmental Toxicology (METX)](http://www.metx.ucsc.edu/). All possible departments appear in the regex [`_pattern_depts`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/mention_parse.py#L10-L16).
+I pulled the list of department codes from the source of the [class search](https://pisa.ucsc.edu/class_search/) page, in the element`<select id="subject">`.  Unfortunately this list includes defuct and renamed departments. For example, the Arabic department (ARAB) is gone and Environmental Toxicology (ETOX) is now [Microbiology and Environmental Toxicology (METX)](http://www.metx.ucsc.edu/). All the presently avaliable departments appear in the regular expression [`_pattern_depts`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/mention_parse.py#L10-L16).
 
 
 ### Mention types
 
-The bot can see these three types of mention, all case-insensitive. Recall that a *course number* is actually a string and may contain one optional letter at the end.
+This bot can see these three types of mention, all case-insensitive. Recall that a *course number* is actually a string because it may contain one optional letter at the end.
 
 1. **Normal mention:** department code, optional space, and course number.
 For example, "CMPS 12B" and "econ105" are normal mentions.
 	* Specified by regex [`_pattern_mention_normal`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/mention_parse.py#L21-L22).
 1. **Multi-mention:** shorthand for multiple courses in the same department with different course numbers.
 For example, "Math 21, 23b, and 100" is a multi-mention containing Math 21, Math 23, and Math 100.
-	* Not specified by a single regex.
-	* The function [`_parse_multi_mention()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/mention_parse.py#L58-L92) splits a multi-mention into normal mentions.
-1. **Letter-list mention:** shorthand for multiple courses in the same department, where the department code has the same numeric part but different letters.  
+	* Not specified by a single regex. The function [`_parse_multi_mention()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/mention_parse.py#L58-L92) splits a multi-mention into normal mentions.
+1. **Letter-list mention:** shorthand for multiple courses in the same department, where the course number has the same numeric part but different letters.  
 For example, "CE 129A/B/C" is a letter-list mention containing CE 129A, CE 129B, and CE 129C.
 	* Specified by regex [`_pattern_mention_letter_list`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/mention_parse.py#L18-L19).
 	* Function [`_parse_letter_list()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/mention_parse.py#L36-L55) splits a letter-list mention into normal mentions.
-	* You can have a letter-list mention in a multi-mention, like "CS 8a, 15, or 163w/x/y/z".
+	* You can have a letter-list mention **inside** a multi-mention! aFor example, the string "CS 8a, 15, and 163x/y/z" CS 8A, CS 15, CS 163X, CS 163Y, and CS 163Z.
 
-Five regular expressions are combined to form [`_pattern_final`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/mention_parse.py#L30-L33), which is used to search strings.
+Five regular expressions are combined to form the gigantic regular expression [`_pattern_final`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/mention_parse.py#L30-L33), which is used to search strings.
 
 ### Result
 
-In the file [`mention_search_posts.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/mention_search_posts.py), the function [`find_mentions()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/mention_search_posts.py#L111-L150) gets new posts from /r/UCSC then parses everything using [`mention_parse.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/mention_parse.py).
+In the file `mention_search_posts.py`, the function [`find_mentions()`](https://github.com/pfroud/ucsc-class-info-bot/blob/4dae0bb220513ce29fb889410570b1397c3efbde/mention_search_posts.py#L111-L150) gets new posts from /r/UCSC then parses everything using [`mention_parse.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/mention_parse.py).
 
-If `find_mentions()` is called from [`reddit_bot.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/reddit_bot.py), it returns a [`PostWithMentions`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/mention_search_posts.py#L12-L20) instance to be immediately processed; if `mention_search_posts.py` is ran on its own from the console, it is Pickled (serialized) and saved to disk. The `PostWithMentions`class is a container which holds the ID of a submission and a list of course mentions found in that submission.
+If `find_mentions()` is called from [`reddit_bot.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/reddit_bot.py), it returns a [`PostWithMentions`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/mention_search_posts.py#L12-L20) instance to be immediately processed; if `mention_search_posts.py` is ran on its own from the Python console, the result is Pickled (serialized) and saved to disk. The `PostWithMentions`class is a container which holds the ID of a submission and a list of course mentions found in that submission.
 
 
 ## Posting comments
 
-If [`post_comments.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/post_comments.py) is ran on its own from the console, it loads mentions found from the last run of `mention_search_posts.py`. If the function `post_comments()` is called from `reddit_bot.py`, data about found mentions is passed directly as a parameter to the function. [Those function names are outdated]
+If [`post_comments.py`](https://github.com/pfroud/ucsc-class-info-bot/blob/master/post_comments.py) is ran on its own from the Python console, it loads mentions found from the last run of `mention_search_posts.py`. If the function `post_comments()` is called from `reddit_bot.py`, data about found mentions is passed directly as a parameter to the function. [Those function names are outdated]
 
 If a post doesn't already have a a comment by /u/ucsc-class-info-bot, add one. If it does already have a comment, compare the mentions most recently found with the mentions that are already in the comment. If there are new ones, update the comment.
 
 
 ## Known bugs & future work
 
-* After the Registrar fixed some HTML special cases, by scraping script is broken.
-* In the comment, classes are sorted by department name (I think) instead of by order mentioned.
+* After the Registrar fixed some HTML special cases, my scraping script is broken.
+* In the comments posted by this bot, classes are sorted by department name (I think) instead of by order mentioned.
 * I might make the bot see mentions of some department names instead of department codes, e.g. "chemistry 103" instead of "chem 103".
