@@ -18,6 +18,36 @@
    xmlns:dc="http://purl.org/dc/elements/1.1/">
   <defs
      id="defs4">
+    <rect
+       x="987.82817"
+       y="1255.8216"
+       width="421.43564"
+       height="203.64675"
+       id="rect15563" />
+    <rect
+       x="989.94949"
+       y="998.43478"
+       width="420.02143"
+       height="200.11122"
+       id="rect15493" />
+    <rect
+       x="591.14127"
+       y="890.24744"
+       width="124.45079"
+       height="87.681241"
+       id="rect14345" />
+    <rect
+       x="992.07081"
+       y="511.94531"
+       width="417.90011"
+       height="209.30361"
+       id="rect14021" />
+    <rect
+       x="987.82817"
+       y="251.02291"
+       width="427.0925"
+       height="212.13203"
+       id="rect13125" />
     <marker
        inkscape:stockid="Arrow2Lend"
        orient="auto"
@@ -143,9 +173,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.5"
-     inkscape:cx="1021"
-     inkscape:cy="1171"
+     inkscape:zoom="0.70710678"
+     inkscape:cx="761.554"
+     inkscape:cy="1204.2028"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -180,12 +210,12 @@
      id="layer1"
      transform="translate(740.09552,106.87475)">
     <rect
-       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:3.54332;stroke-miterlimit:10;stroke-opacity:1"
-       id="rect2613"
-       width="1473.8162"
-       height="1592.6101"
-       x="-740.09552"
-       y="-106.87475" />
+       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4898"
+       width="1471.8163"
+       height="1590.6102"
+       x="-739.09552"
+       y="-105.87475" />
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -209,34 +239,6 @@
            y="715.21936" /></flowRegion><flowPara
          id="flowPara4158"
          style="font-size:40px;line-height:1"> </flowPara></flowRoot>
-    <flowRoot
-       xml:space="preserve"
-       id="flowRoot4174-5-3-6-6"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       transform="translate(-705.61037,-67.706207)"><flowRegion
-         id="flowRegion4176-7-3-0-8"><rect
-           id="rect4178-0-3-8-1"
-           width="409.59903"
-           height="206.37"
-           x="-0.39899904"
-           y="-7.3606572"
-           style="line-height:129.99999523%;stroke:none;stroke-opacity:1" /></flowRegion><flowPara
-         style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"
-         id="flowPara4184-0-1-9-97">CourseDatabase</flowPara><flowPara
-         id="flowPara4188-8-4-1-77"
-         style="font-size:17.3758px;line-height:220%;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">depts = {</flowPara><flowPara
-         id="flowPara4494-8"
-         style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      ...</flowPara><flowPara
-         id="flowPara4496-71"
-         style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      &quot;ANTH&quot;: Department,</flowPara><flowPara
-         id="flowPara4498-8"
-         style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      &quot;CMPS&quot;: Department,</flowPara><flowPara
-         id="flowPara4500-3"
-         style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      ...</flowPara><flowPara
-         id="flowPara4502-9"
-         style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">               }</flowPara><flowPara
-         id="flowPara4846"
-         style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">num_courses = 1400</flowPara></flowRoot>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -280,359 +282,153 @@
          id="tspan4524-3-7"
          style="font-size:40px;line-height:50%">.</tspan></text>
     <rect
-       style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect4898"
-       width="1471.8163"
-       height="1590.6102"
-       x="-739.09552"
-       y="-105.87475" />
-    <g
-       id="g12643"
-       transform="translate(-10.101526,-717.2083)">
-      <flowRoot
-         transform="translate(-169.7688,741.15578)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         id="flowRoot4174-5-3-6-7"
-         xml:space="preserve"><flowRegion
-           id="flowRegion4176-7-3-0-1"><rect
-             style="line-height:129.99999523%;stroke:none;stroke-opacity:1"
-             y="-7.3606572"
-             x="-0.39899904"
-             height="206.37"
-             width="409.59903"
-             id="rect4178-0-3-8-7" /></flowRegion><flowPara
-           id="flowPara4184-0-1-9-6"
-           style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Department</flowPara><flowPara
-           id="flowPara4186-0-6-0-4"
-           style="font-size:17.3758px;line-height:220%;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">name =&quot;ANTH&quot;</flowPara><flowPara
-           id="flowPara4188-8-4-1-6"
-           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">courses = {</flowPara><flowPara
-           id="flowPara4494-6"
-           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      ...</flowPara><flowPara
-           id="flowPara4496-7"
-           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      &quot;103B&quot;: Course,</flowPara><flowPara
-           id="flowPara4498-2"
-           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      &quot;104&quot;: Course,</flowPara><flowPara
-           id="flowPara4500-8"
-           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      ...</flowPara><flowPara
-           id="flowPara4502-3"
-           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                   }</flowPara></flowRoot>
-      <rect
-         y="718.3587"
-         x="-183.52115"
-         height="671.35443"
-         width="851.18622"
-         id="rect4258-9-4-8-6"
-         style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.46376;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <g
-         transform="translate(0,12)"
-         id="g4900">
-        <g
-           transform="translate(-244.7238,461.14143)"
-           id="g4290-7">
-          <flowRoot
-             transform="translate(444.18903,381.33569)"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-             id="flowRoot4174-5-3"
-             xml:space="preserve"><flowRegion
-               id="flowRegion4176-7-3"><rect
-                 style="line-height:129.99999523%;stroke:none;stroke-opacity:1"
-                 y="-7.3606572"
-                 x="-0.39899904"
-                 height="207.30836"
-                 width="412.45615"
-                 id="rect4178-0-3" /></flowRegion><flowPara
-               id="flowPara4206-4-0"
-               style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Course</flowPara><flowPara
-               style="font-size:17.3758px;line-height:220%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"
-               id="flowPara4182-0-4">dept = &quot;ANTH&quot;</flowPara><flowPara
-               id="flowPara4184-0-1"
-               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
-   id="flowSpan4200-7-6"
-   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">number</flowSpan> =&quot;103B&quot;</flowPara><flowPara
-               id="flowPara4186-0-6"
-               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
-   id="flowSpan4202-5-1"
-   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">name</flowSpan> =&quot;Forensic Anthropology and Bioarchaeology&quot;</flowPara><flowPara
-               id="flowPara4188-8-4"
-               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
-   id="flowSpan4204-4-3"
-   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">description</flowSpan> =&quot;Introduces the analysis of human remains from forensic...&quot;</flowPara></flowRoot>
-          <rect
-             y="358.53857"
-             x="430.43668"
-             height="224.7901"
-             width="428.84091"
-             id="rect4258-9-4"
-             style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.46376;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-        </g>
-        <g
-           transform="translate(-244.7238,709.71286)"
-           id="g4290-7-5-4">
-          <flowRoot
-             transform="translate(444.18903,381.33569)"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-             id="flowRoot4174-5-3-6-5"
-             xml:space="preserve"><flowRegion
-               id="flowRegion4176-7-3-0-0"><rect
-                 style="line-height:129.99999523%;stroke:none;stroke-opacity:1"
-                 y="-7.3606572"
-                 x="-0.39899904"
-                 height="199.22714"
-                 width="412.45615"
-                 id="rect4178-0-3-8-0" /></flowRegion><flowPara
-               id="flowPara4206-4-0-6-8"
-               style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Course</flowPara><flowPara
-               style="font-size:17.3758px;line-height:220%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"
-               id="flowPara4182-0-4-2-6">dept =&quot;ANTH&quot;</flowPara><flowPara
-               id="flowPara4184-0-1-9-9"
-               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
-   id="flowSpan4200-7-6-5-8"
-   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">number</flowSpan> =&quot;104&quot;</flowPara><flowPara
-               id="flowPara4186-0-6-0-1"
-               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
-   id="flowSpan4202-5-1-4-8"
-   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">name</flowSpan> =&quot;Human Variation and Adaptation&quot;</flowPara><flowPara
-               id="flowPara4188-8-4-1-7"
-               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
-   id="flowSpan4204-4-3-1-4"
-   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">description</flowSpan> =&quot;Explores the major environmental factors (temperature, altitude, diet, and disease); how they are perceived...&quot;</flowPara></flowRoot>
-          <rect
-             y="358.53857"
-             x="430.43668"
-             height="224.7901"
-             width="428.84091"
-             id="rect4258-9-4-8-8"
-             style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.46376;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-        </g>
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-           x="393.79544"
-           y="756.24365"
-           id="text4518-4-5"><tspan
-             sodipodi:role="line"
-             id="tspan4520-0-3"
-             x="393.79544"
-             y="756.24365"
-             style="font-size:40px;line-height:50%">.</tspan><tspan
-             sodipodi:role="line"
-             x="393.79544"
-             y="776.24365"
-             id="tspan4522-3-3"
-             style="font-size:40px;line-height:50%">.</tspan><tspan
-             sodipodi:role="line"
-             x="393.79544"
-             y="796.24365"
-             id="tspan4524-1-9"
-             style="font-size:40px;line-height:50%">.</tspan></text>
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-           x="393.79544"
-           y="1312.4366"
-           id="text4518-4-5-0"><tspan
-             sodipodi:role="line"
-             id="tspan4520-0-3-0"
-             x="393.79544"
-             y="1312.4366"
-             style="font-size:40px;line-height:50%">.</tspan><tspan
-             sodipodi:role="line"
-             x="393.79544"
-             y="1332.4366"
-             id="tspan4522-3-3-0"
-             style="font-size:40px;line-height:50%">.</tspan><tspan
-             sodipodi:role="line"
-             x="393.79544"
-             y="1352.4366"
-             id="tspan4524-1-9-5"
-             style="font-size:40px;line-height:50%">.</tspan></text>
-      </g>
-      <path
-         sodipodi:nodetypes="csc"
-         inkscape:connector-curvature="0"
-         id="path7683-2"
-         d="m 86.866615,885.89277 c 58.651925,-0.4902 6.075354,129.79243 37.417695,186.64433 9.32872,16.9214 49.23134,21.8655 49.23134,21.8655"
-         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend-4)" />
-      <path
-         inkscape:connector-curvature="0"
-         id="path9925"
-         d="M 98.489869,862.45353 H 169.70563"
-         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker9933)" />
-    </g>
-    <g
-       id="g12704"
-       transform="translate(-14.142136,707.10678)">
-      <flowRoot
-         transform="translate(-169.7688,21.396421)"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         id="flowRoot4174-5-3-6"
-         xml:space="preserve"><flowRegion
-           id="flowRegion4176-7-3-0"><rect
-             style="line-height:129.99999523%;stroke:none;stroke-opacity:1"
-             y="-7.3606572"
-             x="-0.39899904"
-             height="206.37"
-             width="409.59903"
-             id="rect4178-0-3-8" /></flowRegion><flowPara
-           id="flowPara4184-0-1-9"
-           style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Department</flowPara><flowPara
-           id="flowPara4186-0-6-0"
-           style="font-size:17.3758px;line-height:220%;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">name =&quot;CMPS&quot;</flowPara><flowPara
-           id="flowPara4188-8-4-1"
-           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">courses = {</flowPara><flowPara
-           id="flowPara4494"
-           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      ...</flowPara><flowPara
-           id="flowPara4496"
-           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      &quot;011&quot;: Course,</flowPara><flowPara
-           id="flowPara4498"
-           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      &quot;012B&quot;: Course,</flowPara><flowPara
-           id="flowPara4500"
-           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      ...</flowPara><flowPara
-           id="flowPara4502"
-           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                   }</flowPara></flowRoot>
-      <rect
-         y="-1.4006958"
-         x="-183.52115"
-         height="652.78302"
-         width="849.75763"
-         id="rect4258-9-4-8"
-         style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.46376;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-      <g
-         id="g10619">
-        <g
-           id="g4290"
-           transform="translate(-244.7238,-11.775201)">
-          <flowRoot
-             transform="translate(444.18903,381.33569)"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-             id="flowRoot4174-5"
-             xml:space="preserve"><flowRegion
-               id="flowRegion4176-7"><rect
-                 style="line-height:129.99999523%;stroke:none;stroke-opacity:1"
-                 y="-7.3606572"
-                 x="-0.39899904"
-                 height="199.22714"
-                 width="412.45615"
-                 id="rect4178-0" /></flowRegion><flowPara
-               id="flowPara4206-4"
-               style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Course</flowPara><flowPara
-               style="font-size:17.3758px;line-height:220%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"
-               id="flowPara4182-0">dept = &quot;CMPS&quot;</flowPara><flowPara
-               id="flowPara4184-0"
-               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
-   id="flowSpan4200-7"
-   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">number </flowSpan>= &quot;012B&quot;</flowPara><flowPara
-               id="flowPara4186-0"
-               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
-   id="flowSpan4202-5"
-   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">name </flowSpan>= &quot;Introduction To Data Structures&quot;</flowPara><flowPara
-               id="flowPara4188-8"
-               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
-   id="flowSpan4204-4"
-   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">description </flowSpan>= &quot;Teaches students to implement common data structures and the algorithms...&quot;</flowPara></flowRoot>
-          <rect
-             y="358.53857"
-             x="430.43668"
-             height="224.7901"
-             width="428.84091"
-             id="rect4258-9"
-             style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.46376;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-        </g>
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-           x="393.79544"
-           y="589.21466"
-           id="text4518"><tspan
-             sodipodi:role="line"
-             id="tspan4520"
-             x="393.79544"
-             y="589.21466"
-             style="font-size:40px;line-height:50%">.</tspan><tspan
-             sodipodi:role="line"
-             x="393.79544"
-             y="609.21466"
-             id="tspan4522"
-             style="font-size:40px;line-height:50%">.</tspan><tspan
-             sodipodi:role="line"
-             x="393.79544"
-             y="629.21466"
-             id="tspan4524"
-             style="font-size:40px;line-height:50%">.</tspan></text>
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-           x="393.79544"
-           y="51.128418"
-           id="text4518-4"><tspan
-             sodipodi:role="line"
-             id="tspan4520-0"
-             x="393.79544"
-             y="51.128418"
-             style="font-size:40px;line-height:50%">.</tspan><tspan
-             sodipodi:role="line"
-             x="393.79544"
-             y="71.128418"
-             id="tspan4522-3"
-             style="font-size:40px;line-height:50%">.</tspan><tspan
-             sodipodi:role="line"
-             x="393.79544"
-             y="91.128418"
-             id="tspan4524-1"
-             style="font-size:40px;line-height:50%">.</tspan></text>
-        <g
-           id="g4290-1"
-           transform="translate(-244.7238,-250.0285)">
-          <flowRoot
-             transform="translate(444.18903,381.33569)"
-             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-             id="flowRoot4174-5-0"
-             xml:space="preserve"><flowRegion
-               id="flowRegion4176-7-7"><rect
-                 style="line-height:129.99999523%;stroke:none;stroke-opacity:1"
-                 y="-7.3606572"
-                 x="-0.39899904"
-                 height="199.22714"
-                 width="412.45615"
-                 id="rect4178-0-39" /></flowRegion><flowPara
-               id="flowPara4206-4-3"
-               style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Course</flowPara><flowPara
-               style="font-size:17.3758px;line-height:220%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"
-               id="flowPara4182-0-8">dept = &quot;CMPS&quot;</flowPara><flowPara
-               id="flowPara4184-0-2"
-               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
-   id="flowSpan4200-7-1"
-   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">number =</flowSpan> &quot;011&quot;</flowPara><flowPara
-               id="flowPara4186-0-7"
-               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
-   id="flowSpan4202-5-7"
-   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">name =</flowSpan> &quot;Introduction To Computer Science&quot;</flowPara><flowPara
-               id="flowPara4188-8-8"
-               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
-   id="flowSpan4204-4-8"
-   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">description =</flowSpan> &quot;Covers basic object-oriented programming; event-driven programming; GUI creation; recursion...&quot;</flowPara></flowRoot>
-          <rect
-             y="358.53857"
-             x="430.43668"
-             height="224.7901"
-             width="428.84091"
-             id="rect4258-9-6"
-             style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.46376;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
-        </g>
-      </g>
-      <path
-         sodipodi:nodetypes="csc"
-         inkscape:connector-curvature="0"
-         id="path7683"
-         d="m 98.489877,163.93304 c 58.651923,-0.4902 -1.500787,129.28738 29.841553,186.1393 9.32872,16.92138 49.23134,21.86547 49.23134,21.86547"
-         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)" />
-      <path
-         inkscape:connector-curvature="0"
-         id="path9925-4"
-         d="M 86.413417,141.66933 H 172.98305"
-         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker9933-3)" />
-    </g>
+       y="1.1504036"
+       x="-193.62268"
+       height="671.35443"
+       width="851.18622"
+       id="rect4258-9-4-8-6"
+       style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.46376;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <rect
+       y="114.4717"
+       x="175.61134"
+       height="224.7901"
+       width="428.84091"
+       id="rect4258-9-4"
+       style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.46376;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <rect
+       y="363.04312"
+       x="175.61134"
+       height="224.7901"
+       width="428.84091"
+       id="rect4258-9-4-8-8"
+       style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.46376;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="383.69391"
+       y="51.035351"
+       id="text4518-4-5"><tspan
+         sodipodi:role="line"
+         id="tspan4520-0-3"
+         x="383.69391"
+         y="51.035351"
+         style="font-size:40px;line-height:50%">.</tspan><tspan
+         sodipodi:role="line"
+         x="383.69391"
+         y="71.035355"
+         id="tspan4522-3-3"
+         style="font-size:40px;line-height:50%">.</tspan><tspan
+         sodipodi:role="line"
+         x="383.69391"
+         y="91.035355"
+         id="tspan4524-1-9"
+         style="font-size:40px;line-height:50%">.</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="383.69391"
+       y="607.22833"
+       id="text4518-4-5-0"><tspan
+         sodipodi:role="line"
+         id="tspan4520-0-3-0"
+         x="383.69391"
+         y="607.22833"
+         style="font-size:40px;line-height:50%">.</tspan><tspan
+         sodipodi:role="line"
+         x="383.69391"
+         y="627.22833"
+         id="tspan4522-3-3-0"
+         style="font-size:40px;line-height:50%">.</tspan><tspan
+         sodipodi:role="line"
+         x="383.69391"
+         y="647.22833"
+         id="tspan4524-1-9-5"
+         style="font-size:40px;line-height:50%">.</tspan></text>
+    <path
+       sodipodi:nodetypes="csc"
+       inkscape:connector-curvature="0"
+       id="path7683-2"
+       d="m 76.765089,168.68447 c 58.651921,-0.4902 6.075354,129.79243 37.417691,186.64433 9.32872,16.9214 49.23134,21.8655 49.23134,21.8655"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend-4)" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path9925"
+       d="M 88.388343,145.24523 H 159.6041"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker9933)" />
+    <rect
+       y="705.70605"
+       x="-197.66328"
+       height="652.78302"
+       width="849.75763"
+       id="rect4258-9-4-8"
+       style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.46376;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <rect
+       y="1053.8701"
+       x="171.57074"
+       height="224.7901"
+       width="428.84091"
+       id="rect4258-9"
+       style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.46376;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="379.65329"
+       y="1296.3214"
+       id="text4518"><tspan
+         sodipodi:role="line"
+         id="tspan4520"
+         x="379.65329"
+         y="1296.3214"
+         style="font-size:40px;line-height:50%">.</tspan><tspan
+         sodipodi:role="line"
+         x="379.65329"
+         y="1316.3214"
+         id="tspan4522"
+         style="font-size:40px;line-height:50%">.</tspan><tspan
+         sodipodi:role="line"
+         x="379.65329"
+         y="1336.3214"
+         id="tspan4524"
+         style="font-size:40px;line-height:50%">.</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="379.65329"
+       y="758.23517"
+       id="text4518-4"><tspan
+         sodipodi:role="line"
+         id="tspan4520-0"
+         x="379.65329"
+         y="758.23517"
+         style="font-size:40px;line-height:50%">.</tspan><tspan
+         sodipodi:role="line"
+         x="379.65329"
+         y="778.23517"
+         id="tspan4522-3"
+         style="font-size:40px;line-height:50%">.</tspan><tspan
+         sodipodi:role="line"
+         x="379.65329"
+         y="798.23517"
+         id="tspan4524-1"
+         style="font-size:40px;line-height:50%">.</tspan></text>
+    <rect
+       y="815.61688"
+       x="171.57074"
+       height="224.7901"
+       width="428.84091"
+       id="rect4258-9-6"
+       style="fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.46376;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <path
+       sodipodi:nodetypes="csc"
+       inkscape:connector-curvature="0"
+       id="path7683"
+       d="m 84.347741,871.03982 c 58.651919,-0.4902 -1.500787,129.28738 29.841549,186.13928 9.32872,16.9214 49.23134,21.8655 49.23134,21.8655"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path9925-4"
+       d="M 72.271281,848.77611 H 158.84091"
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker9933-3)" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker9933-5)"
        d="m -386.89699,29.989337 h 181.34451"
@@ -644,5 +440,338 @@
        id="path7683-1"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="csc" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:17.5px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.9375"
+       x="-681.44891"
+       y="-31.88479"
+       id="text11176"><tspan
+         sodipodi:role="line"
+         id="tspan11174"
+         x="-681.44891"
+         y="-31.88479"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375">CourseDatabase</tspan><tspan
+         sodipodi:role="line"
+         x="-681.44891"
+         y="-7.2308297"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan11178">depts = {</tspan><tspan
+         sodipodi:role="line"
+         x="-681.44891"
+         y="14.803777"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan11180">                      ...</tspan><tspan
+         sodipodi:role="line"
+         x="-681.44891"
+         y="36.838383"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan11182">                      &quot;ANTH&quot;: Department,</tspan><tspan
+         sodipodi:role="line"
+         x="-681.44891"
+         y="58.873005"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan11184">                      &quot;CMPS&quot;: Department,</tspan><tspan
+         sodipodi:role="line"
+         x="-681.44891"
+         y="80.907631"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan11186">                      ...</tspan><tspan
+         sodipodi:role="line"
+         x="-681.44891"
+         y="102.94224"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan11188">               }</tspan><tspan
+         sodipodi:role="line"
+         x="-681.44891"
+         y="124.97684"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan11190">num_courses = 1400</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:17.5px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.9375"
+       x="-173.96819"
+       y="46.953358"
+       id="text13000"><tspan
+         sodipodi:role="line"
+         id="tspan12998"
+         x="-173.96819"
+         y="46.953358"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375">Department</tspan><tspan
+         sodipodi:role="line"
+         x="-173.96819"
+         y="71.607315"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan13002">name =&quot;ANTH&quot;</tspan><tspan
+         sodipodi:role="line"
+         x="-173.96819"
+         y="93.64193"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan13004">courses = {</tspan><tspan
+         sodipodi:role="line"
+         x="-173.96819"
+         y="115.67654"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan13006">                      ...</tspan><tspan
+         sodipodi:role="line"
+         x="-173.96819"
+         y="137.71115"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan13008">                      &quot;103B&quot;: Course,</tspan><tspan
+         sodipodi:role="line"
+         x="-173.96819"
+         y="159.74577"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan13010">                      &quot;104&quot;: Course,</tspan><tspan
+         sodipodi:role="line"
+         x="-173.96819"
+         y="181.78038"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan13012">                      ...</tspan><tspan
+         sodipodi:role="line"
+         x="-173.96819"
+         y="203.81499"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan13014">                   }</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:37.5px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.9375"
+       x="197.26288"
+       y="137.73999"
+       id="text13113"><tspan
+         sodipodi:role="line"
+         id="tspan13111"
+         x="197.26288"
+         y="137.73999"
+         style="stroke-width:0.9375"></tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.93749996,0,0,0.93749996,-737.44387,-105.54892)"
+       id="text13123"
+       style="font-style:normal;font-weight:normal;font-size:18.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect13125);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
+         x="987.82812"
+         y="275.04359"
+         id="tspan17841"><tspan
+           style="font-size:26.6667px;font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17837">Course</tspan><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17839">
+</tspan></tspan><tspan
+         x="987.82812"
+         y="301.34118"
+         id="tspan17845"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17843">dept = &quot;ANTH&quot;
+</tspan></tspan><tspan
+         x="987.82812"
+         y="324.84481"
+         id="tspan17849"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17847">number =&quot;103B&quot;
+</tspan></tspan><tspan
+         x="987.82812"
+         y="348.34844"
+         id="tspan17853"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17851">name =&quot;Forensic Anthropology and </tspan></tspan><tspan
+         x="987.82812"
+         y="371.85207"
+         id="tspan17857"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17855">Bioarchaeology&quot;
+</tspan></tspan><tspan
+         x="987.82812"
+         y="395.35571"
+         id="tspan17861"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17859">description =&quot;Introduces the analysis of human </tspan></tspan><tspan
+         x="987.82812"
+         y="418.85934"
+         id="tspan17865"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17863">remains from forensic...&quot;</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.93749996,0,0,0.93749996,-740.98513,-106.87475)"
+       id="text14019"
+       style="font-style:normal;font-weight:normal;font-size:18.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect14021);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
+         x="992.07031"
+         y="535.96546"
+         id="tspan17871"><tspan
+           style="font-size:26.6667px"
+           id="tspan17867">Course</tspan><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17869">
+</tspan></tspan><tspan
+         x="992.07031"
+         y="562.26305"
+         id="tspan17875"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17873">dept =&quot;ANTH&quot;
+</tspan></tspan><tspan
+         x="992.07031"
+         y="585.76666"
+         id="tspan17879"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17877">number =&quot;104&quot;
+</tspan></tspan><tspan
+         x="992.07031"
+         y="609.27026"
+         id="tspan17883"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17881">name =&quot;Human Variation and Adaptation&quot;
+</tspan></tspan><tspan
+         x="992.07031"
+         y="632.77386"
+         id="tspan17887"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17885">description =&quot;Explores the major environmental </tspan></tspan><tspan
+         x="992.07031"
+         y="656.27746"
+         id="tspan17891"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17889">factors (temperature, altitude, diet, and disease); </tspan></tspan><tspan
+         x="992.07031"
+         y="679.78106"
+         id="tspan17895"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17893">how they are perceived...&quot;</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.93749996,0,0,0.93749996,-740.09552,-106.87475)"
+       id="text14343"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect14345);display:inline;fill:#000000;fill-opacity:1;stroke:none" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:17.5px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.9375"
+       x="-182.58606"
+       y="744.96796"
+       id="text14399"><tspan
+         sodipodi:role="line"
+         id="tspan14397"
+         x="-182.58606"
+         y="744.96796"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375">Department</tspan><tspan
+         sodipodi:role="line"
+         x="-182.58606"
+         y="769.62189"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan14401">name =&quot;CMPS&quot;</tspan><tspan
+         sodipodi:role="line"
+         x="-182.58606"
+         y="791.65656"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan14403">courses = {</tspan><tspan
+         sodipodi:role="line"
+         x="-182.58606"
+         y="813.69116"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan14405">                      ...</tspan><tspan
+         sodipodi:role="line"
+         x="-182.58606"
+         y="835.72577"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan14407">                      &quot;011&quot;: Course,</tspan><tspan
+         sodipodi:role="line"
+         x="-182.58606"
+         y="857.76038"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan14409">                      &quot;012B&quot;: Course,</tspan><tspan
+         sodipodi:role="line"
+         x="-182.58606"
+         y="879.79498"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan14411">                      ...</tspan><tspan
+         sodipodi:role="line"
+         x="-182.58606"
+         y="901.82959"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;font-family:Arial;-inkscape-font-specification:Arial;stroke-width:0.9375"
+         id="tspan14413">                   }</tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.93749996,0,0,0.93749996,-742.08405,-106.87475)"
+       id="text15491"
+       style="font-style:normal;font-weight:normal;font-size:18.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect15493);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
+         x="989.94922"
+         y="1022.4557"
+         id="tspan17901"><tspan
+           style="font-size:26.6667px"
+           id="tspan17897">Course</tspan><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17899">
+</tspan></tspan><tspan
+         x="989.94922"
+         y="1048.7533"
+         id="tspan17905"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17903">dept = &quot;CMPS&quot;
+</tspan></tspan><tspan
+         x="989.94922"
+         y="1072.257"
+         id="tspan17909"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17907">number = &quot;011&quot;
+</tspan></tspan><tspan
+         x="989.94922"
+         y="1095.7606"
+         id="tspan17913"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17911">name = &quot;Introduction To Computer Science&quot;
+</tspan></tspan><tspan
+         x="989.94922"
+         y="1119.2643"
+         id="tspan17917"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17915">description = &quot;Covers basic object-oriented </tspan></tspan><tspan
+         x="989.94922"
+         y="1142.7679"
+         id="tspan17921"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17919">programming; event-driven programming; GUI </tspan></tspan><tspan
+         x="989.94922"
+         y="1166.2716"
+         id="tspan17925"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17923">creation; recursion...&quot;</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.93749996,0,0,0.93749996,-740.09552,-106.87475)"
+       id="text15561"
+       style="font-style:normal;font-weight:normal;font-size:18.6667px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect15563);display:inline;fill:#000000;fill-opacity:1;stroke:none"><tspan
+         x="987.82812"
+         y="1279.8424"
+         id="tspan17931"><tspan
+           style="font-size:26.6667px"
+           id="tspan17927">Course</tspan><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17929">
+</tspan></tspan><tspan
+         x="987.82812"
+         y="1306.14"
+         id="tspan17935"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17933">dept = &quot;CMPS&quot;
+</tspan></tspan><tspan
+         x="987.82812"
+         y="1329.6437"
+         id="tspan17939"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17937">number = &quot;012B&quot;
+</tspan></tspan><tspan
+         x="987.82812"
+         y="1353.1473"
+         id="tspan17943"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17941">name = &quot;Introduction To Data Structures&quot;
+</tspan></tspan><tspan
+         x="987.82812"
+         y="1376.651"
+         id="tspan17947"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17945">description = &quot;Teaches students to implement </tspan></tspan><tspan
+         x="987.82812"
+         y="1400.1547"
+         id="tspan17951"><tspan
+           style="font-family:Arial;-inkscape-font-specification:Arial"
+           id="tspan17949">common data structures and the algorithms...&quot;</tspan></tspan></text>
   </g>
 </svg>
