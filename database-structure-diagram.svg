@@ -8,7 +8,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
-   sodipodi:docname="database structure diagram.svg"
+   sodipodi:docname="database-structure-diagram.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -144,8 +144,8 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.5"
-     inkscape:cx="1260"
-     inkscape:cy="1021"
+     inkscape:cx="1021"
+     inkscape:cy="1171"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -221,26 +221,22 @@
            x="-0.39899904"
            y="-7.3606572"
            style="line-height:129.99999523%;stroke:none;stroke-opacity:1" /></flowRegion><flowPara
-         style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1"
+         style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"
          id="flowPara4184-0-1-9-97">CourseDatabase</flowPara><flowPara
          id="flowPara4188-8-4-1-77"
-         style="font-size:17.3758px;line-height:220%"><flowSpan
-   style="font-weight:bold;line-height:220%"
-   id="flowSpan4844">depts</flowSpan> = {</flowPara><flowPara
+         style="font-size:17.3758px;line-height:220%;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">depts = {</flowPara><flowPara
          id="flowPara4494-8"
-         style="font-size:17.3758px;line-height:1.3">                      ...</flowPara><flowPara
+         style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      ...</flowPara><flowPara
          id="flowPara4496-71"
-         style="font-size:17.3758px;line-height:1.3">                      &quot;ANTH&quot;: Department,</flowPara><flowPara
+         style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      &quot;ANTH&quot;: Department,</flowPara><flowPara
          id="flowPara4498-8"
-         style="font-size:17.3758px;line-height:1.3">                      &quot;CMPS&quot;: Department,</flowPara><flowPara
+         style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      &quot;CMPS&quot;: Department,</flowPara><flowPara
          id="flowPara4500-3"
-         style="font-size:17.3758px;line-height:1.3">                      ...</flowPara><flowPara
+         style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      ...</flowPara><flowPara
          id="flowPara4502-9"
-         style="font-size:17.3758px;line-height:1.3">               }</flowPara><flowPara
+         style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">               }</flowPara><flowPara
          id="flowPara4846"
-         style="font-size:17.3758px;line-height:1.3"><flowSpan
-   style="font-weight:bold"
-   id="flowSpan4848">num_courses</flowSpan> = 1400</flowPara></flowRoot>
+         style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">num_courses = 1400</flowPara></flowRoot>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0%;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -306,25 +302,21 @@
              width="409.59903"
              id="rect4178-0-3-8-7" /></flowRegion><flowPara
            id="flowPara4184-0-1-9-6"
-           style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1">Department</flowPara><flowPara
+           style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Department</flowPara><flowPara
            id="flowPara4186-0-6-0-4"
-           style="font-size:17.3758px;line-height:220%"><flowSpan
-   id="flowSpan4202-5-1-4-9"
-   style="font-weight:bold;line-height:220%;stroke:none;stroke-opacity:1">name</flowSpan> =&quot;ANTH&quot;</flowPara><flowPara
+           style="font-size:17.3758px;line-height:220%;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">name =&quot;ANTH&quot;</flowPara><flowPara
            id="flowPara4188-8-4-1-6"
-           style="font-size:17.3758px;line-height:1.3"><flowSpan
-   style="font-weight:bold"
-   id="flowSpan4492-6">courses</flowSpan> = {</flowPara><flowPara
+           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">courses = {</flowPara><flowPara
            id="flowPara4494-6"
-           style="font-size:17.3758px;line-height:1.3">                      ...</flowPara><flowPara
+           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      ...</flowPara><flowPara
            id="flowPara4496-7"
-           style="font-size:17.3758px;line-height:1.3">                      &quot;103B&quot;: Course,</flowPara><flowPara
+           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      &quot;103B&quot;: Course,</flowPara><flowPara
            id="flowPara4498-2"
-           style="font-size:17.3758px;line-height:1.3">                      &quot;104&quot;: Course,</flowPara><flowPara
+           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      &quot;104&quot;: Course,</flowPara><flowPara
            id="flowPara4500-8"
-           style="font-size:17.3758px;line-height:1.3">                      ...</flowPara><flowPara
+           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      ...</flowPara><flowPara
            id="flowPara4502-3"
-           style="font-size:17.3758px;line-height:1.3">                   }</flowPara></flowRoot>
+           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                   }</flowPara></flowRoot>
       <rect
          y="718.3587"
          x="-183.52115"
@@ -351,23 +343,21 @@
                  width="412.45615"
                  id="rect4178-0-3" /></flowRegion><flowPara
                id="flowPara4206-4-0"
-               style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1">Course</flowPara><flowPara
-               style="font-size:17.3758px;line-height:220%;stroke:none;stroke-opacity:1"
-               id="flowPara4182-0-4"><flowSpan
-   id="flowSpan4198-1-6"
-   style="font-weight:bold;line-height:220%;stroke:none;stroke-opacity:1">dept</flowSpan> = &quot;ANTH&quot;</flowPara><flowPara
+               style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Course</flowPara><flowPara
+               style="font-size:17.3758px;line-height:220%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"
+               id="flowPara4182-0-4">dept = &quot;ANTH&quot;</flowPara><flowPara
                id="flowPara4184-0-1"
-               style="font-size:17.3758px;line-height:1.3"><flowSpan
+               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
    id="flowSpan4200-7-6"
-   style="font-weight:bold;line-height:130%;stroke:none;stroke-opacity:1">number</flowSpan> =&quot;103B&quot;</flowPara><flowPara
+   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">number</flowSpan> =&quot;103B&quot;</flowPara><flowPara
                id="flowPara4186-0-6"
-               style="font-size:17.3758px;line-height:1.3"><flowSpan
+               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
    id="flowSpan4202-5-1"
-   style="font-weight:bold;line-height:130%;stroke:none;stroke-opacity:1">name</flowSpan> =&quot;Forensic Anthropology and Bioarchaeology&quot;</flowPara><flowPara
+   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">name</flowSpan> =&quot;Forensic Anthropology and Bioarchaeology&quot;</flowPara><flowPara
                id="flowPara4188-8-4"
-               style="font-size:17.3758px;line-height:1.3"><flowSpan
+               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
    id="flowSpan4204-4-3"
-   style="font-weight:bold;line-height:130%;stroke:none;stroke-opacity:1">description</flowSpan> =&quot;Introduces the analysis of human remains from forensic...&quot;</flowPara></flowRoot>
+   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">description</flowSpan> =&quot;Introduces the analysis of human remains from forensic...&quot;</flowPara></flowRoot>
           <rect
              y="358.53857"
              x="430.43668"
@@ -392,23 +382,21 @@
                  width="412.45615"
                  id="rect4178-0-3-8-0" /></flowRegion><flowPara
                id="flowPara4206-4-0-6-8"
-               style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1">Course</flowPara><flowPara
-               style="font-size:17.3758px;line-height:220%;stroke:none;stroke-opacity:1"
-               id="flowPara4182-0-4-2-6"><flowSpan
-   id="flowSpan4198-1-6-1-9"
-   style="font-weight:bold;line-height:220%;stroke:none;stroke-opacity:1">dept</flowSpan> =&quot;ANTH&quot;</flowPara><flowPara
+               style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Course</flowPara><flowPara
+               style="font-size:17.3758px;line-height:220%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"
+               id="flowPara4182-0-4-2-6">dept =&quot;ANTH&quot;</flowPara><flowPara
                id="flowPara4184-0-1-9-9"
-               style="font-size:17.3758px;line-height:1.3"><flowSpan
+               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
    id="flowSpan4200-7-6-5-8"
-   style="font-weight:bold;line-height:130%;stroke:none;stroke-opacity:1">number</flowSpan> =&quot;104&quot;</flowPara><flowPara
+   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">number</flowSpan> =&quot;104&quot;</flowPara><flowPara
                id="flowPara4186-0-6-0-1"
-               style="font-size:17.3758px;line-height:1.3"><flowSpan
+               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
    id="flowSpan4202-5-1-4-8"
-   style="font-weight:bold;line-height:130%;stroke:none;stroke-opacity:1">name</flowSpan> =&quot;Human Variation and Adaptation&quot;</flowPara><flowPara
+   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">name</flowSpan> =&quot;Human Variation and Adaptation&quot;</flowPara><flowPara
                id="flowPara4188-8-4-1-7"
-               style="font-size:17.3758px;line-height:1.3"><flowSpan
+               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
    id="flowSpan4204-4-3-1-4"
-   style="font-weight:bold;line-height:130%;stroke:none;stroke-opacity:1">description</flowSpan> =&quot;Explores the major environmental factors (temperature, altitude, diet, and disease); how they are perceived...&quot;</flowPara></flowRoot>
+   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">description</flowSpan> =&quot;Explores the major environmental factors (temperature, altitude, diet, and disease); how they are perceived...&quot;</flowPara></flowRoot>
           <rect
              y="358.53857"
              x="430.43668"
@@ -488,25 +476,21 @@
              width="409.59903"
              id="rect4178-0-3-8" /></flowRegion><flowPara
            id="flowPara4184-0-1-9"
-           style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1">Department</flowPara><flowPara
+           style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Department</flowPara><flowPara
            id="flowPara4186-0-6-0"
-           style="font-size:17.3758px;line-height:220%"><flowSpan
-   id="flowSpan4202-5-1-4"
-   style="font-weight:bold;line-height:220%;stroke:none;stroke-opacity:1">name</flowSpan> =&quot;CMPS&quot;</flowPara><flowPara
+           style="font-size:17.3758px;line-height:220%;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">name =&quot;CMPS&quot;</flowPara><flowPara
            id="flowPara4188-8-4-1"
-           style="font-size:17.3758px;line-height:1.3"><flowSpan
-   style="font-weight:bold"
-   id="flowSpan4492">courses</flowSpan> = {</flowPara><flowPara
+           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">courses = {</flowPara><flowPara
            id="flowPara4494"
-           style="font-size:17.3758px;line-height:1.3">                      ...</flowPara><flowPara
+           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      ...</flowPara><flowPara
            id="flowPara4496"
-           style="font-size:17.3758px;line-height:1.3">                      &quot;011&quot;: Course,</flowPara><flowPara
+           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      &quot;011&quot;: Course,</flowPara><flowPara
            id="flowPara4498"
-           style="font-size:17.3758px;line-height:1.3">                      &quot;012B&quot;: Course,</flowPara><flowPara
+           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      &quot;012B&quot;: Course,</flowPara><flowPara
            id="flowPara4500"
-           style="font-size:17.3758px;line-height:1.3">                      ...</flowPara><flowPara
+           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                      ...</flowPara><flowPara
            id="flowPara4502"
-           style="font-size:17.3758px;line-height:1.3">                   }</flowPara></flowRoot>
+           style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">                   }</flowPara></flowRoot>
       <rect
          y="-1.4006958"
          x="-183.52115"
@@ -532,25 +516,21 @@
                  width="412.45615"
                  id="rect4178-0" /></flowRegion><flowPara
                id="flowPara4206-4"
-               style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1">Course</flowPara><flowPara
-               style="font-size:17.3758px;line-height:220%;stroke:none;stroke-opacity:1"
-               id="flowPara4182-0"><flowSpan
-   id="flowSpan4198-1"
-   style="font-weight:bold;line-height:220%;stroke:none;stroke-opacity:1">dept <flowSpan
-   style="font-weight:normal"
-   id="flowSpan4482">=</flowSpan></flowSpan> &quot;CMPS&quot;</flowPara><flowPara
+               style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Course</flowPara><flowPara
+               style="font-size:17.3758px;line-height:220%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"
+               id="flowPara4182-0">dept = &quot;CMPS&quot;</flowPara><flowPara
                id="flowPara4184-0"
-               style="font-size:17.3758px;line-height:1.3"><flowSpan
+               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
    id="flowSpan4200-7"
-   style="font-weight:bold;line-height:130%;stroke:none;stroke-opacity:1">number </flowSpan>= &quot;012B&quot;</flowPara><flowPara
+   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">number </flowSpan>= &quot;012B&quot;</flowPara><flowPara
                id="flowPara4186-0"
-               style="font-size:17.3758px;line-height:1.3"><flowSpan
+               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
    id="flowSpan4202-5"
-   style="font-weight:bold;line-height:130%;stroke:none;stroke-opacity:1">name </flowSpan>= &quot;Introduction To Data Structures&quot;</flowPara><flowPara
+   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">name </flowSpan>= &quot;Introduction To Data Structures&quot;</flowPara><flowPara
                id="flowPara4188-8"
-               style="font-size:17.3758px;line-height:1.3"><flowSpan
+               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
    id="flowSpan4204-4"
-   style="font-weight:bold;line-height:130%;stroke:none;stroke-opacity:1">description </flowSpan>= &quot;Teaches students to implement common data structures and the algorithms...&quot;</flowPara></flowRoot>
+   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">description </flowSpan>= &quot;Teaches students to implement common data structures and the algorithms...&quot;</flowPara></flowRoot>
           <rect
              y="358.53857"
              x="430.43668"
@@ -617,31 +597,21 @@
                  width="412.45615"
                  id="rect4178-0-39" /></flowRegion><flowPara
                id="flowPara4206-4-3"
-               style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1">Course</flowPara><flowPara
-               style="font-size:17.3758px;line-height:220%;stroke:none;stroke-opacity:1"
-               id="flowPara4182-0-8"><flowSpan
-   id="flowSpan4198-1-2"
-   style="font-weight:bold;line-height:220%;stroke:none;stroke-opacity:1">dept <flowSpan
-   style="font-weight:normal"
-   id="flowSpan4482-1">=</flowSpan></flowSpan> &quot;CMPS&quot;</flowPara><flowPara
+               style="font-size:25px;line-height:1.3;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal">Course</flowPara><flowPara
+               style="font-size:17.3758px;line-height:220%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"
+               id="flowPara4182-0-8">dept = &quot;CMPS&quot;</flowPara><flowPara
                id="flowPara4184-0-2"
-               style="font-size:17.3758px;line-height:1.3"><flowSpan
+               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
    id="flowSpan4200-7-1"
-   style="font-weight:bold;line-height:130%;stroke:none;stroke-opacity:1">number <flowSpan
-   style="font-weight:normal"
-   id="flowSpan4484-9">=</flowSpan></flowSpan> &quot;011&quot;</flowPara><flowPara
+   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">number =</flowSpan> &quot;011&quot;</flowPara><flowPara
                id="flowPara4186-0-7"
-               style="font-size:17.3758px;line-height:1.3"><flowSpan
+               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
    id="flowSpan4202-5-7"
-   style="font-weight:bold;line-height:130%;stroke:none;stroke-opacity:1">name <flowSpan
-   style="font-weight:normal"
-   id="flowSpan4486-2">=</flowSpan></flowSpan> &quot;Introduction To Computer Science&quot;</flowPara><flowPara
+   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">name =</flowSpan> &quot;Introduction To Computer Science&quot;</flowPara><flowPara
                id="flowPara4188-8-8"
-               style="font-size:17.3758px;line-height:1.3"><flowSpan
+               style="font-size:17.3758px;line-height:1.3;-inkscape-font-specification:Arial;font-family:Arial;font-weight:normal;font-style:normal;font-stretch:normal;font-variant:normal"><flowSpan
    id="flowSpan4204-4-8"
-   style="font-weight:bold;line-height:130%;stroke:none;stroke-opacity:1">description <flowSpan
-   style="font-weight:normal"
-   id="flowSpan4488-3">=</flowSpan></flowSpan> &quot;Covers basic object-oriented programming; event-driven programming; GUI creation; recursion...&quot;</flowPara></flowRoot>
+   style="font-weight:normal;line-height:130%;stroke:none;stroke-opacity:1;-inkscape-font-specification:Arial;font-family:Arial;font-style:normal;font-stretch:normal;font-variant:normal">description =</flowSpan> &quot;Covers basic object-oriented programming; event-driven programming; GUI creation; recursion...&quot;</flowPara></flowRoot>
           <rect
              y="358.53857"
              x="430.43668"
