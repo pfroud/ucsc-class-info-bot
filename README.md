@@ -30,7 +30,7 @@ The course database uses a course's department and number to look up that course
 ### Database structure
 The database stores a [Pickled](https://docs.python.org/3/library/pickle.html)  instance of `CourseDatabase`, which has a dict mapping a department code string to a `Department` instance. A `Department` instance has a dict mapping a course number to a `Course` instance. A `Course` instance has department, number, name, description. The relationship between these structures is illustrated below.
 
-![Database structure diagram](img/database_structure_diagram.png?raw=true)
+![Database structure diagram](database-structure-diagram.svg)
 
 You can see the log from building the database at [misc/db build log.txt](misc/db build log.txt). You can see the database's contents at [misc/db print.txt](misc/db print.txt).
 
